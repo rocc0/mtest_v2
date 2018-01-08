@@ -1,0 +1,76 @@
+            <div class="input_one input-group col-md-12">
+                <div class="input-group pull-left dia_input">
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-question-sign"
+                          aria-hidden="true"
+                          ng-click="openModal('col-sm-9','static/html/tmpl/ask_procedure.html','mTestController')">
+                    </span>
+                    Дія/Процедура
+                </div>
+                <input class="form-control dia"
+                       ng-model="item.proc"
+                       name="proc"
+                       placeholder="Оберіть дію"
+                       uib-typeahead="dia as dia[1] for dia in dii | limitTo:15"
+                       ng-change="item.adq = questions[item.proc[0]]"
+                       typeahead-on-select="item.adq = questions[item.proc[0]]; item.total = 0"
+                       typeahead-min-length="0"
+                       typeahead-focus-on-select="true"
+                       typeahead-editable="false">
+                <a class="clear" ng-click="item.proc = null">
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                </a>
+               </div>
+                 <div class="input-group pull-left dia_input">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-question-sign"
+                              aria-hidden="true"
+                              uib-popover="
+                            Частота – кількість разів  виконання ІВ/складової ІВ/процедури."
+                              popover-trigger="'mouseenter'"
+                              popover-placement="top">
+                            </span>
+                        Частота застосування
+                    </div>
+                    <input type="number" class="form-control" name="kri" ng-model="item.kri" placeholder='КРі (раз)'>
+                </div>
+            </div>
+            <div class="input_two input-group col-md-12">
+                <div class="input-group first">
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-question-sign"
+                          aria-hidden="true"
+                          uib-popover="
+                    Супутні витрати – грошові  витрати в гривнях, які безпосередньо супроводжують адміністративні дії/процедури,  необхідні для виконання ІВ. Наприклад, оплата проїзду в транспорті до місця  подання звітності, сплата за бланки, витрати на копіювання, оплата аутсорсингу"
+                          popover-trigger="'mouseenter'"
+                          popover-placement="top-left">
+                    </span>
+                Супутні витрати(грн.)</div>
+                <input type="number" class="form-control" name="pvri" ng-model="item.pvri" placeholder='ПВРі (грн)'>
+            </div>
+              <div class="input-group second">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-question-sign"
+                              aria-hidden="true"
+                              uib-popover="Час – витрати робочого часу  в годинах необхідні для виконання кожної
+                        окремої адміністративної дії/процедури  суб`єктами  малого бізнесу, на яких розповсюджується регулювання."
+                              popover-trigger="'mouseenter'"
+                              popover-placement="top">
+                        </span>
+                    Час(год.):</div>
+                    <input type="number" class="form-control" name="chi" ng-model="item.chi" placeholder="Чі (год)">
+                </div>
+                <div class="input-group thrd">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-question-sign"
+                              aria-hidden="true"
+                              uib-popover-html="payContent"
+                              popover-trigger="'mouseenter'"
+                              popover-placement="left">
+                        </span>
+                    Оплата(грн.):</div>
+                    <input type="number" class="form-control" name="vchi" ng-model="item.vchi" placeholder="ВЧі (грн)"> 
+                </div>   
+            </div>
+           
+        </div>

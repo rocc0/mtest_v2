@@ -1,0 +1,26 @@
+
+    <div class="input-group">
+        <textarea type="text"
+               ng-model="model"
+               on-esc="cancel()"
+               placeholder="Коментар"
+               ng-show="editMode"
+                  class="form-control"></textarea>
+        <div class="input-group-btn">
+            <button type="button" class="btn btn-default" aria-label="Bold" ng-show="editMode"
+                    ng-click="save()">
+                <span class="glyphicon glyphicon-ok"></span>
+            </button>
+            <button type="button" class="btn btn-default" aria-label="Italic"
+                    ng-show="editMode" ng-click="cancel()" >
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+        <div ng-hide="editMode" ng-click="edit()">
+            <span ng-hide="model != ''">інф. відсутня</span>
+            <span ng-show="model != ''">{{model}}</span>
+        </div>
+    </div>
+
+
+

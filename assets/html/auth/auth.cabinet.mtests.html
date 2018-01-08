@@ -1,0 +1,105 @@
+
+<div ng-repeat="mt in records" class="mtests-list">
+    <div class="mtest-item"><a href="/track/{[{ mt.id }]}" target="_blank">{[{ mt.name }]}</a></div>
+    <div class="mtest-icon">
+        <button ng-click="dynamicPopover.open($index, 'settingsTemplate.html', 's');"
+                uib-popover-template="dynamicPopover.templateUrl[$index + 's']"
+                type="button"
+                class="btn btn-primary"
+                popover-placement="left-top"
+                popover-is-open="dynamicPopover.isOpen[$index+'s']">
+            <span class="glyphicon glyphicon-cog"></span>
+        </button>
+    </div>
+    <div class="mtest-icon">
+        <button ng-click="dynamicPopover.open($index, 'emailTemplate.html', 'm')"
+                uib-popover-template="dynamicPopover.templateUrl[$index + 'm']"
+                popover-title="Надіслати посилання на email"
+                type="button"
+                class="btn btn-success"
+                popover-placement="left-top"
+                popover-is-open="dynamicPopover.isOpen[$index + 'm']"
+                popover-class="email-popover">
+            <span class="glyphicon glyphicon-envelope"></span>
+        </button>
+    </div>
+    <div class="mtest-icon">
+        <button ng-click="removeMtestItem(mt.id)" class="btn btn-danger">
+            <span class="glyphicon glyphicon-remove">
+            </span>
+        </button>
+    </div>
+</div>
+
+<div class="add-mtest">
+    <button ng-click="dynamicPopover.open('add', 'static/html/tmpl/modal_add_mtest.html', '')"
+            uib-popover-template="dynamicPopover.templateUrl['add']"
+            type="button"
+            class="btn btn-success"
+            popover-placement="auto top"
+            popover-is-open="dynamicPopover.isOpen['add']"
+            popover-class="email-popover">
+        <span class="glyphicon glyphicon-add"></span>
+        Додати розрахунок
+    </button>
+</div>
+
+<script type="text/ng-template" id="settingsTemplate.html">
+    <div id="edit-mtest">
+        <div class="modal-body" id="modal-body">
+            <form method="POST" class="post-form" name="addMtestForm">
+                <div class="form-group input-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">Назва</div>
+                        <input name="name" class="form-control" ng-model="mt.name"/>
+                    </div>
+                </div>
+                <div class="form-group input-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">Регіон</div>
+                        <input name="region" class="form-control" type="text" ng-model="mt.region"/>
+                    </div>
+                </div>
+                <div class="form-group input-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">Орган</div>
+                        <input name="government" class="form-control" type="text" ng-model="mt.govern"/>
+                    </div>
+                </div>
+                <div class="pull-right buttons">
+                    <button class="btn btn-success btn-sm"
+                            ng-click="updateMtestItem(mt);dynamicPopover.close($index,'s')">
+                        Зберегти</button>
+                    <button class="btn btn-danger btn-sm"
+                            ng-click="dynamicPopover.close($index,'s');settingsMtestItem(mt.id)">
+                        Закрити</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="emailTemplate.html">
+<div id="send-mtest">
+    <form method="POST" class="post-form" name="emailform">
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon">Email</div>
+                <tags-input name="emailfor" placeholder="Введіть email" class="form-control emails" type="email"
+                            ng-model="emails" add-on-space="true" add-on-enter="false"
+                            allowed-tags-pattern="\S+@\S+\.\S+"/></tags-input>
+            </div>
+        </div>
+        <div class="pull-right buttons">
+            <button class="btn btn-success btn-sm "
+                    ng-click="dynamicPopover.close($index,'m');multiActsSave($event)">
+                Надіслати</button>
+            <button class="btn btn-danger btn-sm "
+                    ng-click="dynamicPopover.close($index,'m');">
+                Закрити</button>
+        </div>
+
+    </form>
+</div>
+</script>
