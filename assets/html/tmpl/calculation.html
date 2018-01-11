@@ -11,9 +11,9 @@
                        ng-model="item.proc"
                        name="proc"
                        placeholder="Оберіть дію"
-                       uib-typeahead="dia as dia[1] for dia in dii | limitTo:15"
-                       ng-change="item.adq = questions[item.proc[0]]"
-                       typeahead-on-select="item.adq = questions[item.proc[0]]; item.total = 0"
+                       uib-typeahead="action as action.act_name for action in adm_actions | limitTo:15"
+                       ng-change="item.adq = questions[item.proc.act_id]"
+                       typeahead-on-select="item.adq = questions[item.proc.act_id]; item.total = 0"
                        typeahead-min-length="0"
                        typeahead-focus-on-select="true"
                        typeahead-editable="false">

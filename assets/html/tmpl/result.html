@@ -142,7 +142,7 @@
                     <span style="color:#9e576c">М-ТЕСТ</span><span style="color:#337ab7">:Звіт</span>
                 </h1>
                 <div class="col-md-6 pull-right">
-                    <h3 class="row"><b>Загальні витрати: </b> {[{ m.totalSum() }]} грн</h3>
+                    <h3 class="row"><b>Загальні витрати: </b> {[{ totalSum() }]} грн</h3>
                     <h3 class="row"><b>Кількість суб'єктів: </b> {[{ list[0].ki }]} шт.</h3>
                 </div>
             </div>
@@ -189,7 +189,7 @@
         <div class="math_part" ng-if="reportToggler == 1">
             <div class="row bordr itm-heading">
                <h4 class="pull-left number">#{[{ $index+1 }]}.</h4>
-                <h4 class="pull-left info"><b>Назва дії/процедури:</b>{[{ item.proc[1] }]}</h4>
+                <h4 class="pull-left info"><b>Назва дії/процедури:</b>{[{ item.proc.act_name }]}</h4>
             </div>
 
             <div class="row bordr">
@@ -201,11 +201,11 @@
             </div>
         </div>
         <div class="cor_part" ng-if="reportToggler == 0 || reportToggler == null">
-            <div class="row bordr-red" style="display: {[{ hideCritical(item.total, questions[item.proc[0]].len) }]}">
+            <div class="row bordr-red" style="display: {[{ hideCritical(item.total, questions[item.proc.act_id].len) }]}">
                 <h4 style="color:red"><b>Критична корупційна складова!</b></h4>
             </div>
             <div class="row bordr">
-                <h4><b>Корупційна складова:</b> {[{ item.proc[1] }]}</h4>
+                <h4><b>Корупційна складова:</b> {[{ item.proc.act_name }]}</h4>
                 <div class="row">
                     <h5 class="col-md-10 pull-left"><b>Назва складової</b></h5>
                     <h5 class="col-md-2 pull-left"><b>Вплив</b></h5>

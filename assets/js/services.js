@@ -41,14 +41,21 @@ mTestApp.service('authService', function ($http) {
 mTestApp.service('mtCrud', function ($http) {
     const baseURL = 'http://localhost:8888';
 
+    this.readMtestFromDB = function (id) {
+        return $http({
+            method: 'GET',
+            url: '/api/v.1/m/get/'+id,
+        });
+    }
+
     this.addMtest = function(newmtest, token) {
         return $http({
             method: 'POST',
             url:baseURL + "/api/v.1/m/create",
             data: {
                 name: newmtest.name,
-                region: parseInt(newmtest.region),
-                government: parseInt(newmtest.government)
+                region: parseInt(newmtest.region.id),
+                government: parseInt(newmtest.government.id)
             },
             headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }
@@ -63,12 +70,22 @@ mTestApp.service('mtCrud', function ($http) {
             }
         });
     };
+
     this.updateMtestItem = function (item, token) {
         return $http({
             method: 'POST',
             url:baseURL + "/api/v.1/m/update",
             data: {mid:item.id, name:item.name,
                 region:parseInt(item.region),govern: parseInt(item.govern)},
+            headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        });
+    };
+    this.updateMtestCalculations= function (id, item, token) {
+        return $http({
+            method: 'POST',
+            url:baseURL + "/api/v.1/m/update",
+            data: {id:id,calculations: item},
             headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }
         });

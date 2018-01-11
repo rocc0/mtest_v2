@@ -10,10 +10,7 @@ import (
 	"github.com/appleboy/gin-jwt"
 	"log"
 )
-type editGov struct {
-	Id int
-	Name string
-}
+
 
 type newMtest struct {
 	Name string 	`json:"name"`
@@ -91,9 +88,11 @@ func postUpdateMtest(c *gin.Context) {
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	var form map[string]interface{}
 	json.Unmarshal([]byte(x), &form)
+
 	if err := updateMtest(form, email); err == nil {
 		c.JSON(http.StatusOK, gin.H{
 			"title": "Mtest updated",
+			"data": form,
 		})
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -128,7 +127,23 @@ func getGovernments(c *gin.Context) {
 	})
 }
 
-//api administrative actions
-func getAdmCations(c *gin.Context) {
 
+func getRegions(c *gin.Context) {
+	res, err := getRegs()
+	check(err)
+	c.JSON(http.StatusOK, gin.H{
+		"regions": res,
+	})
+}
+
+
+
+
+//api administrative actions
+func getAdmActions(c *gin.Context) {
+	res, err := getAdmactions()
+	check(err)
+	c.JSON(http.StatusOK, gin.H{
+		"actions": res,
+	})
 }

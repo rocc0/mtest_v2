@@ -23,10 +23,14 @@ func userInit() {
 	stmt, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id SERIAL NOT NULL PRIMARY KEY, " +
 		"name VARCHAR(100) NOT NULL, surename VARCHAR(20) NOT NULL, email VARCHAR(100)," +
 			" password VARCHAR(100) NOT NULL, rights VARCHAR(100) NOT NULL, records VARCHAR(100) NOT NULL);")
+
+	defer stmt.Close()
+
 	check(err)
 
 	_, err = stmt.Exec()
 	check(err)
+
 }
 
 
@@ -61,8 +65,13 @@ func createUser(name, surename, email, password string) (string, error) {
 	}
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	req, err := db.Prepare("INSERT INTO users (name, surename, email, password) VALUES (?,?,?,?)")
+
+	defer req.Close()
+
 	check(err)
 	_, err = req.Exec(name, surename, email, hashedPassword)
+
+
 	check(err)
 
 	return name, nil
@@ -96,6 +105,8 @@ func updateUser(field, data string, id int) error {
 	stmt, err := db.Prepare("UPDATE users SET "+ field + "=? WHERE id=?;")
 	check(err)
 
+	defer stmt.Close()
+
 	if field == "password" {
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(data), bcrypt.DefaultCost)
 		_, err = stmt.Exec(field, hashedPassword, id)
@@ -116,8 +127,10 @@ func deleteUser(user_id int) error {
 
 func isUsernameAvailable(email string) bool {
 	res, _ := db.Query("SELECT email FROM users WHERE email=?", email)
-	if res == nil {
 
+	defer res.Close()
+
+	if res == nil {
 		return false
 	}
 	return true

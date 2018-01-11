@@ -57,8 +57,7 @@
                         dnd-draggable="item"
                         dnd-type="item.type"
                         dnd-effect-allowed="copy"
-                        dnd-copied="item.id = item.id + 1"
-                        >
+                        dnd-copied="item.id = item.id + 1">
                         <h3 class="itemname">{[{item.name}]}</h3>
                         <div class="dragitem"><img src="/static/img/{[{ item.type }]}.png"></div>
                     </li>
@@ -91,8 +90,8 @@
 
             <div class="btn2 {[{ getClass }]}" ng-show="isLoggedIn">
                 <form method="POST" class="post-form" name="form">
-                    <button type="submit" id='btn-save' class="btn btn-default  btn-sm" name="Save" ng-click="m
-                    .submitData($event);m.setClasses()">
+                    <button type="submit" id='btn-save' class="btn btn-default
+                     btn-sm" name="Save" ng-click="saveMtestToDB();setClasses()">
                         <span class="glyphicon glyphicon-floppy-disk"></span>
                         <span class="sm">Зберегти зміни</span>
                     </button>

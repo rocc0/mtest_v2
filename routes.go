@@ -76,9 +76,14 @@ func initializeRoutes() {
 	{
 		//Get goverments names and ids
 		apiRoutes.GET("/govs", getGovernments) //+
-		apiRoutes.POST("/govs/edit", authMiddleware.MiddlewareFunc(), postEditGovernments) //+
+		apiRoutes.POST("/govs/save", authMiddleware.MiddlewareFunc(), postEditGovernments) //+
 
-		apiRoutes.GET("/adm_actions", getAdmCations())
+		//Get regions and edit
+
+		apiRoutes.GET("/regions", getRegions) //+
+		apiRoutes.POST("/regions/save", authMiddleware.MiddlewareFunc(), postEditRegions) //+
+
+		apiRoutes.GET("/adm_actions", getAdmActions)
 
 		//Show and edit view
 		apiRoutes.GET("/m/get/:mtest_id", getReadMtest) //+

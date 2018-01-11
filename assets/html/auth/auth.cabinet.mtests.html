@@ -1,4 +1,3 @@
-
 <div ng-repeat="mt in records" class="mtests-list">
     <div class="mtest-item"><a href="/track/{[{ mt.id }]}" target="_blank">{[{ mt.name }]}</a></div>
     <div class="mtest-icon">
@@ -57,13 +56,31 @@
                 <div class="form-group input-group">
                     <div class="input-group">
                         <div class="input-group-addon">Регіон</div>
-                        <input name="region" class="form-control" type="text" ng-model="mt.region"/>
+                        <input class="form-control region"
+                               ng-model="mt.region"
+                               name="region"
+                               placeholder="Оберіть область"
+                               uib-typeahead="region as region.name for region in regions | limitTo:15 | filter:$viewValue"
+                               typeahead-min-length="0"
+                               typeahead-focus-on-select="true"
+                               typeahead-editable="false"
+                               typeahead-on-select="formatLabel($model, mt.id, 'region')"
+                               typeahead-input-formatter="regions[$model].name" >
                     </div>
                 </div>
                 <div class="form-group input-group">
                     <div class="input-group">
                         <div class="input-group-addon">Орган</div>
-                        <input name="government" class="form-control" type="text" ng-model="mt.govern"/>
+                        <input class="form-control govern"
+                               ng-model="mt.govern"
+                               name="govern"
+                               placeholder="Оберіть орган влади"
+                               uib-typeahead="gov as gov.name for gov in governs | limitTo:15 | filter:$viewValue"
+                               typeahead-min-length="0"
+                               typeahead-focus-on-select="true"
+                               typeahead-editable="false"
+                               typeahead-on-select="formatLabel($model, mt.id, 'govern')"
+                               typeahead-input-formatter="governs[$model].name">
                     </div>
                 </div>
                 <div class="pull-right buttons">
