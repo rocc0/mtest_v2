@@ -59,17 +59,16 @@ func authCheck(email string) bool {
 }
 
 func createUser(name, surename, email, password string) (string, error) {
-	if !isUsernameAvailable(email) {
-
+	if isUsernameAvailable(email) == true {
 		return name, errors.New("Користувач з цим ім'ям вже існує")
 	}
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	req, err := db.Prepare("INSERT INTO users (name, surename, email, password) VALUES (?,?,?,?)")
+	req, err := db.Prepare("INSERT INTO users (name, surename, email, records, password) VALUES (?,?,?,?)")
 
 	defer req.Close()
 
 	check(err)
-	_, err = req.Exec(name, surename, email, hashedPassword)
+	_, err = req.Exec(name, surename, email,"{}", hashedPassword)
 
 
 	check(err)
@@ -126,12 +125,12 @@ func deleteUser(user_id int) error {
 
 
 func isUsernameAvailable(email string) bool {
-	res, _ := db.Query("SELECT email FROM users WHERE email=?", email)
+	res, err := db.Query("SELECT email FROM users WHERE email=?", email)
 
 	defer res.Close()
 
-	if res == nil {
-		return false
+	if err == nil {
+		return true
 	}
-	return true
+	return false
 }

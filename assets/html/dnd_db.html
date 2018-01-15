@@ -37,7 +37,9 @@
                     <div class="col-md-5 input-group">
                         <div style="padding-right: 5px;width: 66%;line-height: 29px;float:right;height: 30px;">Загальна
                             вартість вимог:</div>
-                        <div class='input-group-addon' style="width: 41%;">{[{ totalSumDb() }]} грн</div>
+                        <div class='input-group-addon' style="width: 41%;">
+                            <span ng-if="mtestData.calc_type != 1">{[{ totalSumDb() }]}</span>
+                            <span ng-if="mtestData.calc_type == 1">{[{ awgSumDb() }]}</span>  грн</div>
                     </div>
                 </div>
             </div>
@@ -75,6 +77,16 @@
 
     <div class='faq'>
         <div class="buttons">
+            <div class="executors" ng-show="(executors | objLength) > 0">
+                <h5>Виконавці:</h5>
+                <div ng-repeat="ex in executors track by $index" class="execs">
+                    <div class="checkbox">
+                        <label><input type="checkbox" value="checked" ng-model="ex.checked"
+                                      ng-click="updateExecutors()">
+                            <a href="/track/{[{ ex.mid }]}">{[{ ex.email }]}</a></label>
+                    </div>
+                </div>
+            </div>
             <div class="btn1">
                 <a type="button" id='btn-dwn' class="btn btn-default btn-sm" download="Звіт.html" ng-href="{[{ saveToPdf }]}">
                     <span class="glyphicon glyphicon-cloud-download"></span>
@@ -195,9 +207,14 @@
                     <span class="glyphicon glyphicon-remove-circle"></span>
                 </a>
                 </div>
-                <div class="input-group-addon container-header"
-                     ng-model="item.subS">Вартість вимоги: {[{SumDb(item.id)[item.id] | number:0}]} грн</div>
+
+                <div class="input-group-addon container-header">
+                    Вартість вимоги:
+                    <span ng-if="mtestData.calc_type != 1">{[{ SumDb(item.id)[item.id] | number:0 }]}</span>
+                    <span ng-if="mtestData.calc_type == 1">{[{ sumDevsInfs(devs_get[$index]) | number:0 }]} </span>
+                     грн</div>
                 <div style="display:none;">{[{ item.contsub = SumDb(item.id)[item.id] }]}</div>
+                <div style="display:none;">{[{ item.awgsub = sumDevsInfs(devs_get[$index]) }]}</div>
             </div>
         </div>
 
@@ -265,7 +282,7 @@
 
             </div>
             <div class="item" style="display:none;">{[{item.id}]}</div>
-            <div class="sum_hidden" ng-model="subsum"> {[{ item.subsum = item.chi *  (item.vchi / 22 / 8) * item.kri
-                + item.pvri | number:0}]}</div>
+            <div class="sum_hidden">
+                {[{ item.subsum = item.chi *  (item.vchi / 22 / 8) * item.kri + item.pvri | number:0}]}</div>
 
 </script>

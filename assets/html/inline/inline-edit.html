@@ -1,4 +1,4 @@
-<div class="text-input">
+<div class="text-input inline-input">
     <div class="input-group">
         <input  type="text"
                 on-enter="save()"
@@ -8,7 +8,6 @@
                 class="form-control"
                 aria-label="model">
         <div ng-hide="editMode" ng-click="edit()" class="inline-show">
-            <span ng-hide="model != ''">інф. відсутня</span>
             <span ng-show="model != ''">{{model}}</span>
         </div>
     </div>

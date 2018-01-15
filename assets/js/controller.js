@@ -47,15 +47,6 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
         LS.setData(lsData);
     }, 5000);
 
-
-    this.emails_arr = function () {
-        var output = [];
-        for (var k = 0; k < $scope.emails.length; k++) {
-            output.push($scope.emails[k]['text'])
-        }
-        return output
-    };
-
     $http({
         method: 'GET',
         url: '/api/v.1/adm_actions'
@@ -76,7 +67,7 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
 
     $scope.isLoggedIn = 234;
 
-    this.mdata = function () {
+    $scope.mdata = function () {
         return angular.toJson($scope.models.dropzones);
     };
 
@@ -108,11 +99,11 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
     };
     //---------------------------------------------SUM----------------------------------------------------------
 
-    this.Sum = function (id) {
+    $scope.Sum = function (id) {
         return MathData.mathSum($scope.models.dropzones['1'], id)
     };
 
-    this.totalSum = function () {
+    $scope.totalSum = function () {
         return MathData.totalSum($scope.models.dropzones['1'][0]['ki'], this.Sum)
     };
 
@@ -149,13 +140,7 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
         return ModalWin.openModal(size, template, controller)
     };
 
-    $interval(function () {
-        var a = document.getElementById('report').innerHTML;
-        var blob = new Blob(["\ufeff", a], {
-            type: 'text/html'
-        });
-        $scope.saveToPdf = (window.URL || window.webkitURL).createObjectURL(blob);
-    }, 1000);
+
 
     $scope.hideQuestion = function (dep, val) {
         if (dep == 1 && val == 0) {
@@ -246,186 +231,6 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
     }
 
 });
-mTestApp.controller("authLoginController", function ($scope, $timeout, $location, authService) {
-    $scope.user = {};
-    $scope.onLogin = function () {
-        authService.login($scope.user)
-            .then(function (user) {
-                localStorage.setItem('token', user.data.token);
-                $location.path('/u/cabinet');
-            })
-            .catch(function (err) {
-                console.log(err);
-                $scope.message = "Невірний логін або пароль, спробуйте ще раз";
-                $timeout(function () {
-                    $scope.message = ""
-                }, 2000);
-            });
-    };
-});
-
-mTestApp.controller("userCabinetController", function ($scope, $http, $location, $rootScope,
-                                                       $timeout, authService, mtCrud, ModalWin) {
-    $scope.changepass = false
-    const token = localStorage.getItem('token');
-    if (token) {
-        authService.ensureAuthenticated(token)
-            .then(function (user) {
-                if (user.status === 200) {
-                    $scope.userdata = user.data.data;
-                    $scope.records = user.data.data.records;
-                    $rootScope.isLoggedIn = true;
-                }
-            })
-            .catch(function (err) {
-                console.log(err);
-                $location.path('/u/login');
-            });
-    }
-    //load governments and regions
-    $http({
-        method: 'GET',
-        url: '/api/v.1/regions',
-    }).then(function (response) {
-        $scope.regions = response.data.regions
-    }).catch( function (reason) {
-        console.log(reason)
-        });
-
-    $http({
-        method: 'GET',
-        url: '/api/v.1/govs',
-    }).then(function (response) {
-        $scope.governs = response.data.govs
-    }).catch( function (reason) {
-        console.log(reason)
-    });
-    //end load governments and regions
-
-
-    $scope.formatLabel = function(model, index, itmtype) {
-        console.log(model, index)
-        for (var i=0; i< $scope[itmtype+'s'].length; i++) {
-            if (model.id === $scope[itmtype+'s'][i].id) {
-                $scope.records[index][itmtype] = $scope[itmtype+'s'][i].id
-            }
-        }
-    };
-
-
-    $scope.changeUserField = function (field, id, value) {
-        console.log(field, id, value);
-        $http({
-            method: 'POST',
-            url: "/api/v.1/u/edituser",
-            data: {field: field, data: value, id: parseInt(id)},
-            headers: {
-                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
-            }
-        }).then(function (response) {
-        }).catch(function (err) {
-            console.log(err)
-        });
-    };
-    $scope.openModal = function (size, template, controller) {
-        return ModalWin.openModal(size, template, controller)
-    };
-    //--------------CRUD mtest------------------------
-    $scope.addMtest = function (newmtest) {
-        mtCrud.addMtest(newmtest, token).then(function (response) {
-            $scope.records = response.data.records;
-            $scope.len_records = angular.toJson($scope.records).length
-        }).catch(function (err) {
-            console.log(err)
-        });
-    };
-    $scope.removeMtestItem = function (id) {
-        console.log(id);
-        mtCrud.removeMtestItem(id, token)
-            .then(function (response) {
-                delete $scope.records[id];
-                $scope.len_records = angular.toJson($scope.records).length
-            }).catch(function (err) {
-            console.log(err)
-        });
-    };
-
-    $scope.updateMtestItem = function (item) {
-        console.log(item);
-        mtCrud.updateMtestItem(item, token)
-            .then(function (response) {
-            }).catch(function (err) {
-            console.log(err)
-        });
-    };
-
-    $scope.dynamicPopover = {
-        isOpen: {},
-        title: "heh",
-
-        templateUrl: {},
-
-        open: function open(index, template, tp) {
-            $scope.dynamicPopover.templateUrl[index + tp] = template;
-            $scope.dynamicPopover.isOpen[index + tp] = true;
-            $scope.dynamicPopover.data = 'Hello!';
-        },
-
-        close: function close(index, tp) {
-            $scope.dynamicPopover.isOpen[index + tp] = false;
-        }
-    };
-
-    var countUp = function () {
-        $scope.len_records = angular.toJson($scope.records).length
-    };
-    $timeout(countUp, 100);
-
-
-});
-
-mTestApp.controller("authRegisterController", function ($scope, authService) {
-
-    $scope.user = {
-        password: "",
-        confirmPassword: ""
-    };
-    $scope.onRegister = function () {
-        authService.register(vm.user)
-            .then(function (response) {
-                $location.path('/status');
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-    };
-});
-
-mTestApp.controller("menuController", function ($scope, $rootScope, authService, ModalWin) {
-    $rootScope.isLoggedIn = false;
-    const token = localStorage.getItem('token');
-    if (token) {
-        authService.ensureAuthenticated(token)
-            .then(function (user) {
-                if (user.status === 200) {
-                    $rootScope.isLoggedIn = true;
-                }
-            })
-            .catch(function (err) {
-
-                console.log(err)
-            });
-
-    }
-    $scope.onLogout = function () {
-        localStorage.removeItem('token');
-        $rootScope.isLoggedIn = false;
-        $location.path('/u/login');
-    };
-    $scope.openModal = function (size, template, controller) {
-        return ModalWin.openModal(size, template, controller)
-    };
-});
 
 mTestApp.controller("mTestDBController",
     function ($scope, $timeout, $sce, $http, $cookies, $location, $routeParams, DB_data,
@@ -433,7 +238,7 @@ mTestApp.controller("mTestDBController",
         const token = localStorage.getItem('token');
         $scope.allowed = {dropzone: ['container'], container: ['itemplus', 'item'], itemplus: ['item']};
 
-        $scope.params = $routeParams
+        $scope.params = $routeParams;
 
         var trusted = {};
         $scope.getPopoverContent = function (content) {
@@ -444,22 +249,23 @@ mTestApp.controller("mTestDBController",
         //----------------------------------------------------------------------------------------------------------
         mtCrud.readMtestFromDB($scope.params.mtest_id)
             .then(function (response) {
-                $scope.mtestData = response.data.mtest
-                this.val = angular.fromJson(response.data.mtest.calculations)
+                $scope.mtestData = response.data.mtest;
+                $scope.executors = angular.fromJson(response.data.mtest.executors);
+                this.val = angular.fromJson(response.data.mtest.calculations);
                 $scope.modelsdb = {
                     selected: null,
                     templates: [{
                         type: "container",
                         id: this.num + 1,
                         columns: [
-                            [],
+                            []
                         ],
                         name: "Додати інф. вимогу"
                     }, {
                         type: "itemplus",
                         id: 3,
                         columns: [
-                            [],
+                            []
                         ],
                         name: "Додати складову інф. вимоги"
                     }, {
@@ -491,21 +297,19 @@ mTestApp.controller("mTestDBController",
 
 
         //-------------------------------------------- GROUP MATH ------------------------------------------------
+        $scope.doGroupMath = function () {
+            var execs = $scope.executors;
+            var infs = $scope.modelsdb.dropzones['1'];
 
-        setTimeout(function () {
-            var devs = $scope.modelsdb.dropzones['1'][0].executors
-            var infs = $scope.modelsdb.dropzones['1']
-
-            for (var devs_get = []; devs_get.length < infs.length; devs_get.push([])) ;
-
-            for (var i = 0; i < devs.length; i++) {
-                let dev = devs[i]
+            for (var devs_get = []; devs_get.length < infs.length; devs_get.push([]));
+            for (var p in execs) {
                 let dev_data;
-
-                if (dev[2] === true) {
-                    $http({method: 'GET', url: dev[1] + '/get/'}).then(function (response) {
-                        dev_data = JSON.parse(response.data)
-                    })
+                console.log(execs[p].checked)
+                if (execs[p].checked === true) {
+                    $http({method: 'GET', url: '/api/v.1/m/get/' + execs[p].mid })
+                        .then(function (response) {
+                            dev_data = JSON.parse(response.data.mtest.calculations)
+                        });
                     setTimeout(function () {
                         for (var j = 0; j < dev_data['1'].length; j++) {
                             if (dev_data['1'][j]['contsub'] != 0) {
@@ -516,8 +320,12 @@ mTestApp.controller("mTestDBController",
                 }
             }
             $scope.devs_get = devs_get
+        }
 
+        setTimeout(function () {
+            $scope.doGroupMath()
         }, 150);
+
 
         setTimeout(function () {
             $scope.sumDevsInfs = function (x) {
@@ -529,9 +337,7 @@ mTestApp.controller("mTestDBController",
             }
         }, 200);
 
-        $scope.reloadRoute = function () {
-            $window.location.reload();
-        }
+
         //-------------------------------------------- END GROUP MATH ------------------------------------------------
 
         //-------------------------------corruption part
@@ -637,7 +443,14 @@ mTestApp.controller("mTestDBController",
                     console.log(value.data)
                 })
         };
-
+        $scope.updateExecutors = function () {
+            var executors = angular.toJson($scope.executors)
+            mtCrud.updateMtestExecutors($scope.params.mtest_id, executors, token)
+                .then(function (value) {
+                    $scope.doGroupMath()
+                    console.log(value.data)
+                }).catch(function (err) {  console.log(err) })
+        }
         //---------------------------------------------SUM----------------------------------------------------------
 
         $scope.SumDb = function (id) {
@@ -700,3 +513,208 @@ mTestApp.controller("mTestDBController",
   Для ФОПів  це може бути  розрахунок вартості  людино-години на основі річного обсягу реалізації сектору (детальніше див.  Посібник з М-Тесту).<br>\
   В віконце  оплата вводиться  за місяць і перераховується автоматично в оплату за годину.');
     });
+
+mTestApp.controller("authLoginController", function ($scope, $timeout, $location, authService) {
+    $scope.user = {};
+    $scope.onLogin = function () {
+        authService.login($scope.user)
+            .then(function (user) {
+                localStorage.setItem('token', user.data.token);
+                $location.path('/u/cabinet');
+            })
+            .catch(function (err) {
+                console.log(err);
+                $scope.message = "Невірний логін або пароль, спробуйте ще раз";
+                $timeout(function () {
+                    $scope.message = ""
+                }, 2000);
+            });
+    };
+});
+
+mTestApp.controller("userCabinetController", function ($scope, $http, $location, $rootScope,
+                                                       $timeout, authService, mtCrud, ModalWin) {
+    $scope.changepass = false
+    const token = localStorage.getItem('token');
+    if (token) {
+        authService.ensureAuthenticated(token)
+            .then(function (user) {
+                if (user.status === 200) {
+                    $scope.userdata = user.data.data;
+                    $scope.records = user.data.data.records;
+                    $rootScope.isLoggedIn = true;
+                }
+            })
+            .catch(function (err) {
+                console.log(err);
+                $location.path('/u/login');
+            });
+    }
+
+
+
+    //load governments and regions
+    $http({
+        method: 'GET',
+        url: '/api/v.1/regions',
+    }).then(function (response) {
+        $scope.regions = response.data.regions
+    }).catch( function (reason) {
+        console.log(reason)
+        });
+
+    $http({
+        method: 'GET',
+        url: '/api/v.1/govs',
+    }).then(function (response) {
+        $scope.governs = response.data.govs
+    }).catch( function (reason) {
+        console.log(reason)
+    });
+    //end load governments and regions
+
+    //format label for typehead on select
+    $scope.formatLabel = function(model, index, itmtype) {
+        console.log(model, index)
+        for (var i=0; i< $scope[itmtype+'s'].length; i++) {
+            if (model.id === $scope[itmtype+'s'][i].id) {
+                $scope.records[index][itmtype] = $scope[itmtype+'s'][i].id
+            }
+        }
+    };
+    //end format label for typehead on select
+
+
+
+    $scope.changeUserField = function (field, id, value) {
+        console.log(field, id, value);
+        $http({
+            method: 'POST',
+            url: "/api/v.1/u/edituser",
+            data: {field: field, data: value, id: parseInt(id)},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+    $scope.openModal = function (size, template, controller) {
+        return ModalWin.openModal(size, template, controller)
+    };
+    //--------------CRUD mtest------------------------
+    //add executor to mtest item
+    $scope.addExecutor = function (title, email, region, gov, dev_mid) {
+        mtCrud.addMtestExecutor(title, email,region, gov, dev_mid, token).then(function (response) {
+            $scope.records[dev_mid].executors[email] = {email: email, mid: response.data.mid}
+        }).catch(function (err) {
+            console.log(err)
+        });
+    }
+    $scope.removeExecutor = function (email, exIndex, devIndex) {
+        mtCrud.removeMtestExecutor(email, exIndex, devIndex, token).then(function (response) {
+            delete $scope.records[devIndex].executors[exIndex]
+        }).catch(function (err) {
+            console.log(err)
+        });
+    }
+    //end add executor to mtest item
+    $scope.addMtest = function (newmtest) {
+        mtCrud.addMtest(newmtest, token).then(function (response) {
+            $scope.records = response.data.records;
+            $scope.len_records = angular.toJson($scope.records).length
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+    $scope.removeMtestItem = function (id) {
+        console.log(id);
+        mtCrud.removeMtestItem(id, token)
+            .then(function (response) {
+                delete $scope.records[id];
+                $scope.len_records = angular.toJson($scope.records).length
+            }).catch(function (err) {
+            console.log(err)
+        });
+    };
+
+    $scope.updateMtestItem = function (item) {
+        console.log(item);
+        mtCrud.updateMtestItem(item, token)
+            .then(function (response) {
+            }).catch(function (err) {
+            console.log(err)
+        });
+    };
+
+    // popover for setting, mail, add mtest etc..
+    $scope.dynamicPopover = {
+        isOpen: {},
+        title: "heh",
+
+        templateUrl: {},
+
+        open: function open(index, template, tp) {
+            $scope.dynamicPopover.templateUrl[index + tp] = template;
+            $scope.dynamicPopover.isOpen[index + tp] = true;
+            $scope.dynamicPopover.data = 'Hello!';
+        },
+
+        close: function close(index, tp) {
+            $scope.dynamicPopover.isOpen[index + tp] = false;
+        }
+    };
+    // end popover for setting, mail, add mtest etc..
+
+    //count len of records array for showing-hiding empty array banner
+    var countUp = function () {
+        $scope.len_records = angular.toJson($scope.records).length
+    };
+    $timeout(countUp, 300);
+    //end count len of records array for showing-hiding empty array banner
+
+
+});
+
+mTestApp.controller("authRegisterController", function ($scope, authService,$location) {
+
+    $scope.user = {
+        password: "",
+        confirmPassword: ""
+    };
+    $scope.onRegister = function () {
+        authService.register($scope.user)
+            .then(function (response) {
+                $location.path('/u/login');
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    };
+});
+
+mTestApp.controller("menuController", function ($scope, $rootScope, authService, ModalWin) {
+    $rootScope.isLoggedIn = false;
+    const token = localStorage.getItem('token');
+    if (token) {
+        authService.ensureAuthenticated(token)
+            .then(function (user) {
+                if (user.status === 200) {
+                    $rootScope.isLoggedIn = true;
+                }
+            })
+            .catch(function (err) {
+                console.log(err.data.code)
+            });
+    }
+    $scope.onLogout = function () {
+        localStorage.removeItem('token');
+        $rootScope.isLoggedIn = false;
+        $location.path('/u/login');
+    };
+    $scope.openModal = function (size, template, controller) {
+        return ModalWin.openModal(size, template, controller)
+    };
+});
+

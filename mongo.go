@@ -1,5 +1,5 @@
 package main
-
+//
 //import (
 //	"log"
 //
@@ -29,4 +29,17 @@ package main
 //	}
 //
 //	return result,  nil
+//}
+//
+//func saveUserMtestsToMongo(id int, u UserMtest) error {
+//	session, err := mgo.Dial("mongodb://adder:password@192.168.99.100:27017")
+//	if err != nil {
+//		panic(err)
+//	}
+//	defer session.Close()
+//
+//
+//
+//
+//
 //}

@@ -714,13 +714,13 @@ div#sponsors .logo {
     margin: 22px 23px 0 23px;
     float: left;
 }
-span.ng-binding {
-    line-height: 31px;
-    height: 37px;
-    margin-top: -10px;
-    margin-right: -15px;
-    padding: 0 5px;
-}
+/*span.ng-binding {*/
+    /*line-height: 31px;*/
+    /*height: 37px;*/
+    /*margin-top: -10px;*/
+    /*margin-right: -15px;*/
+    /*padding: 0 5px;*/
+/*}*/
 .allsum.ng-binding {
     padding: 0 5px;
     float: right;
@@ -752,8 +752,20 @@ div#cont-id {
     border-bottom: 1px solid #fff;
     background-color: #9e566c;
 }
-.corr_toggle {
+.faq .corr_toggle {
     line-height: 39px;
+}
+
+.faq .corr_toggle span {
+    margin-right: -15px;
+    padding: 0 5px;
+}
+
+#add-mtest .corr_toggle {
+    background: #daf2ff;
+    width: 38%;
+    text-align: center;
+    margin-bottom: 3px;
 }
 
 code.small {
@@ -1108,6 +1120,11 @@ ti-tag-item.ng-isolate-scope span {
     padding: 5px 0px;
 }
 
+#cabinet .inline-input span{
+    margin-left: 5px;
+    line-height: 31px;
+}
+
 #add-mtest .form-group {
     margin-bottom: 4px;
 }
@@ -1121,7 +1138,7 @@ ti-tag-item.ng-isolate-scope span {
 }
 
 #add-mtest .modal-body {
-    margin-bottom: 20px;
+    margin-bottom: 0px;
 }
 
 #add-mtest .buttons {
@@ -1197,13 +1214,16 @@ ti-tag-item.ng-isolate-scope span {
 
 #mtests .add-mtest button{
     width: 30%;
-    margin: 0 auto;
+    margin: 0px 1px 0 5px;
+}
+
+#mtests .add-mtest .buttons button {
+    height: 28px;
+    margin: 0px 3px 0 3px;
 }
 
 #mtests .mtests-list {
-    padding-left: 7px;
-    line-height: 30px;
-    height: 30px;
+
     width: 100%;
     margin: 5px 0px;
 }
@@ -1213,7 +1233,7 @@ ti-tag-item.ng-isolate-scope span {
 }
 
 #mtests .mtests-list:nth-child(even) {
-    background: #f5f5f5;
+    background: #e8e7e7;
 }
 
 #mtests .mtest-icon,#mtests .mtest-item  {
@@ -1221,18 +1241,51 @@ ti-tag-item.ng-isolate-scope span {
 }
 
 #mtests .mtest-item {
-    width: 85%;
+    width: 80%;
+}
+#mtests .mtest-buttons {
+    width: 20%;
+    float: left;
 }
 
 #mtests .mtest-icon  {
-    width: 5%;
+    width: 25%;
     font-size: 23px;
+    float: right;
 }
 
 #mtests .mtest-icon button {
     margin-top: -4px;
     line-height: 21px;
     padding: 2px 5px 0px 5px;
+}
+#mtests .mtest-row-info {
+    padding-left: 7px;
+    line-height: 30px;
+    height: 30px;
+}
+
+#mtests .add-executor {
+    padding-top: 1px;
+    height: 32px;
+    background: #efd6c0;
+    margin: 3px 0px;
+}
+
+#mtests .mtest-sharing {
+    border-top: 1px solid #cccccc;
+    padding-left: 15px;
+}
+
+#mtests .sharing-row {
+    padding-left: 5px;
+    line-height: 30px;
+    height: 32px;
+    background: #e2f3fb;
+    margin-bottom: 2px;
+}
+#mtests .mtest-sharing h5 {
+    border-bottom: 1px solid #cccccc;
 }
 
 h2.border-bottom {

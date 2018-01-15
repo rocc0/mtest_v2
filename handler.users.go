@@ -45,10 +45,9 @@ func registerHandler(c *gin.Context) {
 
 	if name, err := createUser(user.Name,user.Surename,user.Email,user.Password); err == nil {
 		c.JSON(200, gin.H{
-			"title": "Item added",
+			"title": "User registered",
 			"id": name,
 		})
-
 	} else {
 		c.AbortWithStatus(400)
 	}

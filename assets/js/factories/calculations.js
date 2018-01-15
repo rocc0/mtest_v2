@@ -48,7 +48,6 @@ mTestApp.factory('MathData', function () {
 
       },
       awgSum: function(data, ki){
-
           if (ki > 0){
             ki = ki
           } else {

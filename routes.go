@@ -72,7 +72,6 @@ func initializeRoutes() {
 
 
 	apiRoutes := router.Group("/api/v.1/")
-
 	{
 		//Get goverments names and ids
 		apiRoutes.GET("/govs", getGovernments) //+
@@ -96,6 +95,11 @@ func initializeRoutes() {
 		//Delete handling
 		apiRoutes.POST("/m/delete", authMiddleware.MiddlewareFunc(), postDeleteMtest) //+
 
+		//executors and group calculations
+		//Creation of view
+		apiRoutes.POST("/m/excreate", authMiddleware.MiddlewareFunc(), postCreateMtestExecutor) //+
+		//Delete handling
+		apiRoutes.POST("/m/exdelete", authMiddleware.MiddlewareFunc(), postDeleteExecutor) //+
 
 		//user
 		apiRoutes.GET("/u/cabinet", authMiddleware.MiddlewareFunc(), cabinetHandler)

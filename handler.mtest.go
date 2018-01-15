@@ -16,10 +16,25 @@ type newMtest struct {
 	Name string 	`json:"name"`
 	Region int		`json:"region"`
 	Government int 	`json:"government"`
+	CalcType int `json:"calc_type"`
 }
 
 type deleteRequest struct {
 	Id string `json:"id"`
+}
+
+type delExecutorReq struct {
+	ExEmail string `json:"ex_email"`
+	ExMtestId string `json:"ex_mtest_id"`
+	DevMtestId string `json:"dev_mtest_id"`
+}
+
+type newExecutor struct {
+	Title string `json:"title"`
+	Email string `json:"email"`
+	Region int `json:"region"`
+	Government int `json:"government"`
+	DevMid string `json:"dev_mid"`
 }
 
 // page render
@@ -100,12 +115,12 @@ func postUpdateMtest(c *gin.Context) {
 }
 
 func postDeleteMtest(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+	email, _ := claims["id"].(string)
+
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	var id deleteRequest
 	json.Unmarshal([]byte(x), &id)
-
-	claims := jwt.ExtractClaims(c)
-	email, _ := claims["id"].(string)
 
 	log.Print(id.Id)
 
@@ -137,8 +152,44 @@ func getRegions(c *gin.Context) {
 }
 
 
+//executors and group calculations
+//add executor
+func postCreateMtestExecutor(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+	email, _ := claims["id"].(string)
+
+	x, _ := ioutil.ReadAll(c.Request.Body)
+	var executor newExecutor
+	json.Unmarshal([]byte(x), &executor)
+
+	if mid, err := createMtestExecutor(email, executor); err == nil {
+		c.JSON(http.StatusOK, gin.H{
+			"mid": mid,
+		})
+	} else {
+		log.Print(err)
+		c.AbortWithStatus(http.StatusBadRequest)
+	}
+}
 
 
+func postDeleteExecutor(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+	email, _ := claims["id"].(string)
+
+	x, _ := ioutil.ReadAll(c.Request.Body)
+	var delRequest delExecutorReq
+	json.Unmarshal([]byte(x), &delRequest)
+
+	if  err := deleteMtestExecutor(email, delRequest); err == nil {
+		c.JSON(http.StatusOK, gin.H{
+			"response": "ok",
+		})
+	} else {
+		log.Print(err)
+		c.AbortWithStatus(http.StatusBadRequest)
+	}
+}
 //api administrative actions
 func getAdmActions(c *gin.Context) {
 	res, err := getAdmactions()

@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"time"
+	"errors"
 	"github.com/google/uuid"
 	"encoding/json"
 )
@@ -12,13 +13,22 @@ type governmentRegion struct {
 	Name string	`json:"name"`
 }
 
+type newExecutors struct {
+	Email string `json:"email"`
+	Mid string `json:"mid"`
+	Checked bool `json:"checked"`
+}
+
 type Mtest struct {
 	Id int `json:"id"`
 	Mid uuid.UUID `json:"mid"`
 	Name string `json:"name"`
-	Region int `json:"region"`
-	Govern int `json:"govern"`
+	Region string `json:"region"`
+	Govern string `json:"govern"`
 	Calculations string `json:"calculations"`
+	CalcType int `json:"calc_type"`
+	CalcData string `json:"calc_data"`
+	Executors string `json:"executors"`
 	PubDate string `json:"pub_date"`
 	Author string `json:"author"`
 }
@@ -27,7 +37,11 @@ type UserMtest struct {
 	Id string `json:"id"`
 	Name string `json:"name"`
 	Region int `json:"region"`
-	Govern int `json:"govern"`
+	Government int `json:"govern"`
+	CalcType int `json:"calc_type"`
+	Developer string `json:"developer"`
+	DevMid string `json:"dev_mid"`
+	Executors map[string]newExecutors `json:"executors"`
 }
 
 type AdmAction struct {
@@ -41,51 +55,52 @@ const calculations = `{"1":[{"type":"container","id":3,"columns":[[{"type":"item
                 {"type":"container","id":null,"columns":[[{"type":"itemplus","id":4,"columns":[[{"type":"item","id":3,"name":"Додати дію","subsum":0},
                             {"type":"item","id":4,"name":"Додати дію","subsum":0}]],"name":"Додати складову інф. вимоги"}]],"name":"Додати інф. вимогу","contsub":0}]}`
 
-
-
 func createNewMtest(m newMtest, email string) (*map[string]interface{}, error) {
 	var (
 		id int
-		db_records string
+		dbRecords string
 		records map[string]interface{}
 		)
 
 	stmt, err := db.Prepare("INSERT INTO mtests (mid, name, region, govern," +
-		" calculations, pub_date, author) VALUES (?,?,?,?,?,?,?)")
+		" calculations, calc_type, pub_date, author) VALUES (?,?,?,?,?,?,?,?)")
 	if err != nil {
 		log.Print(err)
 		return nil, err
 	}
-	m_id := uuid.New()
+	mId := uuid.New()
 	defer stmt.Close()
 
-	result, err := stmt.Exec(m_id, m.Name, m.Region, m.Government, calculations, time.Now(), email)
+	result, err := stmt.Exec(mId, m.Name, m.Region, m.Government, calculations,m.CalcType, time.Now(), email )
 
 	if err != nil {
 		log.Print(err)
 		return nil, err
 	}
-	id_res, _ := result.LastInsertId()
+	idRes, _ := result.LastInsertId()
 
-	id_stmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", email)
-	id_stmt.Scan(&id, &db_records)
+	idStmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", email)
+	idStmt.Scan(&id, &dbRecords)
 
-	json.Unmarshal([]byte(db_records), &records)
-	records[m_id.String()] = UserMtest{m_id.String(), m.Name, m.Region, m.Government}
+	json.Unmarshal([]byte(dbRecords), &records)
+	records[mId.String()] = UserMtest{mId.String(), m.Name, m.Region,
+		m.Government, m.CalcType, "", "", nil}
 
 	out, err := json.Marshal(records)
 	check(err)
 
-	id_err := updateUser("records", string(out), id)
+	err = updateUser("records", string(out), id)
 
-	if id_err != nil {
-		return nil, id_err
+	if err != nil {
+		return nil, err
 	}
 //need check
-	idx_err := updateIndex(id_res)
-	if idx_err != nil {
-		return nil, idx_err
+	err = updateIndex(idRes)
+	if err != nil {
+		return nil, err
 	}
+
+
 
 	return &records, nil
 }
@@ -94,20 +109,21 @@ func readMtest(id string) (*Mtest, error) {
 	var (
 		mtest Mtest
 		mid uuid.UUID
-		row_id, govern, region int
-		name,  calculations, pub_date, author string
+		rowId, calcType int
+		name, govern, region, calculations, calcData, executors, pubDate, author string
 	)
-	res := db.QueryRow("SELECT id, mid, name, region, govern, calculations," +
-		" pub_date, author FROM mtests WHERE mid=?", id)
+	res := db.QueryRow("SELECT m.id, m.mid, m.name, r.reg_name, g.gov_name, m.calculations," +
+		" m.calc_type, m.calc_data, m.executors, m.pub_date, m.author FROM mtests m JOIN govs g ON m.govern = g.id JOIN " +
+			"regions r ON m.region = r.reg_id WHERE mid=?", id)
 
-	err := res.Scan(&row_id, &mid, &name, &region, &govern, &calculations, &pub_date, &author)
+	err := res.Scan(&rowId, &mid, &name, &region, &govern, &calculations, &calcType, &calcData, &executors, &pubDate, &author)
 	if err != nil {
-		log.Print(err, "kek")
+		log.Print(err)
 		return nil, err
 	}
 
-	mtest = Mtest{row_id, mid, name, region,
-	govern,calculations,pub_date, author}
+	mtest = Mtest{rowId, mid, name, region,
+	govern,calculations,calcType,calcData, executors,pubDate, author}
 
 	return &mtest, nil
 }
@@ -115,7 +131,7 @@ func readMtest(id string) (*Mtest, error) {
 func updateMtest(m map[string]interface{}, email string) error{
 	var (
 		id int
-		db_records string
+		dbRecords string
 		records map[string]interface{}
 	)
 
@@ -128,17 +144,18 @@ func updateMtest(m map[string]interface{}, email string) error{
 		} else {
 			region := int(m["region"].(float64))
 			govern := int(m["govern"].(float64))
+			calc_type := int(m["calc_type"].(float64))
 
 			_, err := stmt.Exec(m["name"],region,govern,m["mid"])
 			check(err)
 
 			id_stmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", email)
-			id_stmt.Scan(&id, &db_records)
+			id_stmt.Scan(&id, &dbRecords)
 
-			json.Unmarshal([]byte(db_records), &records)
+			json.Unmarshal([]byte(dbRecords), &records)
 
 			records[m["mid"].(string)] = UserMtest{m["mid"].(string),m["name"].(string),
-				region,govern}
+				region,govern,calc_type, "", "", nil}
 
 			out, err := json.Marshal(records)
 			check(err)
@@ -160,6 +177,16 @@ func updateMtest(m map[string]interface{}, email string) error{
 			check(err)
 			return nil
 		}
+	} else if m["executors"] != nil && m["name"] == nil {
+		log.Print("kek", m)
+		stmt, err := db.Prepare("UPDATE mtests SET executors= ? WHERE mid=?;")
+		if err != nil {
+			return err
+		} else {
+			_, err := stmt.Exec(m["executors"],m["id"])
+			check(err)
+			return nil
+		}
 	}
 
 	//update index!!!!!!!!
@@ -169,7 +196,7 @@ func updateMtest(m map[string]interface{}, email string) error{
 func deleteMtest(mid, email string) error {
 	var (
 		id int
-		db_records string
+		dbRecords string
 		records map[string]interface{}
 	)
 	if stmt, err := db.Prepare("DELETE FROM mtests WHERE mid=?"); err != nil {
@@ -183,10 +210,10 @@ func deleteMtest(mid, email string) error {
 			return err
 		}
 	}
-	id_stmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", email)
-	id_stmt.Scan(&id, &db_records)
+	idStmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", email)
+	idStmt.Scan(&id, &dbRecords)
 
-	json.Unmarshal([]byte(db_records), &records)
+	json.Unmarshal([]byte(dbRecords), &records)
 
     delete(records,mid)
 
@@ -201,53 +228,30 @@ func deleteMtest(mid, email string) error {
 
 }
 
-func editGovName(id int, name string) error {
-	stmt, err := db.Prepare("UPDATE governments SET gov_name=? WHERE id=?;")
-	defer stmt.Close()
-	check(err)
-	_, err = stmt.Exec(name, id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func getGovs() (*[]governmentRegion, error){
 	var (
 		govs []governmentRegion
-		gov_id int
-		gov_name string
+		govId int
+		govName string
 	)
 	res, err := db.Query("SELECT gov_id, gov_name FROM govs")
 	check(err)
 	defer res.Close()
 
 	for res.Next() {
-		err = res.Scan(&gov_id, &gov_name)
+		err = res.Scan(&govId, &govName)
 		check(err)
 
-		govs = append(govs, governmentRegion{gov_id, gov_name })
+		govs = append(govs, governmentRegion{govId, govName })
 	}
 	return &govs, nil
 }
 
-func editRegName(id int, name string) error {
-	stmt, err := db.Prepare("UPDATE governments SET gov_name=? WHERE id=?;")
-	defer stmt.Close()
-	check(err)
-	_, err = stmt.Exec(name, id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-
 func getRegs() (*[]governmentRegion, error) {
 	var (
 		regions []governmentRegion
-		reg_id int
-		reg_name string
+		regId int
+		regName string
 	)
 
 	res, err := db.Query("SELECT reg_id, reg_name FROM regions")
@@ -255,18 +259,18 @@ func getRegs() (*[]governmentRegion, error) {
 	defer res.Close()
 
 	for res.Next() {
-		err = res.Scan(&reg_id, &reg_name)
+		err = res.Scan(&regId, &regName)
 		check(err)
 
-		regions = append(regions, governmentRegion{reg_id, reg_name})
+		regions = append(regions, governmentRegion{regId, regName})
 	}
 	return &regions, nil
 }
 
 func getAdmactions() (*[]AdmAction, error) {
 	var (
-		act_id int
-		act_name string
+		actId int
+		actName string
 		actions []AdmAction
 	)
 
@@ -274,12 +278,181 @@ func getAdmactions() (*[]AdmAction, error) {
 	defer res.Close()
 	check(err)
 	for res.Next() {
-		err := res.Scan(&act_id, &act_name)
+		err := res.Scan(&actId, &actName)
 		check(err)
-		action := AdmAction{act_id, act_name}
+		action := AdmAction{actId, actName}
 		actions = append(actions, action)
 	}
 
 	return &actions, nil
+
+}
+
+func createMtestExecutor(email string, ex newExecutor) (*uuid.UUID, error) {
+	var mId = uuid.New()
+
+	var (
+		id, devId int
+		dbRecords, devDbRecords,getExecutors string
+		records map[string]interface{}
+		devRecords map[string]UserMtest
+	)
+
+
+	//check if user exists !!!!
+	log.Print(ex.Email)
+	if isUsernameAvailable(ex.Email) == false {
+		return nil, errors.New("Користувач не зареєстрований")
+	}
+
+	//add mtest type 3
+	stmt, _ := db.Prepare("INSERT INTO mtests (mid, name, region, govern," +
+		" calculations, calc_type, developer, dev_mid, pub_date, author) VALUES (?,?,?,?,?,?,?,?,?,?)")
+
+	defer stmt.Close()
+
+	_, err := stmt.Exec(mId, ex.Title, ex.Region, ex.Government,
+		calculations, 3, email, ex.DevMid, time.Now(), ex.Email)
+	if err != nil {
+		log.Print(err)
+		return nil, err
+	}
+	log.Print("add mtest type 3 done")
+
+	//UPDATE MAIN MTEST executors!!!!!!!!!!!
+
+	var saveExecutors = map[string]newExecutors{}
+
+	exStmt := db.QueryRow("SELECT executors FROM mtests WHERE mid=?", ex.DevMid)
+	exStmt.Scan(&getExecutors)
+	json.Unmarshal([]byte(getExecutors), &saveExecutors)
+
+	saveExecutors[mId.String()] = newExecutors{ex.Email, mId.String(), true}
+
+	updOut, updOutErr := json.Marshal(saveExecutors)
+	if updOutErr != nil {
+		return nil, updOutErr
+	}
+
+	updMtest, updMtestErr := db.Prepare("UPDATE mtests SET executors=? WHERE mid=?")
+	if updMtestErr != nil {
+		return nil, updMtestErr
+	}
+	_, updError := updMtest.Exec(updOut,ex.DevMid)
+	if updError != nil {
+		return nil, updError
+	}
+
+	log.Print("add executors to mtest done",mId)
+
+	//add mtest to executor mtests
+	idStmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", ex.Email)
+	idStmt.Scan(&id, &dbRecords)
+
+	json.Unmarshal([]byte(dbRecords), &records)
+	records[mId.String()] = UserMtest{mId.String(), ex.Title, ex.Region,
+	ex.Government, 3, email, ex.DevMid, nil}
+
+	out, marshErr := json.Marshal(records)
+	if marshErr != nil {
+		return nil, marshErr
+	}
+
+	idErr := updateUser("records", string(out), id)
+	if idErr != nil {
+		return nil, idErr
+	}
+
+	// add mtest to developer mtest to executors section
+	devStmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", email)
+	devStmt.Scan(&devId, &devDbRecords)
+
+	json.Unmarshal([]byte(devDbRecords), &devRecords)
+	record := devRecords[ex.DevMid]
+	devRecords[ex.DevMid] = UserMtest{ex.DevMid, record.Name, record.Region,
+		record.Government, record.CalcType, "", "", saveExecutors}
+
+	devOut, devOutErr := json.Marshal(devRecords)
+	if devOutErr != nil {
+		return nil, devOutErr
+	}
+
+	devErr := updateUser("records", string(devOut), devId)
+	if devErr != nil {
+		return nil, devErr
+	}
+
+	return &mId, nil
+}
+
+func deleteMtestExecutor(devEmail string, del delExecutorReq) error {
+	var (
+		id int
+		dbRecords string
+		records map[string]interface{}
+		devRecords map[string]UserMtest
+	)
+	//delete mtest
+	log.Print(del.ExMtestId)
+	stmt, _ := db.Prepare("DELETE FROM mtests WHERE mid=?")
+	_, err := stmt.Exec(del.ExMtestId)
+	if err != nil {
+		return err
+	}
+
+	//delete from executors mtests
+	idStmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", del.ExEmail)
+	idStmt.Scan(&id, &dbRecords)
+
+	json.Unmarshal([]byte(dbRecords), &records)
+
+	delete(records, del.ExMtestId)
+
+	out, err := json.Marshal(records)
+	check(err)
+
+	if err := updateUser("records", string(out), id); err == nil {
+		log.Print("lel: ", del.DevMtestId)
+	} else {
+		return err
+	}
+
+	//delete from developers mtests
+
+	devStmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", devEmail)
+	devStmt.Scan(&id, &dbRecords)
+
+	unmarshErr := json.Unmarshal([]byte(dbRecords), &devRecords)
+	if unmarshErr != nil {
+		return unmarshErr
+	}
+	delete(devRecords[del.DevMtestId].Executors, del.ExMtestId)
+	devOut, devErr := json.Marshal(devRecords)
+	if devErr != nil {
+		return devErr
+	}
+
+	if err := updateUser("records", string(devOut), id); err == nil {
+		log.Print("lel: ", del.DevMtestId)
+	} else {
+		return err
+	}
+
+	//delete from developer mtest
+	mtStmt := db.QueryRow("SELECT executors FROM mtests WHERE mid=?", del.DevMtestId)
+	mtStmt.Scan(&dbRecords)
+
+	json.Unmarshal([]byte(dbRecords), &records)
+	delete(records, del.ExMtestId)
+	mtOut, err := json.Marshal(records)
+	check(err)
+
+	mtSaveStmt, _ := db.Prepare("UPDATE mtests SET executors=? WHERE mid=?", )
+	_, mtErr := mtSaveStmt.Exec(mtOut, del.DevMtestId)
+	if mtErr != nil {
+		return mtErr
+	}
+
+	return nil
 
 }

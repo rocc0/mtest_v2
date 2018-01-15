@@ -1,32 +1,67 @@
 <div ng-repeat="mt in records" class="mtests-list">
-    <div class="mtest-item"><a href="/track/{[{ mt.id }]}" target="_blank">{[{ mt.name }]}</a></div>
-    <div class="mtest-icon">
-        <button ng-click="dynamicPopover.open($index, 'settingsTemplate.html', 's');"
-                uib-popover-template="dynamicPopover.templateUrl[$index + 's']"
-                type="button"
-                class="btn btn-primary"
-                popover-placement="left-top"
-                popover-is-open="dynamicPopover.isOpen[$index+'s']">
-            <span class="glyphicon glyphicon-cog"></span>
-        </button>
+    <div class="mtest-row-info">
+        <div class="mtest-item"><a href="/track/{[{ mt.id }]}" target="_blank">{[{ mt.name }]}</a></div>
+        <div class="mtest-buttons">
+            <div class="mtest-icon">
+                <button ng-click="removeMtestItem(mt.id)" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove">
+                    </span>
+                </button>
+            </div>
+            <div class="mtest-icon">
+                <button ng-click="dynamicPopover.open($index, 'emailTemplate.html', 'm')"
+                        uib-popover-template="dynamicPopover.templateUrl[$index + 'm']"
+                        popover-title="Надіслати посилання на email"
+                        type="button"
+                        class="btn btn-success"
+                        popover-placement="left-top"
+                        popover-is-open="dynamicPopover.isOpen[$index + 'm']"
+                        popover-class="email-popover">
+                    <span class="glyphicon glyphicon-envelope"></span>
+                </button>
+            </div>
+            <div class="mtest-icon">
+                <button ng-click="dynamicPopover.open($index, 'settingsTemplate.html', 's');"
+                        uib-popover-template="dynamicPopover.templateUrl[$index + 's']"
+                        type="button"
+                        class="btn btn-primary"
+                        popover-placement="left-top"
+                        popover-is-open="dynamicPopover.isOpen[$index+'s']">
+                    <span class="glyphicon glyphicon-cog"></span>
+                </button>
+            </div>
+            <div class="mtest-icon" ng-show="mt.calc_type == 1">
+                <button ng-click="mt.rowSharing=!mt.rowSharing"
+                        type="button"
+                        class="btn btn-primary">
+                    <span class="glyphicon glyphicon-list-alt"></span>
+                </button>
+            </div>
+        </div>
     </div>
-    <div class="mtest-icon">
-        <button ng-click="dynamicPopover.open($index, 'emailTemplate.html', 'm')"
-                uib-popover-template="dynamicPopover.templateUrl[$index + 'm']"
-                popover-title="Надіслати посилання на email"
-                type="button"
-                class="btn btn-success"
-                popover-placement="left-top"
-                popover-is-open="dynamicPopover.isOpen[$index + 'm']"
-                popover-class="email-popover">
-            <span class="glyphicon glyphicon-envelope"></span>
-        </button>
-    </div>
-    <div class="mtest-icon">
-        <button ng-click="removeMtestItem(mt.id)" class="btn btn-danger">
-            <span class="glyphicon glyphicon-remove">
-            </span>
-        </button>
+    <div class="mtest-sharing clearfix" ng-show="mt.rowSharing==1">
+        <h5 ng-show="mt.executors != null">Виконавці:</h5>
+        <div class="sharing-row clearfix" ng-repeat="ex in mt.executors track by $index">
+            <div class="mtest-item"><a href="/track/{[{ ex.mid }]}">{[{ ex.email }]}</a> </div>
+            <div class="mtest-buttons">
+                <div class="mtest-icon">
+                    <button ng-click="removeExecutor(ex.email,ex.mid,mt.id)" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove">
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="add-executor">
+            <div class="pull-left col-md-10 input-group">
+                <span class="input-group-addon">@Email</span>
+                <input name="executor" type="email" class="form-control input-sm"
+                       placeholder="Введіть email" ng-model="executor"/>
+            </div>
+            <div class="pull-left col-md-2">
+                <button ng-click="addExecutor(mt.name, executor, mt.region, mt.govern, mt.id);executor=''" class="btn btn-primary btn-sm">Додати виконавця</button>
+            </div>
+        </div>
     </div>
 </div>
 

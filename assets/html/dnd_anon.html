@@ -33,7 +33,7 @@
                     <div class="col-md-5 input-group">
                         <div style="padding-right: 5px;width: 66%;line-height: 29px;float:right;height: 30px;">Загальна
                             вартість вимог:</div>
-                        <div class='input-group-addon' style="width: 41%;">{[{m.totalSum()}]} грн</div>
+                        <div class='input-group-addon' style="width: 41%;">{[{ totalSum()}]} грн</div>
                     </div>
                 </div>
             </div>
@@ -174,8 +174,8 @@
                 </a>
                 </div>
                 <div class="input-group-addon container-header"
-                     ng-model="item.subS">Вартість вимоги: {[{m.Sum(item.id)[item.id] | number:0}]} грн</div>
-                <div style="display:none;">{[{ item.contsub = m.Sum(item.id)[item.id] }]}</div>
+                     ng-model="item.subS">Вартість вимоги: {[{ Sum(item.id)[item.id] | number:0}]} грн</div>
+                <div style="display:none;">{[{ item.contsub = Sum(item.id)[item.id] }]}</div>
             </div>
         </div>
     

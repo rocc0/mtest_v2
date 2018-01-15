@@ -44,19 +44,24 @@ mTestApp.service('mtCrud', function ($http) {
     this.readMtestFromDB = function (id) {
         return $http({
             method: 'GET',
-            url: '/api/v.1/m/get/'+id,
+            url: '/api/v.1/m/get/'+id
         });
-    }
+    };
 
     this.addMtest = function(newmtest, token) {
+        var data = {
+            name: newmtest.name,
+            region: parseInt(newmtest.region.id),
+            government: parseInt(newmtest.government.id),
+            calc_type: parseInt(newmtest.calc_type)
+        };
+        if (newmtest.calc_type === 1) {
+            data.executors = {}
+        }
         return $http({
             method: 'POST',
             url:baseURL + "/api/v.1/m/create",
-            data: {
-                name: newmtest.name,
-                region: parseInt(newmtest.region.id),
-                government: parseInt(newmtest.government.id)
-            },
+            data: data,
             headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }
         });
@@ -90,4 +95,43 @@ mTestApp.service('mtCrud', function ($http) {
             }
         });
     };
+    this.updateMtestExecutors= function (id, item, token) {
+        console.log(item)
+        return $http({
+            method: 'POST',
+            url:baseURL + "/api/v.1/m/update",
+            data: {id:id, executors: item},
+            headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        });
+    };
+    this.addMtestExecutor = function (title, email, region, gov, dev_mid, token) {
+        return $http({
+            method: 'POST',
+            url:baseURL + "/api/v.1/m/excreate",
+            data: {title: title, email: email, region: region, government: gov, dev_mid: dev_mid, },
+            headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        });
+    };
+    this.removeMtestExecutor = function (email, exIndex, devIndex, token) {
+        return $http({
+            method: 'POST',
+            url:baseURL + "/api/v.1/m/exdelete",
+            data: {ex_email: email, ex_mtest_id: exIndex, dev_mtest_id: devIndex},
+            headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        });
+    }
+});
+
+mTestApp.filter('objLength', function() {
+    return function(object) {
+        var count = 0;
+
+        for(var i in object){
+            count++;
+        }
+        return count;
+    }
 });
