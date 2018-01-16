@@ -44,6 +44,7 @@ func initializeRoutes() {
 
 	// Handle the index route
 	router.GET("/", showIndexPage) //+
+	router.GET("/search", showSearchPage) //+
 
 	adminRoutes :=router.Group("/admin")
 	{

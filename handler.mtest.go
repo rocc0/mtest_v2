@@ -44,6 +44,12 @@ func showIndexPage(c *gin.Context) {
 	}, "index.html")
 }
 
+func showSearchPage(c *gin.Context) {
+	render(c, gin.H{
+		"title":   "Пошук АРВ",
+	}, "index.html")
+}
+
 func showUserPage(c *gin.Context) {
 	render(c, gin.H{
 		"title": "Кабінет користувача",

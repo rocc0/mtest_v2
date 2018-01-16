@@ -30,6 +30,10 @@ mTestApp.config(function($compileProvider, $interpolateProvider, $routeProvider,
             templateUrl: 'static/html/dnd_anon.html',
             controller: 'mTestController',
         })
+        .when('/search', {
+            templateUrl: 'static/html/search.html',
+            controller: 'searchController',
+        })
         .when('/track/:mtest_id', {
             templateUrl: 'static/html/dnd_db.html',
             controller: 'mTestDBController',

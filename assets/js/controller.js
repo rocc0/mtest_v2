@@ -718,3 +718,80 @@ mTestApp.controller("menuController", function ($scope, $rootScope, authService,
     };
 });
 
+mTestApp.controller("searchController", function ($scope, $http) {
+    $scope.currentPage = 0;
+    //elastic search
+    $scope.query = {
+        "from": 0, "size": 10,
+        "query": {
+            "bool": {
+                "should": {
+                    "multi_match": {
+                        "query": $scope.phrase,
+                        "fields": ["name"]
+                    }
+                }
+            }
+        }
+    };
+    $scope.addPhrase = function () {
+        $scope.query.query.bool.should.multi_match.query = $scope.phrase
+    };
+
+    $scope.addTerm = function (field, data) {
+        if (!$scope.query.query.bool.filter) {
+            $scope.query.query.bool.filter = {
+                "bool": {
+                    "must": []
+                }
+            }
+        }
+        var obj = {};
+        var arr = $scope.query.query.bool.filter.bool.must;
+        obj[field] = data;
+        if (arr.length == 0) {
+            arr.push({"term": obj})
+        } else {
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i].term.hasOwnProperty(field)) {
+                    arr[i].term[field] = data;
+                    break
+                } else if (i === arr.length - 1 && !arr[i].term.hasOwnProperty(field)) {
+                    arr.push({"term": obj})
+                }
+            }
+        }
+    };
+    $scope.doSearch = function () {
+        $http({
+            method: 'POST',
+            url: "http://192.168.99.100:9200/mtests/_search",
+            data: $scope.query
+        }).then(function (response) {
+            $scope.results = response.data;
+        }).catch(function (err) {
+            console.log(err)
+        })
+    };
+
+    //load governments and regions
+    $http({
+        method: 'GET',
+        url: '/api/v.1/regions',
+    }).then(function (response) {
+        $scope.regions = response.data.regions
+    }).catch( function (reason) {
+        console.log(reason)
+    });
+
+    $http({
+        method: 'GET',
+        url: '/api/v.1/govs',
+    }).then(function (response) {
+        $scope.governs = response.data.govs
+    }).catch( function (reason) {
+        console.log(reason)
+    });
+    //end load governments and regions
+
+});

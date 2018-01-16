@@ -1,0 +1,82 @@
+<div ng-controller="searchController" id="search">
+    <form class="form-horizontal" role="form">
+        <div style="width:100%;clear: both">
+            <div class="form-group col-xs-11">
+                <div >
+                    <input ng-model="phrase" type="text" class="form-control" ng-change="addPhrase()"
+                           id="searchTerm" placeholder="Введіть назву документу">
+                </div>
+            </div>
+            <div class="form-group col-xs-1" style="float: right">
+                <div >
+                    <button type="submit" class="btn btn-primary" ng-click="doSearch()">Пошук</button>
+                </div>
+            </div>
+        </div>
+        <div style="width:100%;clear: both" class="search_params form-group">
+            <div class="col-xs-1">
+                Фільтри:
+            </div>
+            <div class="col-xs-3">
+                <input type="text"
+                       ng-model="govern"
+                       placeholder="Орган влади"
+                       uib-typeahead="gov as gov.name for gov in governs | filter:$viewValue | limitTo:15"
+                       class="form-control"
+                       typeahead-on-select="addTerm('govern', $item.id)"
+                       typeahead-min-length="0"
+                       typeahead-focus-on-select="true"
+                       typeahead-editable="false">
+            </div>
+            <div class="col-xs-3">
+                <input type="text"
+                       ng-model="region"
+                       placeholder="Регіон"
+                       uib-typeahead="gov as gov.name for gov in regions | filter:$viewValue | limitTo:15"
+                       class="form-control"
+                       typeahead-on-select="addTerm('region', $item.id)"
+                       typeahead-min-length="0"
+                       typeahead-focus-on-select="true"
+                       typeahead-editable="false">
+            </div>
+        </div>
+    </form>
+    <div ng-show="results" ng-include="'results.html'"></div>
+</div>
+
+
+
+
+<script type="text/ng-template" id="results.html" >
+    <h3 class="col-md-12 clearfix">Результати пошуку:</h3>
+    <ul style="list-style: none;    padding-left: 0px;">
+        <li ng-repeat="hit in results.hits.hits">
+            <div class="well col-md-12">
+                <div class="pull-left col-xs-12">
+                    <span class="pull-left" >Назва:	&nbsp;</span>
+                    <a href="/track/id/{[{ hit._source.mid }]}" target="_blank" class="clearfix"> {[{ hit._source.name }]}</a>
+                </div>
+                <div class="pull-left col-xs-6">Орган влади: {[{ governs[hit._source.govern - 1].name }]}</div>
+                <div class="pull-left col-xs-3">Регіон: {[{ regions[hit._source.region - 1].name }]}</div>
+                <div class="pull-left col-xs-3">Розробник: {[{ hit._source.author }]}</div>
+            </div>
+
+        </li>
+    </ul>
+
+    <div class="col-xs-12 search-pgn">
+        <ul uib-pagination total-items="results.hits.total"
+            max-size="10"
+            ng-model="currentPage"
+            boundary-links="true"
+            force-ellipses="true"
+            rotate="true"
+            first-text="Перша"
+            last-text="Остання"
+            next-text="Вперед"
+            previous-text="Назад"
+            ng-change="query.from=currentPage*10;doSearch()"></ul>
+    </div>
+
+
+</script>

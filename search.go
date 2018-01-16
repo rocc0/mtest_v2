@@ -13,6 +13,7 @@ type Idx struct {
 	Mid string `json:"mid"`
 	Name string `json:"name"`
 	Region int `json:"region"`
+	Govern int `json:"govern"`
 	Author string `json:"author"`
 }
 
@@ -26,7 +27,7 @@ const mapping = `
 		"mtest":{
 			"properties":{
 				"mid":{
-					"type":"text"
+					"type":"string"
 				},
 				"name":{
 					"type":"text",
@@ -35,9 +36,11 @@ const mapping = `
 				"region":{
 					"type":"integer"
 				},
+				"govern":{
+					"type":"integer"
+				},
 				"author":{
-					"type":"string",
-					"analyzer": "ukrainian"
+					"type":"string"
 				}
 			}
 		}
@@ -66,6 +69,7 @@ func elasticConnect() (context.Context, *elastic.Client, error){
 	log.Printf("Elasticsearch version %s\n", esversion)
 
 	// Use the IndexExists service to check if a specified index exists.
+	client.DeleteIndex("mtests").Do(ctx)
 	exists, err := client.IndexExists("mtests").Do(ctx)
 	check(err)
 
@@ -85,23 +89,23 @@ func elasticConnect() (context.Context, *elastic.Client, error){
 func elasticIndex(){
 	var (
 		mid uuid.UUID
-		region int
+		region, govern int
 		name, author string
 		trk Idx
 	)
 	ctx, client, err := elasticConnect()
 	check(err)
 
-	res, err := db.Query("SELECT mid, name, region, author FROM mtests")
+	res, err := db.Query("SELECT mid, name, region, govern, author FROM mtests")
 	check(err)
 
 	log.Print("Indexing started")
 	for res.Next(){
-		err := res.Scan(&mid, &name, &region, &author)
+		err := res.Scan(&mid, &name, &region, &govern, &author)
 		if err != nil {
 			log.Print(err.Error(), " | " ,mid, "\n")
 		}
-		trk = Idx{mid.String(), name, region, author}
+		trk = Idx{mid.String(), name, region, govern,author}
 		_, err = client.Index().
 			Index("mtests").
 			Type("mtest").
@@ -116,22 +120,22 @@ func elasticIndex(){
 func updateIndex(id int64) error {
 	var (
 		mid uuid.UUID
-		region int
+		region, govern int
 		name, author string
 	)
 	ctx, client, err := elasticConnect()
 
-	ind, err := db.Query("SELECT mid, name, region, author FROM mtests WHERE id=?;", id)
+	ind, err := db.Query("SELECT mid, name, region, govern, author FROM mtests WHERE id=?;", id)
 	check(err)
 
 	for ind.Next() {
-		err = ind.Scan(&mid, &name, &region, &author)
+		err = ind.Scan(&mid, &name, &region, &govern, &author)
 		if err != nil {
 			log.Print(err.Error())
 			return err
 		}
 	}
-	idx := Idx{mid.String(), name, region, author}
+	idx := Idx{mid.String(), name, region, govern,author}
 	_, err = client.Index().
 		Index("mtests").
 		Type("mtest").
