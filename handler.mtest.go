@@ -116,6 +116,7 @@ func postUpdateMtest(c *gin.Context) {
 			"data": form,
 		})
 	} else {
+		log.Print(err)
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 }
@@ -127,8 +128,6 @@ func postDeleteMtest(c *gin.Context) {
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	var id deleteRequest
 	json.Unmarshal([]byte(x), &id)
-
-	log.Print(id.Id)
 
 	if err := deleteMtest(id.Id, email); err == nil {
 		c.JSON(http.StatusOK, gin.H{

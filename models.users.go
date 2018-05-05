@@ -16,6 +16,7 @@ type User struct{
 	Surename string `json:"surename"`
 	Email string `json:"email"`
 	Rights int `json:"rights"`
+	Password string `json:"password"`
 	Records map[string]interface{} `json:"records"`
 }
 
@@ -52,35 +53,47 @@ func authCheck(email string) bool {
 	var (
 		privileged int
 	)
-	res := db.QueryRow("SELECT privileged FROM users WHERE email=?", email)
+	res := db.QueryRow("SELECT activated FROM users WHERE email=?", email)
 	res.Scan(&privileged)
 
 	return privileged == 1
 }
 
-func createUser(name, surename, email, password string) (string, error) {
-	if isUsernameAvailable(email) == true {
-		return name, errors.New("Користувач з цим ім'ям вже існує")
+func (u *User) createUser() (*string, error) {
+	if isUsernameAvailable(u.Email) == false {
+		return &u.Name, errors.New("Користувач з цим ім'ям вже існує")
+	} else {
+
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+		req, err := db.Prepare("INSERT INTO users (name, surename, email, records, password) VALUES (?,?,?,?,?)")
+
+		if err != nil {
+			return nil, err
+		}
+		defer req.Close()
+		_, err = req.Exec(u.Name, u.Surename, u.Email,"{}", hashedPassword)
+
+		if err != nil {
+			return nil, err
+		}
+
+		usrHash, err := u.writeHash()
+		if err != nil {
+			return nil, err
+		}
+
+		err = doSendEmail(*u, *usrHash, "email_activate")
+		if err != nil {
+			return nil, err
+		}
+
+		return &u.Name, nil
 	}
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	req, err := db.Prepare("INSERT INTO users (name, surename, email, records, password) VALUES (?,?,?,?)")
-
-	defer req.Close()
-
-	check(err)
-	_, err = req.Exec(name, surename, email,"{}", hashedPassword)
-
-
-	check(err)
-
-	return name, nil
-
 }
 
 func readUser(email string) (*User, error) {
 	log.Print(email)
 	var (
-		userData User
 		name, surename, e_mail string
 		json_records map[string]interface{}
 		records string
@@ -93,7 +106,7 @@ func readUser(email string) (*User, error) {
 		return nil, err
 	}
 	json.Unmarshal([]byte(records), &json_records)
-	userData = User{id, name, surename, e_mail, rights, json_records}
+	userData := User{id, name, surename, e_mail, rights, "", json_records}
 
 	return &userData, nil
 }
@@ -125,11 +138,10 @@ func deleteUser(user_id int) error {
 
 
 func isUsernameAvailable(email string) bool {
-	res, err := db.Query("SELECT email FROM users WHERE email=?", email)
-
-	defer res.Close()
-
-	if err == nil {
+	var result string
+	res := db.QueryRow("SELECT email FROM users WHERE email=?", email)
+	res.Scan(&result)
+	if result == "" {
 		return true
 	}
 	return false

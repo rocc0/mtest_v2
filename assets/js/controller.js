@@ -203,6 +203,14 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
         }
     };
 
+    $interval(function() {
+        var a = document.getElementById('report').innerHTML;
+        var blob = new Blob(["\ufeff", a], {
+            type: 'text/html'
+        });
+        $scope.saveToPdf = (window.URL || window.webkitURL).createObjectURL(blob);
+    }, 1000);
+
     //---------------------------------------------RESET--------------------------------------------------------
     $scope.reset = function () {
         $scope.models.dropzones = angular.copy({
@@ -515,6 +523,7 @@ mTestApp.controller("mTestDBController",
     });
 
 mTestApp.controller("authLoginController", function ($scope, $timeout, $location, authService) {
+    $scope.template_name = true
     $scope.user = {};
     $scope.onLogin = function () {
         authService.login($scope.user)
@@ -530,6 +539,18 @@ mTestApp.controller("authLoginController", function ($scope, $timeout, $location
                 }, 2000);
             });
     };
+    $scope.sendResetRequest = function () {
+        authService.resetpass($scope.resetpass.email)
+            .then(function (response) {
+                $scope.message = "На ваш Email відправлено посилання для відновлення паролю"
+            })
+            .catch(function (reason) {
+                $scope.message = "Даний Email не зареєстровано";
+                $timeout(function () {
+                    $scope.message = ""
+                }, 2000);
+            })
+    }
 });
 
 mTestApp.controller("userCabinetController", function ($scope, $http, $location, $rootScope,
@@ -640,7 +661,6 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
     };
 
     $scope.updateMtestItem = function (item) {
-        console.log(item);
         mtCrud.updateMtestItem(item, token)
             .then(function (response) {
             }).catch(function (err) {
@@ -673,11 +693,9 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
     };
     $timeout(countUp, 300);
     //end count len of records array for showing-hiding empty array banner
-
-
 });
 
-mTestApp.controller("authRegisterController", function ($scope, authService,$location) {
+mTestApp.controller("authRegisterController", function ($scope, authService,$location,$timeout) {
 
     $scope.user = {
         password: "",
@@ -689,12 +707,17 @@ mTestApp.controller("authRegisterController", function ($scope, authService,$loc
                 $location.path('/u/login');
             })
             .catch(function (err) {
+                $scope.show_err = 1
+                $scope.err_status = err.data.title
+                $timeout(function () {
+                    $scope.show_err = 0
+                }, 2000)
                 console.log(err);
             });
     };
 });
 
-mTestApp.controller("menuController", function ($scope, $rootScope, authService, ModalWin) {
+mTestApp.controller("menuController", function ($scope, $rootScope,$location, authService, ModalWin) {
     $rootScope.isLoggedIn = false;
     const token = localStorage.getItem('token');
     if (token) {
@@ -705,7 +728,7 @@ mTestApp.controller("menuController", function ($scope, $rootScope, authService,
                 }
             })
             .catch(function (err) {
-                console.log(err.data.code)
+                $rootScope.isLoggedIn = false;
             });
     }
     $scope.onLogout = function () {
@@ -793,5 +816,40 @@ mTestApp.controller("searchController", function ($scope, $http) {
         console.log(reason)
     });
     //end load governments and regions
+
+});
+
+mTestApp.controller("authActivateController", function ($scope, $routeParams,$http) {
+    const baseURL = 'http://localhost:8889/';
+    $http({
+        method: 'GET',
+        url: baseURL + 'api/v.1/u/activate/' + $routeParams.hash ,
+    }).then(function (response) {
+        $scope.message = "Акаунт успішно активовано"
+    }).catch(function (err) {
+        $scope.err_message = "Посилання не існує"
+    });
+
+});
+
+mTestApp.controller("authResetController", function ($scope, $routeParams, $http, $location, authService) {
+    const baseURL = 'http://localhost:8889/';
+    var hash = $routeParams.hash
+    $scope.user = {};
+    authService.checkhash(hash)
+        .then(function (value) {
+        })
+        .catch(function (reason) {
+            console.log(reason)
+            $location.url('/');
+        })
+    $scope.onReset = function () {
+        authService.setnewpass($scope.user.password, hash)
+            .then(function (response) {
+                $scope.message = "Пароль успішно змінено"
+            }).catch(function (err) {
+            $scope.err_message = "Помилка: посилання не існує"
+        });
+    }
 
 });

@@ -54,7 +54,7 @@
             <div class="well col-md-12">
                 <div class="pull-left col-xs-12">
                     <span class="pull-left" >Назва:	&nbsp;</span>
-                    <a href="/track/id/{[{ hit._source.mid }]}" target="_blank" class="clearfix"> {[{ hit._source.name }]}</a>
+                    <a href="/track/{[{ hit._source.mid }]}" target="_blank" class="clearfix"> {[{ hit._source.name }]}</a>
                 </div>
                 <div class="pull-left col-xs-6">Орган влади: {[{ governs[hit._source.govern - 1].name }]}</div>
                 <div class="pull-left col-xs-3">Регіон: {[{ regions[hit._source.region - 1].name }]}</div>

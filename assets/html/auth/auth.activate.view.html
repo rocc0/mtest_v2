@@ -1,0 +1,16 @@
+<div class="row">
+    <div class="col-md-4" id="login-form">
+        <h1 class="page-header bg-primary ">Активація акаунту</h1>
+            <div class="">
+                <h2><span class="glyphicon glyphicon-ok-sign" ng-if="message"></span></h2>
+                <h2 class="bg-success" ng-if="message">{[{ message }]}</h2>
+                <h2 ng-if="err_message"><code>404</code></h2>
+                <div class="bg-danger" ng-if="err_message">
+
+                <h2>{[{ err_message }]}</h2>
+                </div>
+            </div>
+    </div>
+</div>
+
+

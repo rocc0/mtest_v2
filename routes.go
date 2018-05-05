@@ -25,7 +25,7 @@ func initializeRoutes() {
 			return eMail, false
 		},
 		Authorizator: func(userId string, c *gin.Context) bool {
-			return true
+			return authCheck(userId)
 			//return authCheck(userId)
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
@@ -64,6 +64,10 @@ func initializeRoutes() {
 		userRoutes.POST("/register", registerHandler) //+
 
 		userRoutes.GET("/cabinet", showUserPage)
+
+		userRoutes.GET("/activate/:hash", showIndexPage)
+
+		userRoutes.GET("/reset/:hash", showIndexPage)
 
 	}
 
@@ -105,6 +109,14 @@ func initializeRoutes() {
 		//user
 		apiRoutes.GET("/u/cabinet", authMiddleware.MiddlewareFunc(), cabinetHandler)
 		apiRoutes.POST("/u/edituser",authMiddleware.MiddlewareFunc(), editUserField) //+
+
+		apiRoutes.POST("/u/reset/", sendResetPasswordLink)
+
+		apiRoutes.GET("/u/reset/:hash", checkPasswordLink)
+
+		apiRoutes.POST("/u/reset/:hash", resetPassword)
+
+		apiRoutes.GET("/u/activate/:hash", activateAccount)
 	}
 
 }

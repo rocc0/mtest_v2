@@ -2,7 +2,15 @@
     <div class="col-md-4 inner">
         <h1>Реєстрація</h1>
         <hr><br>
+
         <form ng-submit="onRegister()" name="registerForm">
+            <div class='msg-block'>
+             <span ng-show="err_status">
+                <span class='msg-error' ng-hide="show_err==0">
+                      {[{ err_status }]}
+                 </span>
+             </span>
+            </div>
             <div class="form-group">
                 <label for="username" class="input-group-addon">Ім'я</label>
                 <input type="text" class="form-control" id="name" placeholder="Введіть ім'я" ng-model="user.name" required>

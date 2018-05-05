@@ -1,6 +1,6 @@
 mTestApp.service('authService', function ($http) {
     /*jshint validthis: true */
-    const baseURL = 'http://localhost:8888/';
+    const baseURL = 'http://localhost:8889/';
 
     this.login = function(user) {
         return $http({
@@ -26,6 +26,27 @@ mTestApp.service('authService', function ($http) {
             headers: {'Content-Type': 'application/json'}
         });
     };
+    this.resetpass =  function(email) {
+        return $http({
+            method: 'POST',
+            url: baseURL + 'api/v.1/u/reset/',
+            data: {email: email},
+            headers: {'Content-Type': 'application/json'}
+        });
+    };
+    this.setnewpass = function (pass, hash) {
+        return $http({
+            method: 'POST',
+            url: baseURL + 'api/v.1/u/reset/' + hash,
+            data: {password: pass}
+        })
+    }
+    this.checkhash = function (hash) {
+        return $http({
+            method: 'GET',
+            url: baseURL + 'api/v.1/u/reset/' + hash
+        })
+    }
     this.ensureAuthenticated = function(token) {
         return $http({
             method: 'GET',
@@ -39,7 +60,7 @@ mTestApp.service('authService', function ($http) {
 });
 
 mTestApp.service('mtCrud', function ($http) {
-    const baseURL = 'http://localhost:8888';
+    const baseURL = 'http://localhost:8889';
 
     this.readMtestFromDB = function (id) {
         return $http({
@@ -81,7 +102,8 @@ mTestApp.service('mtCrud', function ($http) {
             method: 'POST',
             url:baseURL + "/api/v.1/m/update",
             data: {mid:item.id, name:item.name,
-                region:parseInt(item.region),govern: parseInt(item.govern)},
+                region: parseInt(item.region),govern: parseInt(item.govern),
+                calc_type: parseInt(item.calc_type), executors: item.executors },
             headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }
         });

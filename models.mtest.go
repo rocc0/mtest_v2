@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"time"
 	"errors"
 	"github.com/google/uuid"
@@ -65,7 +64,7 @@ func createNewMtest(m newMtest, email string) (*map[string]interface{}, error) {
 	stmt, err := db.Prepare("INSERT INTO mtests (mid, name, region, govern," +
 		" calculations, calc_type, pub_date, author) VALUES (?,?,?,?,?,?,?,?)")
 	if err != nil {
-		log.Print(err)
+
 		return nil, err
 	}
 	mId := uuid.New()
@@ -74,7 +73,7 @@ func createNewMtest(m newMtest, email string) (*map[string]interface{}, error) {
 	result, err := stmt.Exec(mId, m.Name, m.Region, m.Government, calculations,m.CalcType, time.Now(), email )
 
 	if err != nil {
-		log.Print(err)
+
 		return nil, err
 	}
 	idRes, _ := result.LastInsertId()
@@ -118,7 +117,7 @@ func readMtest(id string) (*Mtest, error) {
 
 	err := res.Scan(&rowId, &mid, &name, &region, &govern, &calculations, &calcType, &calcData, &executors, &pubDate, &author)
 	if err != nil {
-		log.Print(err)
+
 		return nil, err
 	}
 
@@ -128,11 +127,11 @@ func readMtest(id string) (*Mtest, error) {
 	return &mtest, nil
 }
 
-func updateMtest(m map[string]interface{}, email string) error{
+func updateMtest(m map[string]interface{}, email string) error {
 	var (
-		id int
+		id        int
 		dbRecords string
-		records map[string]interface{}
+		records   map[string]UserMtest
 	)
 
 	if m["calculations"] == nil && m["name"] != nil {
@@ -141,21 +140,41 @@ func updateMtest(m map[string]interface{}, email string) error{
 		defer stmt.Close()
 		if err != nil {
 			return err
+		} else if m["calculations"] != nil && m["name"] == nil {
+		stmt, err := db.Prepare("UPDATE mtests SET calculations= ? WHERE mid=?;")
+		if err != nil {
+			return err
 		} else {
-			region := int(m["region"].(float64))
+			_, err := stmt.Exec(m["calculations"], m["id"])
+			check(err)
+			return nil
+		}
+	} else if m["executors"] != nil && m["name"] == nil {
+
+		stmt, err := db.Prepare("UPDATE mtests SET executors= ? WHERE mid=?;")
+		if err != nil {
+			return err
+		} else {
+			_, err := stmt.Exec(m["executors"], m["id"])
+			check(err)
+			return nil
+		}
+	} else {
 			govern := int(m["govern"].(float64))
+			region := int(m["region"].(float64))
 			calc_type := int(m["calc_type"].(float64))
 
-			_, err := stmt.Exec(m["name"],region,govern,m["mid"])
+			_, err := stmt.Exec(m["name"], region, govern, m["mid"])
 			check(err)
 
 			id_stmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", email)
 			id_stmt.Scan(&id, &dbRecords)
 
 			json.Unmarshal([]byte(dbRecords), &records)
-
-			records[m["mid"].(string)] = UserMtest{m["mid"].(string),m["name"].(string),
-				region,govern,calc_type, "", "", nil}
+			record := records[m["mid"].(string)]
+			records[m["mid"].(string)] = UserMtest{m["mid"].(string), m["name"].(string),
+				region, govern, calc_type,
+				"", "", record.Executors}
 
 			out, err := json.Marshal(records)
 			check(err)
@@ -168,27 +187,7 @@ func updateMtest(m map[string]interface{}, email string) error{
 
 			return nil
 		}
-	} else if m["calculations"] != nil && m["name"] == nil {
-		stmt, err := db.Prepare("UPDATE mtests SET calculations= ? WHERE mid=?;")
-		if err != nil {
-			return err
-		} else {
-			_, err := stmt.Exec(m["calculations"],m["id"])
-			check(err)
-			return nil
-		}
-	} else if m["executors"] != nil && m["name"] == nil {
-		log.Print("kek", m)
-		stmt, err := db.Prepare("UPDATE mtests SET executors= ? WHERE mid=?;")
-		if err != nil {
-			return err
-		} else {
-			_, err := stmt.Exec(m["executors"],m["id"])
-			check(err)
-			return nil
-		}
 	}
-
 	//update index!!!!!!!!
 	return nil
 }
@@ -200,13 +199,12 @@ func deleteMtest(mid, email string) error {
 		records map[string]interface{}
 	)
 	if stmt, err := db.Prepare("DELETE FROM mtests WHERE mid=?"); err != nil {
-		log.Print("\n",err,mid,"\n")
+
 		defer stmt.Close()
 		return err
 	} else {
 		defer stmt.Close()
-		if res, err := stmt.Exec(mid); err != nil {
-			log.Print("\n",err,res,"\n")
+		if _, err := stmt.Exec(mid); err != nil {
 			return err
 		}
 	}
@@ -300,8 +298,8 @@ func createMtestExecutor(email string, ex newExecutor) (*uuid.UUID, error) {
 
 
 	//check if user exists !!!!
-	log.Print(ex.Email)
-	if isUsernameAvailable(ex.Email) == false {
+
+	if isUsernameAvailable(ex.Email) == true {
 		return nil, errors.New("Користувач не зареєстрований")
 	}
 
@@ -314,10 +312,10 @@ func createMtestExecutor(email string, ex newExecutor) (*uuid.UUID, error) {
 	_, err := stmt.Exec(mId, ex.Title, ex.Region, ex.Government,
 		calculations, 3, email, ex.DevMid, time.Now(), ex.Email)
 	if err != nil {
-		log.Print(err)
+
 		return nil, err
 	}
-	log.Print("add mtest type 3 done")
+
 
 	//UPDATE MAIN MTEST executors!!!!!!!!!!!
 
@@ -343,7 +341,7 @@ func createMtestExecutor(email string, ex newExecutor) (*uuid.UUID, error) {
 		return nil, updError
 	}
 
-	log.Print("add executors to mtest done",mId)
+
 
 	//add mtest to executor mtests
 	idStmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", ex.Email)
@@ -393,7 +391,7 @@ func deleteMtestExecutor(devEmail string, del delExecutorReq) error {
 		devRecords map[string]UserMtest
 	)
 	//delete mtest
-	log.Print(del.ExMtestId)
+
 	stmt, _ := db.Prepare("DELETE FROM mtests WHERE mid=?")
 	_, err := stmt.Exec(del.ExMtestId)
 	if err != nil {
@@ -412,7 +410,7 @@ func deleteMtestExecutor(devEmail string, del delExecutorReq) error {
 	check(err)
 
 	if err := updateUser("records", string(out), id); err == nil {
-		log.Print("lel: ", del.DevMtestId)
+
 	} else {
 		return err
 	}
@@ -433,7 +431,7 @@ func deleteMtestExecutor(devEmail string, del delExecutorReq) error {
 	}
 
 	if err := updateUser("records", string(devOut), id); err == nil {
-		log.Print("lel: ", del.DevMtestId)
+
 	} else {
 		return err
 	}

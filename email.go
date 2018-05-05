@@ -4,28 +4,34 @@ import (
 	"bytes"
 	"html/template"
 	"net/smtp"
+	"log"
 )
 
 var auth smtp.Auth
 
-//func main() {
-//	auth = smtp.PlainAuth("", "dhanush@geektrust.in", "password", "smtp.gmail.com")
-//	templateData := struct {
-//		Name string
-//		URL  string
-//	}{
-//		Name: "Dhanush",
-//		URL:  "http://geektrust.in",
-//	}
-//	r := NewRequest([]string{"junk@junk.com"}, "Hello Junk!", "Hello, World!")
-//	err := r.ParseTemplate("template.html", templateData)
-//	if err = r.ParseTemplate("template.html", templateData); err == nil {
-//		ok, _ := r.SendEmail()
-//		fmt.Println(ok)
-//	}
-//}
+func doSendEmail(usr User, h Hash, template string) error {
+	auth = smtp.PlainAuth("M-TEST", "noreply@mtest.com.ua", "Qzwxec1425", "mail.adm.tools")
+	templateData := struct {
+		Name string
+		URL  string
+	}{
+		Name: usr.Name,
+		URL:  h.Hash,
+	}
+	r := NewRequest([]string{h.Email}, "Активація аккаунту", "Активація аккаунту")
+	if err := r.ParseTemplate("templates/" + template + ".html", templateData); err == nil {
+		ok, err := r.SendEmail()
+		if err != nil {
+			return err
+		}
+		log.Println(ok)
+	} else {
+		return err
+	}
+	return nil
+}
 
-//Request struct
+
 type Request struct {
 	from    string
 	to      []string
@@ -42,12 +48,14 @@ func NewRequest(to []string, subject, body string) *Request {
 }
 
 func (r *Request) SendEmail() (bool, error) {
+	r.from = "noreply@mtest.com.ua"
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	subject := "Subject: " + r.subject + "!\n"
-	msg := []byte(subject + mime + "\n" + r.body)
-	addr := "smtp.gmail.com:587"
+	from := "From:" + r.from + "\n"
+	msg := []byte(from + subject + mime + "\n" + r.body)
+	addr := "mail.adm.tools:2525"
 
-	if err := smtp.SendMail(addr, auth, "dhanush@geektrust.in", r.to, msg); err != nil {
+	if err := smtp.SendMail(addr, auth, r.from, r.to, msg); err != nil {
 		return false, err
 	}
 	return true, nil
@@ -65,3 +73,4 @@ func (r *Request) ParseTemplate(templateFileName string, data interface{}) error
 	r.body = buf.String()
 	return nil
 }
+

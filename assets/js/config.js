@@ -27,26 +27,28 @@ mTestApp.config(function($compileProvider, $interpolateProvider, $routeProvider,
     $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
     $routeProvider
         .when('/', {
+            title: 'Калькулятор',
             templateUrl: 'static/html/dnd_anon.html',
-            controller: 'mTestController',
+            controller: 'mTestController'
         })
         .when('/search', {
+            title: 'Пошук АРВ',
             templateUrl: 'static/html/search.html',
-            controller: 'searchController',
+            controller: 'searchController'
         })
         .when('/track/:mtest_id', {
             templateUrl: 'static/html/dnd_db.html',
-            controller: 'mTestDBController',
+            controller: 'mTestDBController'
         })
         .when('/u/register', {
             title: 'Реєстрація',
             templateUrl: '/static/html/auth/auth.register.view.html',
-            controller: 'authRegisterController',
+            controller: 'authRegisterController'
         })
         .when('/u/login', {
             title: 'Вхід',
             templateUrl: '/static/html/auth/auth.login.view.html',
-            controller: 'authLoginController',
+            controller: 'authLoginController'
         })
         .when('/u/cabinet', {
             title: 'Кабінет користувача',
@@ -59,7 +61,23 @@ mTestApp.config(function($compileProvider, $interpolateProvider, $routeProvider,
                     return defer.promise;
                 }
             }
-        });
-
+        })
+        .when('/u/activate/:hash', {
+            title: 'Активація акаунту',
+            templateUrl: '/static/html/auth/auth.activate.view.html',
+            controller: 'authActivateController'
+        })
+        .when('/u/reset/:hash', {
+            title: 'Відновлення доступу',
+            templateUrl: '/static/html/auth/auth.reset.view.html',
+            controller: 'authResetController'
+        })
+        .otherwise({redirectTo:'/'});;
 
 });
+
+mTestApp.run(['$rootScope', '$route', function($rootScope, $route) {
+    $rootScope.$on('$routeChangeSuccess', function(event, currentRoute, previousRoute) {
+        document.title = "M-TECT | " + currentRoute.title;
+    });
+}]);

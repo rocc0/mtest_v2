@@ -654,7 +654,7 @@ li.ng-scope img:hover,
 
 
 #nav .questions {
-    width: 32%;
+    width: 53%;
 }
 
 ul.questions {
@@ -695,7 +695,7 @@ ul.questions li a:focus {
 
 #nav .profile {
     float: right;
-    width: 68%;
+    width: 47%;
 }
 
 #nav .profile ul {
@@ -1064,6 +1064,28 @@ ti-tag-item.ng-isolate-scope span {
 
 #login-form .input-group .input-group-addon{
     width: 16%;
+}
+
+#login-form .resetpass {
+    width: 100%;
+    text-align: right;
+}
+
+#login-form .resetpass a {
+    font-style: italic;
+}
+
+#login-form .resetpass .input-group-addon {
+    width: 30%;
+}
+
+#reset-form {
+    text-align: center;
+    margin-top: 8%;
+    margin-left: 32%;
+}
+#reset-form input {
+    width: 80%;
 }
 
 #register .form-group {
