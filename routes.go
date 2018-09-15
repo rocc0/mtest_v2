@@ -17,15 +17,15 @@ func initializeRoutes() {
 		Key:        []byte("secret key"),
 		Timeout:    time.Hour,
 		MaxRefresh: time.Hour,
-		Authenticator: func(eMail string, password string, c *gin.Context) (string, bool) {
-			if (loginCheck(eMail, password) == true) {
+		Authenticator: func(eMail string, password string, c *gin.Context) (interface{}, bool) {
+			if loginCheck(eMail, password) {
 				return eMail, true
 			}
 
 			return eMail, false
 		},
-		Authorizator: func(userId string, c *gin.Context) bool {
-			return authCheck(userId)
+		Authorizator: func(userId interface{}, c *gin.Context) bool {
+			return authCheck(userId.(string))
 			//return authCheck(userId)
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
