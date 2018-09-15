@@ -118,7 +118,7 @@ mTestApp.service('mtCrud', function ($http) {
         });
     };
     this.updateMtestExecutors= function (id, item, token) {
-        console.log(item)
+        console.log(item);
         return $http({
             method: 'POST',
             url:baseURL + "/api/v.1/m/update",

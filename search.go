@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	elastic "gopkg.in/olivere/elastic.v5"
+	"gopkg.in/olivere/elastic.v5"
 	"github.com/google/uuid"
 )
 
@@ -52,18 +52,18 @@ const mapping = `
 func elasticConnect() (context.Context, *elastic.Client, error){
 	ctx := context.Background()
 	client, err := elastic.NewClient(
-		elastic.SetURL("http://192.168.99.100:9200", "http://192.168.99.100:9200"),
+		elastic.SetURL("http://localhost:9200", "http://localhost:9200"),
 		elastic.SetSniff(false),
 		elastic.SetBasicAuth("elastic", "changeme"),
 	)
 	// Ping the Elasticsearch server to get e.g. the version number
-	info, code, err := client.Ping("http://192.168.99.100:9200").Do(ctx)
+	info, code, err := client.Ping("http://localhost:9200").Do(ctx)
 	check(err)
 
 	log.Printf("Elasticsearch returned with code %d and version %s\n", code, info.Version.Number)
 
 	// Getting the ES version number is quite common, so there's a shortcut
-	esversion, err := client.ElasticsearchVersion("http://192.168.99.100:9200")
+	esversion, err := client.ElasticsearchVersion("http://localhost:9200")
 	check(err)
 
 	log.Printf("Elasticsearch version %s\n", esversion)

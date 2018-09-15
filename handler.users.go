@@ -114,7 +114,7 @@ func activateAccount(c *gin.Context) {
 			"title": "ok",
 		})
 	} else {
-		c.AbortWithError(404, errors.New("Код застарілий"))
+		c.AbortWithError(404, errors.New("код застарілий"))
 	}
 }
 
@@ -128,7 +128,7 @@ func sendResetPasswordLink(c *gin.Context) {
 	u.Name = user.Email
 	res, err := u.writeHash()
 	if err != nil {
-		c.AbortWithError(404, errors.New("Код застарілий"))
+		c.AbortWithError(404, errors.New("код застарілий"))
 	}
 	err = doSendEmail(u, *res, "email_password")
 	if err != nil {

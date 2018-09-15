@@ -162,27 +162,27 @@ func updateMtest(m map[string]interface{}, email string) error {
 	} else {
 			govern := int(m["govern"].(float64))
 			region := int(m["region"].(float64))
-			calc_type := int(m["calc_type"].(float64))
+			calcType := int(m["calc_type"].(float64))
 
 			_, err := stmt.Exec(m["name"], region, govern, m["mid"])
 			check(err)
 
-			id_stmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", email)
-			id_stmt.Scan(&id, &dbRecords)
+			idStmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", email)
+			idStmt.Scan(&id, &dbRecords)
 
 			json.Unmarshal([]byte(dbRecords), &records)
 			record := records[m["mid"].(string)]
 			records[m["mid"].(string)] = UserMtest{m["mid"].(string), m["name"].(string),
-				region, govern, calc_type,
+				region, govern, calcType,
 				"", "", record.Executors}
 
 			out, err := json.Marshal(records)
 			check(err)
 
-			id_err := updateUser("records", string(out), id)
+			idErr := updateUser("records", string(out), id)
 
-			if id_err != nil {
-				return id_err
+			if idErr != nil {
+				return idErr
 			}
 
 			return nil
@@ -300,7 +300,7 @@ func createMtestExecutor(email string, ex newExecutor) (*uuid.UUID, error) {
 	//check if user exists !!!!
 
 	if isUsernameAvailable(ex.Email) == true {
-		return nil, errors.New("Користувач не зареєстрований")
+		return nil, errors.New("користувач не зареєстрований")
 	}
 
 	//add mtest type 3

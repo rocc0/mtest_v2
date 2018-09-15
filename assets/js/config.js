@@ -12,7 +12,7 @@ var interceptor = function ($q, $location) {
         },
 
         responseError: function (rejection) {
-            if (rejection.status == 401 && rejection.config.method == 'POST') {
+            if (rejection.status === 401 && rejection.config.method === 'POST') {
                 $location.url('/u/login');
             }
             return $q.reject(rejection);
@@ -72,7 +72,7 @@ mTestApp.config(function($compileProvider, $interpolateProvider, $routeProvider,
             templateUrl: '/static/html/auth/auth.reset.view.html',
             controller: 'authResetController'
         })
-        .otherwise({redirectTo:'/'});;
+        .otherwise({redirectTo:'/'});
 
 });
 

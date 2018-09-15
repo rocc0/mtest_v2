@@ -37,10 +37,10 @@ func userInit() {
 
 func loginCheck(email, password string) bool{
 	var (
-		e_mail, passw string
+		eMail, passw string
 	)
 	res := db.QueryRow("SELECT email, password FROM users WHERE email=?", email)
-	res.Scan(&e_mail, &passw)
+	res.Scan(&eMail, &passw)
 	err := bcrypt.CompareHashAndPassword([]byte(passw), []byte(password))
 
 	if err != nil {
@@ -61,7 +61,7 @@ func authCheck(email string) bool {
 
 func (u *User) createUser() (*string, error) {
 	if isUsernameAvailable(u.Email) == false {
-		return &u.Name, errors.New("Користувач з цим ім'ям вже існує")
+		return &u.Name, errors.New("користувач з цим ім'ям вже існує")
 	} else {
 
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
@@ -94,19 +94,19 @@ func (u *User) createUser() (*string, error) {
 func readUser(email string) (*User, error) {
 	log.Print(email)
 	var (
-		name, surename, e_mail string
-		json_records map[string]interface{}
+		name, surename, eMail string
+		jsonRecords map[string]interface{}
 		records string
 		id,rights int
 	)
 
 	res := db.QueryRow("SELECT name, surename, email, id, rights, records FROM users WHERE email = ?", email)
-	err := res.Scan(&name, &surename, &e_mail, &id, &rights, &records)
+	err := res.Scan(&name, &surename, &eMail, &id, &rights, &records)
 	if err != nil {
 		return nil, err
 	}
-	json.Unmarshal([]byte(records), &json_records)
-	userData := User{id, name, surename, e_mail, rights, "", json_records}
+	json.Unmarshal([]byte(records), &jsonRecords)
+	userData := User{id, name, surename, eMail, rights, "", jsonRecords}
 
 	return &userData, nil
 }
@@ -130,12 +130,6 @@ func updateUser(field, data string, id int) error {
 		return nil
 	}
 }
-
-
-func deleteUser(user_id int) error {
-	return nil
-}
-
 
 func isUsernameAvailable(email string) bool {
 	var result string

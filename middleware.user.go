@@ -18,7 +18,7 @@ type Hash struct {
 func (u *User) writeHash() (*Hash, error) {
 	hash := u.generateHash(20)
 
-	dialInfo, err := mgo.ParseURL("mongodb://hasher:password@192.168.99.100:27017")
+	dialInfo, err := mgo.ParseURL("mongodb://hasher:password@localhost:27017")
 	dialInfo.Direct = true
 	dialInfo.FailFast = true
 	session, err := mgo.DialWithInfo(dialInfo)
@@ -41,7 +41,7 @@ func (u *User) writeHash() (*Hash, error) {
 
 func (u *User) readHash(hash string) (*Hash, error) {
 	var h Hash
-	dialInfo, err := mgo.ParseURL("mongodb://hasher:password@192.168.99.100:27017")
+	dialInfo, err := mgo.ParseURL("mongodb://hasher:password@localhost:27017")
 	dialInfo.Direct = true
 	dialInfo.FailFast = true
 	session, err := mgo.DialWithInfo(dialInfo)
@@ -66,7 +66,7 @@ func (u *User) readHash(hash string) (*Hash, error) {
 
 func (u *User) deleteHash(h string) (err error) {
 
-	session, err := mgo.Dial("mongodb://hasher:password@192.168.99.100:27017")
+	session, err := mgo.Dial("mongodb://hasher:password@localhost:27017")
 	if err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func passwordResetter(password, hash string) error {
 		return err
 	}
 	if h == nil {
-		return errors.New("Посилання не існує")
+		return errors.New("посилання не існує")
 	}
 	res, _ := db.Prepare("UPDATE users SET password=? WHERE email=?")
 	_, err = res.Exec(hashedPassword, h.Email)

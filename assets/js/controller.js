@@ -2,7 +2,7 @@ var mTestApp = angular.module("mTestApp", ["ngAnimate", "ngSanitize", "ngCookies
     "dndLists", "ui.bootstrap", "ngAnimate", "sticky", "switcher"]);
 
 //----------------------------------------------------------------------------------------------------------
-//---------------------------------------------COTROLLER WITH LOCAL ----------------------------------------
+//---------------------------------------------CONTROLLER WITH LOCAL ----------------------------------------
 //----------------------------------------------------------------------------------------------------------
 
 mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, $window,
@@ -143,9 +143,9 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
 
 
     $scope.hideQuestion = function (dep, val) {
-        if (dep == 1 && val == 0) {
+        if (dep === 1 && val === 0) {
             return "none"
-        } else if (dep == 1 && val == 1) {
+        } else if (dep === 1 && val === 1) {
             return "block"
         } else {
             return "block"
@@ -180,22 +180,22 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
     };
 
     $scope.valueToText = function (val, type) {
-        if (type == "yn") {
-            if (val == 1 || val == "Yes") {
+        if (type === "yn") {
+            if (val === 1 || val === "Yes") {
                 return "Так"
-            } else if (val == 0 || val == "No") {
+            } else if (val === 0 || val === "No") {
                 return "Ні"
-            } else if (val == "idk") {
+            } else if (val === "idk") {
                 return "Незнаю"
             } else {
                 return "Не заповнено!"
             }
         } else {
-            if (val == 1) {
+            if (val === 1) {
                 return "Суттєво"
-            } else if (val == 0) {
+            } else if (val === 0) {
                 return "Несуттєво"
-            } else if (val == 100) {
+            } else if (val === 100) {
                 return "Критично"
             } else {
                 return "Не заповнено!"
@@ -312,7 +312,7 @@ mTestApp.controller("mTestDBController",
             for (var devs_get = []; devs_get.length < infs.length; devs_get.push([]));
             for (var p in execs) {
                 let dev_data;
-                console.log(execs[p].checked)
+                console.log(execs[p].checked);
                 if (execs[p].checked === true) {
                     $http({method: 'GET', url: '/api/v.1/m/get/' + execs[p].mid })
                         .then(function (response) {
@@ -320,7 +320,7 @@ mTestApp.controller("mTestDBController",
                         });
                     setTimeout(function () {
                         for (var j = 0; j < dev_data['1'].length; j++) {
-                            if (dev_data['1'][j]['contsub'] != 0) {
+                            if (dev_data['1'][j]['contsub'] !== 0) {
                                 devs_get[j].push(dev_data['1'][j]['contsub'])
                             }
                         }
@@ -328,7 +328,7 @@ mTestApp.controller("mTestDBController",
                 }
             }
             $scope.devs_get = devs_get
-        }
+        };
 
         setTimeout(function () {
             $scope.doGroupMath()
@@ -392,9 +392,9 @@ mTestApp.controller("mTestDBController",
             item.splice(index, 1);
         };
         $scope.addToSlider = function (res, eft) {
-            if (res == 1 && eft == 1) {
+            if (res === 1 && eft === 1) {
                 return 1
-            } else if (res == 1 && eft > 2) {
+            } else if (res === 1 && eft > 2) {
                 return 100
             } else {
                 return 0
@@ -403,9 +403,9 @@ mTestApp.controller("mTestDBController",
         };
 
         $scope.hideQuestion = function (dep, val) {
-            if (dep == 1 && val == 0) {
+            if (dep === 1 && val === 0) {
                 return "none"
-            } else if (dep == 1 && val == 1) {
+            } else if (dep === 1 && val === 1) {
                 return "block"
             } else {
                 return "block"
@@ -413,22 +413,22 @@ mTestApp.controller("mTestDBController",
         };
 
         $scope.valueToText = function (val, type) {
-            if (type == "yn") {
-                if (val == 1 || val == "Yes") {
+            if (type === "yn") {
+                if (val === 1 || val === "Yes") {
                     return "Так"
-                } else if (val == 0 || val == "No") {
+                } else if (val === 0 || val === "No") {
                     return "Ні"
-                } else if (val == "idk") {
+                } else if (val === "idk") {
                     return "Незнаю"
                 } else {
                     return "Не заповнено!"
                 }
             } else {
-                if (val == 1) {
+                if (val === 1) {
                     return "Суттєво"
-                } else if (val == 0) {
+                } else if (val === 0) {
                     return "Несуттєво"
-                } else if (val == 100) {
+                } else if (val === 100) {
                     return "Критично"
                 } else {
                     return "Не заповнено!"
@@ -436,7 +436,7 @@ mTestApp.controller("mTestDBController",
             }
         };
 
-        //end corrution part --------------------
+        //end corruption part --------------------
 
         //----------------------------------------------------------------------------------------------------------
         //---------------------------------------------SAVE TO DB --------------------------------------------------
@@ -452,13 +452,13 @@ mTestApp.controller("mTestDBController",
                 })
         };
         $scope.updateExecutors = function () {
-            var executors = angular.toJson($scope.executors)
+            var executors = angular.toJson($scope.executors);
             mtCrud.updateMtestExecutors($scope.params.mtest_id, executors, token)
                 .then(function (value) {
                     $scope.doGroupMath()
                     console.log(value.data)
                 }).catch(function (err) {  console.log(err) })
-        }
+        };
         //---------------------------------------------SUM----------------------------------------------------------
 
         $scope.SumDb = function (id) {
@@ -481,16 +481,17 @@ mTestApp.controller("mTestDBController",
         //---------------------------------------------alert------------------------------------------------------
 
 
-        $scope.getClass = 'not_disabled'
-        $scope.getClassTwo = 'disabled'
+        $scope.getClass = 'not_disabled';
+        $scope.getClassTwo = 'disabled';
 
         $scope.setClasses = function () {
-            $scope.getClass = 'disabled'
-            $scope.getClassTwo = 'not_disabled'
+            $scope.getClass = 'disabled';
+            $scope.getClassTwo = 'not_disabled';
             $timeout(function () {
-                $scope.getClass = 'not_disabled', $scope.getClassTwo = 'disabled'
+                $scope.getClass = 'not_disabled';
+                $scope.getClassTwo = 'disabled';
             }, 1000)
-        }
+        };
 
 
         //---------------------------------------------PDF--------------------------------------------------------
@@ -506,7 +507,7 @@ mTestApp.controller("mTestDBController",
 //---------------------------------------------reset------------------------------------------------------
         $scope.resetdb = function () {
             mtCrud.readMtestFromDB($scope.params.mtest_id).then(function (response) {
-                val = angular.fromJson(response.data.mtest.calculations)
+                var val = angular.fromJson(response.data.mtest.calculations);
                 $scope.modelsdb.dropzones = angular.copy(
                     val
                 )
@@ -523,7 +524,7 @@ mTestApp.controller("mTestDBController",
     });
 
 mTestApp.controller("authLoginController", function ($scope, $timeout, $location, authService) {
-    $scope.template_name = true
+    $scope.template_name = true;
     $scope.user = {};
     $scope.onLogin = function () {
         authService.login($scope.user)
@@ -541,10 +542,10 @@ mTestApp.controller("authLoginController", function ($scope, $timeout, $location
     };
     $scope.sendResetRequest = function () {
         authService.resetpass($scope.resetpass.email)
-            .then(function (response) {
+            .then(function () {
                 $scope.message = "На ваш Email відправлено посилання для відновлення паролю"
             })
-            .catch(function (reason) {
+            .catch(function () {
                 $scope.message = "Даний Email не зареєстровано";
                 $timeout(function () {
                     $scope.message = ""
@@ -555,7 +556,7 @@ mTestApp.controller("authLoginController", function ($scope, $timeout, $location
 
 mTestApp.controller("userCabinetController", function ($scope, $http, $location, $rootScope,
                                                        $timeout, authService, mtCrud, ModalWin) {
-    $scope.changepass = false
+    $scope.changepass = false;
     const token = localStorage.getItem('token');
     if (token) {
         authService.ensureAuthenticated(token)
@@ -596,7 +597,7 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
 
     //format label for typehead on select
     $scope.formatLabel = function(model, index, itmtype) {
-        console.log(model, index)
+        console.log(model, index);
         for (var i=0; i< $scope[itmtype+'s'].length; i++) {
             if (model.id === $scope[itmtype+'s'][i].id) {
                 $scope.records[index][itmtype] = $scope[itmtype+'s'][i].id
@@ -604,8 +605,6 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
         }
     };
     //end format label for typehead on select
-
-
 
     $scope.changeUserField = function (field, id, value) {
         console.log(field, id, value);
@@ -632,14 +631,14 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
         }).catch(function (err) {
             console.log(err)
         });
-    }
+    };
     $scope.removeExecutor = function (email, exIndex, devIndex) {
-        mtCrud.removeMtestExecutor(email, exIndex, devIndex, token).then(function (response) {
+        mtCrud.removeMtestExecutor(email, exIndex, devIndex, token).then(function () {
             delete $scope.records[devIndex].executors[exIndex]
         }).catch(function (err) {
             console.log(err)
         });
-    }
+    };
     //end add executor to mtest item
     $scope.addMtest = function (newmtest) {
         mtCrud.addMtest(newmtest, token).then(function (response) {
@@ -652,7 +651,7 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
     $scope.removeMtestItem = function (id) {
         console.log(id);
         mtCrud.removeMtestItem(id, token)
-            .then(function (response) {
+            .then(function () {
                 delete $scope.records[id];
                 $scope.len_records = angular.toJson($scope.records).length
             }).catch(function (err) {
@@ -707,11 +706,11 @@ mTestApp.controller("authRegisterController", function ($scope, authService,$loc
                 $location.path('/u/login');
             })
             .catch(function (err) {
-                $scope.show_err = 1
-                $scope.err_status = err.data.title
+                $scope.show_err = 1;
+                $scope.err_status = err.data.title;
                 $timeout(function () {
                     $scope.show_err = 0
-                }, 2000)
+                }, 2000);
                 console.log(err);
             });
     };
@@ -727,7 +726,7 @@ mTestApp.controller("menuController", function ($scope, $rootScope,$location, au
                     $rootScope.isLoggedIn = true;
                 }
             })
-            .catch(function (err) {
+            .catch(function () {
                 $rootScope.isLoggedIn = false;
             });
     }
@@ -772,7 +771,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
         var obj = {};
         var arr = $scope.query.query.bool.filter.bool.must;
         obj[field] = data;
-        if (arr.length == 0) {
+        if (arr.length === 0) {
             arr.push({"term": obj})
         } else {
             for (var i = 0; i < arr.length; i++) {
@@ -788,7 +787,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
     $scope.doSearch = function () {
         $http({
             method: 'POST',
-            url: "http://192.168.99.100:9200/mtests/_search",
+            url: "http://localhost:9200/mtests/_search",
             data: $scope.query
         }).then(function (response) {
             $scope.results = response.data;
@@ -834,20 +833,20 @@ mTestApp.controller("authActivateController", function ($scope, $routeParams,$ht
 
 mTestApp.controller("authResetController", function ($scope, $routeParams, $http, $location, authService) {
     const baseURL = 'http://localhost:8889/';
-    var hash = $routeParams.hash
+    var hash = $routeParams.hash;
     $scope.user = {};
     authService.checkhash(hash)
         .then(function (value) {
         })
         .catch(function (reason) {
-            console.log(reason)
+            console.log(reason);
             $location.url('/');
-        })
+        });
     $scope.onReset = function () {
         authService.setnewpass($scope.user.password, hash)
-            .then(function (response) {
+            .then(function () {
                 $scope.message = "Пароль успішно змінено"
-            }).catch(function (err) {
+            }).catch(function () {
             $scope.err_message = "Помилка: посилання не існує"
         });
     }
