@@ -819,7 +819,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
 });
 
 mTestApp.controller("authActivateController", function ($scope, $routeParams,$http) {
-    const baseURL = 'http://185.65.245.79:8889/';
+    const baseURL = 'http://185.65.245.79/';
     $http({
         method: 'GET',
         url: baseURL + 'api/v.1/u/activate/' + $routeParams.hash ,
@@ -832,7 +832,7 @@ mTestApp.controller("authActivateController", function ($scope, $routeParams,$ht
 });
 
 mTestApp.controller("authResetController", function ($scope, $routeParams, $http, $location, authService) {
-    const baseURL = 'http://185.65.245.79:8889/';
+    const baseURL = 'http://185.65.245.79/';
     var hash = $routeParams.hash;
     $scope.user = {};
     authService.checkhash(hash)

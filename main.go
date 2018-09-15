@@ -33,5 +33,5 @@ func main(){
 	//Search indexing
 	elasticIndex()
 	// Start serving the application
-	router.Run(":8889")
+	router.Run(":80")
 }
