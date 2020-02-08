@@ -4,39 +4,38 @@ import (
 	"bytes"
 	"html/template"
 	"net/smtp"
-	"log"
+
+	log "github.com/sirupsen/logrus"
+)
+
+type (
+	templateData struct {
+		Name string
+		URL  string
+	}
+	Request struct {
+		from    string
+		to      []string
+		subject string
+		body    string
+	}
 )
 
 var auth smtp.Auth
 
 func doSendEmail(usr User, h Hash, template string) error {
-	auth = smtp.PlainAuth("M-TEST", "noreply@mtest.com.ua", "Qzwxec1425", "mail.adm.tools")
-	templateData := struct {
-		Name string
-		URL  string
-	}{
-		Name: usr.Name,
-		URL:  h.Hash,
-	}
+	auth = smtp.PlainAuth("M-TEST", "noreply@mtest.com.ua", "test", "mail.adm.tools")
+	tmpl := templateData{Name: usr.Name, URL: h.Hash}
 	r := NewRequest([]string{h.Email}, "Активація аккаунту", "Активація аккаунту")
-	if err := r.ParseTemplate("templates/" + template + ".html", templateData); err == nil {
-		ok, err := r.SendEmail()
-		if err != nil {
-			return err
-		}
-		log.Println(ok)
-	} else {
+	if err := r.ParseTemplate("templates/"+template+".html", tmpl); err != nil {
 		return err
 	}
+	ok, err := r.SendEmail()
+	if err != nil {
+		return err
+	}
+	log.Info(ok)
 	return nil
-}
-
-
-type Request struct {
-	from    string
-	to      []string
-	subject string
-	body    string
 }
 
 func NewRequest(to []string, subject, body string) *Request {
@@ -73,4 +72,3 @@ func (r *Request) ParseTemplate(templateFileName string, data interface{}) error
 	r.body = buf.String()
 	return nil
 }
-

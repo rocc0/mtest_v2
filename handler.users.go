@@ -3,56 +3,51 @@
 package main
 
 import (
-	"io/ioutil"
 	"encoding/json"
-
-	"github.com/appleboy/gin-jwt"
-	"github.com/gin-gonic/gin"
 	"errors"
+	"io/ioutil"
+	"net/http"
+
+	log "github.com/sirupsen/logrus"
+
+	jwt "github.com/appleboy/gin-jwt"
+	"github.com/gin-gonic/gin"
 )
 
-type userField struct {
-	Field string `json:"field"`
-	Data string `json:"data"`
-	Id int `json:"id"`
-}
-
-type userEmail struct {
-	Email string `json:"email" binding:"required"`
-}
-
+type (
+	userField struct {
+		Field string `json:"field"`
+		Data  string `json:"data"`
+		Id    int    `json:"id"`
+	}
+	userEmail struct {
+		Email string `json:"email" binding:"required"`
+	}
+)
 
 func cabinetHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	user, _ := claims["id"].(string)
-
-	userdata, err := readUser(user)
+	userData, err := readUser(user)
 	if err != nil {
-		c.JSON(200, gin.H{
-			"data": err,
-		})
+		c.JSON(200, gin.H{"data": err})
 	} else {
-		c.JSON(200, gin.H{
-			"data": userdata,
-		})
+		c.JSON(200, gin.H{"data": userData})
 	}
 }
 
 func registerHandler(c *gin.Context) {
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	var user User
-	err := json.Unmarshal([]byte(x), &user)
-	check(err)
+	if err := json.Unmarshal(x, &user); err != nil {
+		c.AbortWithStatus(400)
+		return
+	}
 
 	if name, err := user.createUser(); err == nil {
-		c.JSON(200, gin.H{
-			"title": "User registered",
-			"id": name,
-		})
+		c.JSON(200, gin.H{"title": "User registered", "id": name})
 	} else {
-		c.JSON(400, gin.H{
-			"title": err.Error(),
-		})
+		c.JSON(400, gin.H{"title": err.Error()})
 		c.AbortWithStatus(400)
 	}
 }
@@ -60,13 +55,12 @@ func registerHandler(c *gin.Context) {
 func editUserField(c *gin.Context) {
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	var field userField
-	err := json.Unmarshal([]byte(x), &field)
-	check(err)
+	if err := json.Unmarshal(x, &field); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
 	if err := updateUser(field.Field, field.Data, field.Id); err == nil {
-		c.JSON(200, gin.H{
-			"title": "Field modifiyed",
-			"data": "kek",
-		})
+		c.JSON(200, gin.H{"title": "Field modifiyed", "data": "kek"})
 	} else {
 		c.AbortWithStatus(400)
 	}
@@ -75,21 +69,15 @@ func editUserField(c *gin.Context) {
 func resetPassword(c *gin.Context) {
 	var pass map[string]string
 	email := c.Param("hash")
-	err := c.BindJSON(&pass)
-	if err != nil {
-		c.JSON(400, gin.H{
-			"title": "Невірний параметр",
-		})
+	if err := c.BindJSON(&pass); err != nil {
+		c.JSON(400, gin.H{"title": "Невірний параметр"})
+		return
 	}
 
 	if err := passwordResetter(pass["password"], email); err == nil {
-		c.JSON(200, gin.H{
-			"title": "Пароль змінено",
-		})
+		c.JSON(200, gin.H{"title": "Пароль змінено"})
 	} else {
-		c.JSON(400, gin.H{
-			"title": "Невірне посилання",
-		})
+		c.JSON(400, gin.H{"title": "Невірне посилання"})
 	}
 }
 
@@ -98,41 +86,44 @@ func activateAccount(c *gin.Context) {
 	var user User
 
 	if usr, err := user.readHash(hash); err == nil {
-		err = user.deleteHash(hash)
-		if err != nil {
-			c.JSON(400, gin.H{
-				"title": err,
-			})
+		if err = user.deleteHash(hash); err != nil {
+			c.JSON(400, gin.H{"title": err})
+			return
 		}
-		err = setActiveField(usr.Email)
-		if err != nil {
-			c.JSON(400, gin.H{
-				"title": err,
-			})
+
+		if err = setActiveField(usr.Email); err != nil {
+			c.JSON(400, gin.H{"title": err})
+			return
 		}
-		c.JSON(200, gin.H{
-			"title": "ok",
-		})
+		c.JSON(200, gin.H{"title": "ok"})
 	} else {
-		c.AbortWithError(404, errors.New("код застарілий"))
+		if err := c.AbortWithError(404, errors.New("код застарілий")); err != nil {
+			log.Error(err)
+		}
 	}
 }
 
 func sendResetPasswordLink(c *gin.Context) {
-
 	var user userEmail
-	err := c.BindJSON(&user)
-
+	if err := c.BindJSON(&user); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
 	var u User
 	u.Email = user.Email
 	u.Name = user.Email
 	res, err := u.writeHash()
 	if err != nil {
-		c.AbortWithError(404, errors.New("код застарілий"))
+		if err := c.AbortWithError(404, errors.New("код застарілий")); err != nil {
+			log.Error(err)
+		}
+		return
 	}
-	err = doSendEmail(u, *res, "email_password")
-	if err != nil {
-		c.AbortWithError(404, err)
+
+	if err = doSendEmail(u, *res, "email_password"); err != nil {
+		if err := c.AbortWithError(404, err); err != nil {
+			log.Error(err)
+		}
 	}
 }
 
@@ -140,7 +131,9 @@ func checkPasswordLink(c *gin.Context) {
 	var u User
 	hash, err := u.readHash(c.Param("hash"))
 	if hash == nil {
-		c.AbortWithError(404, err)
+		if err := c.AbortWithError(404, err); err != nil {
+			log.Error(err)
+		}
 	} else {
 		c.Status(200)
 	}

@@ -1,20 +1,23 @@
 package main
 
 import (
-
 	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
 
+	log "github.com/sirupsen/logrus"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var db *sql.DB
 
-
 func init() {
 	var err error
 	db, err = sql.Open("mysql", "root:password@tcp(localhost:3306)/mtest")
-	check(err)
+	if err != nil {
+		log.Error(err)
+	}
 
-	err = db.Ping()
-
+	if err = db.Ping(); err != nil {
+		log.Error(err)
+	}
 }

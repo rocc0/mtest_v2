@@ -1,88 +1,82 @@
 package main
 
 import (
+	"errors"
 	"math/rand"
 	"time"
-	"gopkg.in/mgo.v2"
+
 	"golang.org/x/crypto/bcrypt"
-	"errors"
+	"gopkg.in/mgo.v2"
 )
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 type Hash struct {
 	Email string `json:"email"`
-	Hash string `json:"hash"`
+	Hash  string `json:"hash"`
 }
 
 func (u *User) writeHash() (*Hash, error) {
 	hash := u.generateHash(20)
 
 	dialInfo, err := mgo.ParseURL("mongodb://hasher:password@localhost:27017")
+	if err != nil {
+		return nil, err
+	}
 	dialInfo.Direct = true
 	dialInfo.FailFast = true
 	session, err := mgo.DialWithInfo(dialInfo)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer session.Close()
 
 	session.SetMode(mgo.Monotonic, true)
-
 	c := session.DB("hashes").C(hash)
-	err = c.Insert(&Hash{u.Email, hash})
-	if err != nil {
+	if err = c.Insert(&Hash{u.Email, hash}); err != nil {
 		return nil, err
 	}
-	h := Hash{u.Email, hash}
-
-	return &h, nil
+	return &Hash{u.Email, hash}, nil
 }
 
 func (u *User) readHash(hash string) (*Hash, error) {
-	var h Hash
 	dialInfo, err := mgo.ParseURL("mongodb://hasher:password@localhost:27017")
+	if err != nil {
+		return nil, err
+	}
 	dialInfo.Direct = true
 	dialInfo.FailFast = true
 	session, err := mgo.DialWithInfo(dialInfo)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer session.Close()
 
 	session.SetMode(mgo.Monotonic, true)
-
 	c := session.DB("hashes").C(hash)
-
-	err = c.Find(nil).One(&h)
-
-	if err != nil {
+	var h Hash
+	if err = c.Find(nil).One(&h); err != nil {
 		return nil, err
 	}
 
 	return &h, nil
 }
 
-
 func (u *User) deleteHash(h string) (err error) {
-
 	session, err := mgo.Dial("mongodb://hasher:password@localhost:27017")
 	if err != nil {
 		return err
 	}
 	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
 
+	session.SetMode(mgo.Monotonic, true)
 	c := session.DB("hashes").C(h)
-	err = c.DropCollection()
-	
-	if err != nil {
+	if err = c.DropCollection(); err != nil {
 		return err
 	}
 
 	return nil
 }
-
 
 func (u *User) generateHash(n int) string {
 	rand.Seed(time.Now().UnixNano())
@@ -98,17 +92,19 @@ func setActiveField(email string) error {
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec(email)
-	if err != nil {
+
+	if _, err = stmt.Exec(email); err != nil {
 		return err
 	}
 	return nil
 }
 
 func passwordResetter(password, hash string) error {
-	var u User
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-
+	if err != nil {
+		return err
+	}
+	var u User
 	h, err := u.readHash(hash)
 	if err != nil {
 		return err
@@ -117,12 +113,11 @@ func passwordResetter(password, hash string) error {
 		return errors.New("посилання не існує")
 	}
 	res, _ := db.Prepare("UPDATE users SET password=? WHERE email=?")
-	_, err = res.Exec(hashedPassword, h.Email)
-	if err != nil {
+	if _, err = res.Exec(hashedPassword, h.Email); err != nil {
 		return err
 	}
-	err = u.deleteHash(h.Hash)
-	if err != nil {
+
+	if err = u.deleteHash(h.Hash); err != nil {
 		return err
 	}
 	return nil
