@@ -9,20 +9,32 @@
                                    style="color: #0075b6;">Як користуватись?</a></li>
 
             <li role="menuitem"><a class="btn btn-default" style="color: #0075b6;"
-                                   href="http://commerciallaw.com.ua/attachments/article/517/CLC_M-Test_web_01.pdf"
+                                   href=""
                                    target="_blank">Посібник по М-ТЕСТу</a></li>
             <li role="menuitem"><a class="btn btn-default" style="color: #0075b6;"
                                    href="static/files/reference_information.pdf" target="_blank">Довідкова інформація</a></li>
         </ul>
 
-
-       <a class="btn btn-default" type="button"
-                                href="https://youtu.be/lpdRUGKRmUE" target="_blank" style="color: #0075b6;">Відеоінструкція</a>
+        <a href="/search" class="btn">Пошук АРВ</a></li>
+        <a class="btn btn-default" type="button"
+           href="https://youtu.be/lpdRUGKRmUE" target="_blank" style="color: #0075b6;">Відеоінструкція</a>
 
     </div>
 
 
     <div class="profile">
+        <ul class="login">
+            <!--Display this link only when the user is not logged in-->
+            <li ng-show="isLoggedIn == false"><a class="btn" href="/u/register">Реєстрація</a></li>
 
+            <!--Display this link only when the user is not logged in-->
+            <li ng-show="isLoggedIn == false"><a class="btn" href="/u/login">Вхід</a></li>
+
+            <!--Display this link only when the user is logged in-->
+            <li ng-show="isLoggedIn == true"><a class="btn" href="/u/cabinet">Особистий кабінет</a></li>
+
+            <!--Display this link only when the user is logged in-->
+            <li ng-show="isLoggedIn == true"><a class="btn" href="/" ng-click="onLogout()">Вихід</a></li>
+        </ul>
     </div>
 </div>
