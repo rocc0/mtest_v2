@@ -11,35 +11,35 @@ import (
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
-type Hash struct {
+type HashData struct {
 	Email string `json:"email"`
 	Hash  string `json:"hash"`
 }
 
-func (u *User) writeHash() (*Hash, error) {
+func (u *User) writeHash() (HashData, error) {
 	hash := u.generateHash(20)
 
 	dialInfo, err := mgo.ParseURL("mongodb://hasher:password@localhost:27017")
 	if err != nil {
-		return nil, err
+		return HashData{}, err
 	}
 	dialInfo.Direct = true
 	dialInfo.FailFast = true
 	session, err := mgo.DialWithInfo(dialInfo)
 	if err != nil {
-		return nil, err
+		return HashData{}, err
 	}
 	defer session.Close()
 
 	session.SetMode(mgo.Monotonic, true)
 	c := session.DB("hashes").C(hash)
-	if err = c.Insert(&Hash{u.Email, hash}); err != nil {
-		return nil, err
+	if err = c.Insert(&HashData{u.Email, hash}); err != nil {
+		return HashData{}, err
 	}
-	return &Hash{u.Email, hash}, nil
+	return HashData{u.Email, hash}, nil
 }
 
-func (u *User) readHash(hash string) (*Hash, error) {
+func (u *User) readHash(hash string) (*HashData, error) {
 	dialInfo, err := mgo.ParseURL("mongodb://hasher:password@localhost:27017")
 	if err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (u *User) readHash(hash string) (*Hash, error) {
 
 	session.SetMode(mgo.Monotonic, true)
 	c := session.DB("hashes").C(hash)
-	var h Hash
+	var h HashData
 	if err = c.Find(nil).One(&h); err != nil {
 		return nil, err
 	}

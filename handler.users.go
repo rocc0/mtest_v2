@@ -112,7 +112,7 @@ func sendResetPasswordLink(c *gin.Context) {
 	var u User
 	u.Email = user.Email
 	u.Name = user.Email
-	res, err := u.writeHash()
+	hash, err := u.writeHash()
 	if err != nil {
 		if err := c.AbortWithError(404, errors.New("код застарілий")); err != nil {
 			log.Error(err)
@@ -120,7 +120,7 @@ func sendResetPasswordLink(c *gin.Context) {
 		return
 	}
 
-	if err = doSendEmail(u, *res, "email_password"); err != nil {
+	if err = doSendEmail(u, hash, "email_password"); err != nil {
 		if err := c.AbortWithError(404, err); err != nil {
 			log.Error(err)
 		}

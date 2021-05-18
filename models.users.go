@@ -88,12 +88,12 @@ func (u *User) createUser() (*string, error) {
 		return nil, err
 	}
 
-	usrHash, err := u.writeHash()
+	hash, err := u.writeHash()
 	if err != nil {
 		return nil, err
 	}
 
-	if err = doSendEmail(*u, *usrHash, "email_activate"); err != nil {
+	if err = doSendEmail(*u, hash, "email_activate"); err != nil {
 		return nil, err
 	}
 

@@ -2,10 +2,9 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"html/template"
 	"net/smtp"
-
-	log "github.com/sirupsen/logrus"
 )
 
 type (
@@ -21,12 +20,9 @@ type (
 	}
 )
 
-var auth smtp.Auth
-
-func doSendEmail(usr User, h Hash, template string) error {
-	auth = smtp.PlainAuth("M-TEST", "noreply@mtest.com.ua", "test", "mail.adm.tools")
+func doSendEmail(usr User, h HashData, template string) error {
 	tmpl := templateData{Name: usr.Name, URL: h.Hash}
-	r := NewRequest([]string{h.Email}, "Активація аккаунту", "Активація аккаунту")
+	r := newRequest([]string{h.Email}, "Активація аккаунту", "Активація аккаунту")
 	if err := r.ParseTemplate("templates/"+template+".html", tmpl); err != nil {
 		return err
 	}
@@ -34,11 +30,13 @@ func doSendEmail(usr User, h Hash, template string) error {
 	if err != nil {
 		return err
 	}
-	log.Info(ok)
+	if !ok {
+		return errors.New("email not sent")
+	}
 	return nil
 }
 
-func NewRequest(to []string, subject, body string) *Request {
+func newRequest(to []string, subject, body string) *Request {
 	return &Request{
 		to:      to,
 		subject: subject,
@@ -54,6 +52,7 @@ func (r *Request) SendEmail() (bool, error) {
 	msg := []byte(from + subject + mime + "\n" + r.body)
 	addr := "mail.adm.tools:2525"
 
+	auth := smtp.PlainAuth("M-TEST", "noreply@mtest.com.ua", "test", "mail.adm.tools")
 	if err := smtp.SendMail(addr, auth, r.from, r.to, msg); err != nil {
 		return false, err
 	}
