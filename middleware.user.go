@@ -112,7 +112,10 @@ func passwordResetter(password, hash string) error {
 	if h == nil {
 		return errors.New("посилання не існує")
 	}
-	res, _ := db.Prepare("UPDATE users SET password=? WHERE email=?")
+	res, err := db.Prepare("UPDATE users SET password=? WHERE email=?")
+	if err != nil {
+		return err
+	}
 	if _, err = res.Exec(hashedPassword, h.Email); err != nil {
 		return err
 	}

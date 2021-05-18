@@ -52,7 +52,7 @@ type (
 	}
 )
 
-const calculations = `{"1":[{"type":"container","id":3,"columns":[[{"type":"itemplus","id":3,
+const defaultCalculations = `{"1":[{"type":"container","id":3,"columns":[[{"type":"itemplus","id":3,
                     "columns":[[{"type":"item","id":3,"name":"Додати дію","subsum":0},{"type":"item","id":6,"name":"Додати дію","subsum":0}]],
                     "name":"Додати складову інф. вимоги"}]],"name":"Додати інф. вимогу","contsub":0},
                 {"type":"container","id":null,"columns":[[{"type":"itemplus","id":4,"columns":[[{"type":"item","id":3,"name":"Додати дію","subsum":0},
@@ -71,19 +71,22 @@ func createMTEST(m newMtest, email string) (*map[string]interface{}, error) {
 		return nil, err
 	}
 
-	mId := uuid.New()
+	mId := uuid.New().String()
 	defer func() {
 		if err := stmt.Close(); err != nil {
 			log.Error(err)
 		}
 	}()
 
-	result, err := stmt.Exec(mId, m.Name, m.Region, m.Government, calculations, m.CalcType, time.Now(), email)
+	result, err := stmt.Exec(mId, m.Name, m.Region, m.Government, defaultCalculations, m.CalcType, time.Now(), email)
 	if err != nil {
 		return nil, err
 	}
 
-	idRes, _ := result.LastInsertId()
+	idRes, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
 	idStmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", email)
 	if err := idStmt.Scan(&id, &dbRecords); err != nil {
 		return nil, err
@@ -93,7 +96,7 @@ func createMTEST(m newMtest, email string) (*map[string]interface{}, error) {
 		return nil, err
 	}
 
-	records[mId.String()] = UserMtest{Id: mId.String(), Name: m.Name, Region: m.Region,
+	records[mId] = UserMtest{Id: mId, Name: m.Name, Region: m.Region,
 		Government: m.Government, CalcType: m.CalcType}
 
 	out, err := json.Marshal(records)
@@ -114,25 +117,16 @@ func createMTEST(m newMtest, email string) (*map[string]interface{}, error) {
 }
 
 func getMTEST(id string) (*Mtest, error) {
-	var (
-		mid                  uuid.UUID
-		rowId, calcType      int
-		name, govern         string
-		region, calculations string
-		calcData, executors  string
-		pubDate, author      string
-	)
+	var mtest Mtest
 	res := db.QueryRow("SELECT m.id, m.mid, m.name, r.reg_name, g.gov_name, m.calculations,"+
 		" m.calc_type, m.calc_data, m.executors, m.pub_date, m.author FROM mtests m JOIN govs g ON m.govern = g.id JOIN "+
 		"regions r ON m.region = r.reg_id WHERE mid=?", id)
 
-	if err := res.Scan(&rowId, &mid, &name, &region, &govern, &calculations,
-		&calcType, &calcData, &executors, &pubDate, &author); err != nil {
+	if err := res.Scan(&mtest.Id, &mtest.Mid, &mtest.Name, &mtest.Region, &mtest.Govern, &mtest.Calculations,
+		&mtest.CalcType, &mtest.CalcData, &mtest.Executors, &mtest.PubDate, &mtest.Author); err != nil {
 		return nil, err
 	}
-	return &Mtest{Id: rowId, Mid: mid, Name: name, Region: region,
-		Govern: govern, Calculations: calculations, CalcType: calcType,
-		CalcData: calcData, Executors: executors, PubDate: pubDate, Author: author}, nil
+	return &mtest, nil
 }
 
 func updateMTEST(m map[string]interface{}, email string) error {
@@ -237,10 +231,7 @@ func deleteMTEST(mid, email string) error {
 		return err
 	}
 
-	if err := updateUser("records", string(out), id); err == nil {
-		return err
-	}
-	return nil
+	return updateUser("records", string(out), id)
 }
 
 func getGovernments() (*[]governmentRegion, error) {
@@ -321,7 +312,7 @@ func getAdministrativeActions() (*[]AdmAction, error) {
 
 }
 
-func createMTESTExecutor(email string, ex newExecutor) (*uuid.UUID, error) {
+func createMTESTExecutor(email string, ex newExecutor) (string, error) {
 	var (
 		id, devId                             int
 		dbRecords, devDbRecords, getExecutors string
@@ -330,7 +321,7 @@ func createMTESTExecutor(email string, ex newExecutor) (*uuid.UUID, error) {
 	)
 
 	if checkUserExists(ex.Email) == true {
-		return nil, errors.New("користувач не зареєстрований")
+		return "", errors.New("користувач не зареєстрований")
 	}
 
 	//add mtest type 3
@@ -342,84 +333,85 @@ func createMTESTExecutor(email string, ex newExecutor) (*uuid.UUID, error) {
 			log.Error(err)
 		}
 	}()
-	mId := uuid.New()
-	if _, err := stmt.Exec(mId, ex.Title, ex.Region, ex.Government,
-		calculations, 3, email, ex.DevMid, time.Now(), ex.Email); err != nil {
-		return nil, err
+	mtestID := uuid.New().String()
+	if _, err := stmt.Exec(mtestID, ex.Title, ex.Region, ex.Government,
+		defaultCalculations, 3, email, ex.DevMid, time.Now(), ex.Email); err != nil {
+		return "", err
 	}
 
 	//UPDATE MAIN MTEST executors!!!!!!!!!!!
 	saveExecutors := map[string]newExecutors{}
 	exStmt := db.QueryRow("SELECT executors FROM mtests WHERE mid=?", ex.DevMid)
 	if err := exStmt.Scan(&getExecutors); err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if err := json.Unmarshal([]byte(getExecutors), &saveExecutors); err != nil {
-		return nil, err
+		return "", err
 	}
 
-	saveExecutors[mId.String()] = newExecutors{ex.Email, mId.String(), true}
+	saveExecutors[mtestID] = newExecutors{ex.Email, mtestID, true}
 	updOut, updOutErr := json.Marshal(saveExecutors)
 	if updOutErr != nil {
-		return nil, updOutErr
+		return "", updOutErr
 	}
 
-	updMtest, updMtestErr := db.Prepare("UPDATE mtests SET executors=? WHERE mid=?")
-	if updMtestErr != nil {
-		return nil, updMtestErr
+	updMtest, err := db.Prepare("UPDATE mtests SET executors=? WHERE mid=?")
+	if err != nil {
+		return "", err
 	}
 	_, updError := updMtest.Exec(updOut, ex.DevMid)
 	if updError != nil {
-		return nil, updError
+		return "", updError
 	}
 
 	//add mtest to executor mtests
 	idStmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", ex.Email)
 
 	if err := idStmt.Scan(&id, &dbRecords); err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if err := json.Unmarshal([]byte(dbRecords), &records); err != nil {
-		return nil, err
+		return "", err
 	}
 
-	records[mId.String()] = UserMtest{Id: mId.String(), Name: ex.Title, Region: ex.Region,
+	records[mtestID] = UserMtest{Id: mtestID, Name: ex.Title, Region: ex.Region,
 		Government: ex.Government, CalcType: 3, Developer: email, DevMid: ex.DevMid}
 
-	out, marshErr := json.Marshal(records)
-	if marshErr != nil {
-		return nil, marshErr
+	out, err := json.Marshal(records)
+	if err != nil {
+		return "", err
 	}
 
 	if idErr := updateUser("records", string(out), id); idErr != nil {
-		return nil, idErr
+		return "", idErr
 	}
 
 	// add mtest to developer mtest to executors section
 	devStmt := db.QueryRow("SELECT id, records FROM users WHERE email=?", email)
 	if err := devStmt.Scan(&devId, &devDbRecords); err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if err := json.Unmarshal([]byte(devDbRecords), &devRecords); err != nil {
-		return nil, err
+		return "", err
 	}
+
 	record := devRecords[ex.DevMid]
 	devRecords[ex.DevMid] = UserMtest{Id: ex.DevMid, Name: record.Name, Region: record.Region,
 		Government: record.Government, CalcType: record.CalcType, Executors: saveExecutors}
 
 	devOut, err := json.Marshal(devRecords)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if devErr := updateUser("records", string(devOut), devId); devErr != nil {
-		return nil, devErr
+		return "", devErr
 	}
 
-	return &mId, nil
+	return mtestID, nil
 }
 
 func deleteMTESTExecutor(devEmail string, del delExecutorReq) error {
@@ -473,7 +465,11 @@ func deleteMTESTExecutor(devEmail string, del delExecutorReq) error {
 	if err := json.Unmarshal([]byte(dbRecords), &devRecords); err != nil {
 		return err
 	}
-	delete(devRecords[del.DevMtestId].Executors, del.ExMtestId)
+
+	if _, ok := devRecords[del.DevMtestId]; ok {
+		delete(devRecords[del.DevMtestId].Executors, del.ExMtestId)
+	}
+
 	devOut, err := json.Marshal(devRecords)
 	if err != nil {
 		return err
@@ -484,21 +480,24 @@ func deleteMTESTExecutor(devEmail string, del delExecutorReq) error {
 	}
 
 	//delete from developer mtest
-	mtStmt := db.QueryRow("SELECT executors FROM mtests WHERE mid=?", del.DevMtestId)
-	if err := mtStmt.Scan(&dbRecords); err != nil {
+	if err := db.QueryRow("SELECT executors FROM mtests WHERE mid=?", del.DevMtestId).Scan(&dbRecords); err != nil {
 		return err
 	}
 
 	if err := json.Unmarshal([]byte(dbRecords), &records); err != nil {
 		return err
 	}
+
 	delete(records, del.ExMtestId)
 	mtOut, err := json.Marshal(records)
 	if err != nil {
 		return err
 	}
 
-	mtSaveStmt, _ := db.Prepare("UPDATE mtests SET executors=? WHERE mid=?")
+	mtSaveStmt, err := db.Prepare("UPDATE mtests SET executors=? WHERE mid=?")
+	if err != nil {
+		return err
+	}
 
 	if _, err := mtSaveStmt.Exec(mtOut, del.DevMtestId); err != nil {
 		return err
