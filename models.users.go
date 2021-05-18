@@ -8,6 +8,7 @@ import (
 
 	"encoding/json"
 
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -21,10 +22,13 @@ type User struct {
 	Records  map[string]interface{} `json:"records"`
 }
 
+const createUsersTable = `CREATE TABLE IF NOT EXISTS
+    users (id SERIAL NOT NULL PRIMARY KEY, name VARCHAR(100) NOT NULL, 
+    surename VARCHAR(20) NOT NULL, email VARCHAR(100), password VARCHAR(100) NOT NULL, 
+    rights VARCHAR(100) NOT NULL, records VARCHAR(100) NOT NULL, activated INTEGER DEFAULT 0);`
+
 func userInit() error {
-	stmt, err := db.Prepare("CREATE TABLE IF NOT EXISTS users (id SERIAL NOT NULL PRIMARY KEY, " +
-		"name VARCHAR(100) NOT NULL, surename VARCHAR(20) NOT NULL, email VARCHAR(100)," +
-		" password VARCHAR(100) NOT NULL, rights VARCHAR(100) NOT NULL, records VARCHAR(100) NOT NULL);")
+	stmt, err := db.Prepare(createUsersTable)
 	if err != nil {
 		return err
 	}
@@ -40,12 +44,10 @@ func userInit() error {
 	return nil
 }
 
-func loginCheck(email, password string) bool {
-	var (
-		eMail, passw string
-	)
-	res := db.QueryRow("SELECT email, password FROM users WHERE email=?", email)
-	if err := res.Scan(&eMail, &passw); err != nil {
+func passwordCheck(email, password string) bool {
+	var passw string
+	res := db.QueryRow("SELECT password FROM users WHERE email=?", email)
+	if err := res.Scan(&passw); err != nil {
 		return false
 	}
 
@@ -55,26 +57,31 @@ func loginCheck(email, password string) bool {
 	return true
 }
 
-func authCheck(email string) bool {
+const checkActivationQuery = "SELECT activated FROM users WHERE email=?"
+
+func checkUserActivated(email string) bool {
 	var (
-		privileged int
+		activated int
 	)
-	res := db.QueryRow("SELECT activated FROM users WHERE email=?", email)
-	if err := res.Scan(&privileged); err != nil {
+
+	res := db.QueryRow(checkActivationQuery, email)
+	if err := res.Scan(&activated); err != nil {
 		log.Error(err)
 		return false
 	}
 
-	return privileged == 1
+	return activated == 1
 }
 
+const createUserQuery = "INSERT INTO users (name, surename, email, records, password) VALUES (?,?,?,?,?)"
+
 func (u *User) createUser() (*string, error) {
-	if isUsernameAvailable(u.Email) == false {
+	if checkUserExists(u.Email) == false {
 		return &u.Name, errors.New("користувач з цим ім'ям вже існує")
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
-	req, err := db.Prepare("INSERT INTO users (name, surename, email, records, password) VALUES (?,?,?,?,?)")
+	req, err := db.Prepare(createUserQuery)
 	if err != nil {
 		return nil, err
 	}
@@ -100,29 +107,24 @@ func (u *User) createUser() (*string, error) {
 	return &u.Name, nil
 }
 
-func readUser(email string) (*User, error) {
-	log.Print(email)
-	var (
-		name, sureName, eMail string
-		jsonRecords           map[string]interface{}
-		records               string
-		id, rights            int
-	)
+const getUserQuery = "SELECT name, surename, email, id, rights, records FROM users WHERE email = ?"
 
-	res := db.QueryRow("SELECT name, surename, email, id, rights, records FROM users WHERE email = ?", email)
-	if err := res.Scan(&name, &sureName, &eMail, &id, &rights, &records); err != nil {
+func getUser(email string) (*User, error) {
+	var records string
+	user := &User{}
+
+	res := db.QueryRow(getUserQuery, email)
+	if err := res.Scan(&user.Name, &user.Surename, &user.Email, &user.Id, &user.Rights, &records); err != nil {
 		return nil, err
 	}
-	if err := json.Unmarshal([]byte(records), &jsonRecords); err != nil {
+	if err := json.Unmarshal([]byte(records), &user.Records); err != nil {
 		return nil, err
 	}
 
-	return &User{Id: id, Name: name, Surename: sureName,
-		Email: eMail, Rights: rights, Records: jsonRecords}, nil
+	return user, nil
 }
 
 func updateUser(field, data string, id int) error {
-
 	stmt, err := db.Prepare("UPDATE users SET " + field + "=? WHERE id=?;")
 	if err != nil {
 		return err
@@ -130,9 +132,10 @@ func updateUser(field, data string, id int) error {
 
 	defer func() {
 		if err := stmt.Close(); err != nil {
-			log.Error(err)
+			logrus.Error(err)
 		}
 	}()
+
 	if field == "password" {
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(data), bcrypt.DefaultCost)
 		if _, err = stmt.Exec(field, hashedPassword, id); err != nil {
@@ -146,14 +149,12 @@ func updateUser(field, data string, id int) error {
 	return nil
 }
 
-func isUsernameAvailable(email string) bool {
+func checkUserExists(email string) bool {
 	var result string
 	res := db.QueryRow("SELECT email FROM users WHERE email=?", email)
 	if err := res.Scan(&result); err != nil {
+		logrus.Error(err)
 		return false
 	}
-	if result == "" {
-		return true
-	}
-	return false
+	return result == ""
 }

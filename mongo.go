@@ -1,4 +1,5 @@
 package main
+
 //
 //import (
 //	"log"
@@ -11,7 +12,7 @@ package main
 //}
 //
 //
-//func getAdmactions(col string) (interface{}, error) {
+//func getAdministrativeActions(col string) (interface{}, error) {
 //	session, err := mgo.Dial("mongodb://adder:password@192.168.99.100:27017")
 //	if err != nil {
 //		panic(err)

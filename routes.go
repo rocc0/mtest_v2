@@ -14,14 +14,14 @@ func initializeRoutes() {
 		Realm: "test zone", Key: []byte("secret key"),
 		Timeout: time.Hour, MaxRefresh: time.Hour,
 		Authenticator: func(eMail string, password string, c *gin.Context) (interface{}, bool) {
-			if loginCheck(eMail, password) {
+			if passwordCheck(eMail, password) {
 				return eMail, true
 			}
 
 			return eMail, false
 		},
 		Authorizator: func(userId interface{}, c *gin.Context) bool {
-			return authCheck(userId.(string))
+			return checkUserActivated(userId.(string))
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{"code": code, "message": message})
@@ -30,8 +30,8 @@ func initializeRoutes() {
 	}
 
 	// Handle the index route
-	router.GET("/", showIndexPage)
-	router.GET("/search", showSearchPage)
+	router.GET("/", renderIndexPage)
+	router.GET("/search", renderSearchPage)
 
 	adminRoutes := router.Group("/admin")
 	{
@@ -41,53 +41,53 @@ func initializeRoutes() {
 
 	userRoutes := router.Group("/u")
 	{
-		userRoutes.GET("/login", showIndexPage)
+		userRoutes.GET("/login", renderIndexPage)
 		userRoutes.POST("/login", authMiddleware.LoginHandler)
-		userRoutes.GET("/register", showIndexPage)
-		userRoutes.POST("/register", registerHandler)
-		userRoutes.GET("/cabinet", showUserPage)
-		userRoutes.GET("/activate/:hash", showIndexPage)
-		userRoutes.GET("/reset/:hash", showIndexPage)
+		userRoutes.GET("/register", renderIndexPage)
+		userRoutes.POST("/register", registrationHandler)
+		userRoutes.GET("/cabinet", renderUserPage)
+		userRoutes.GET("/activate/:hash", renderIndexPage)
+		userRoutes.GET("/reset/:hash", renderIndexPage)
 
 	}
 
-	//+ get mtest page
-	router.GET("/track/:mtest_id", showMtestPage)
+	//get mtest page
+	router.GET("/track/:mtest_id", renderMTESTPage)
 
 	apiRoutes := router.Group("/api/v.1/")
 	{
 		//Get goverments names and ids
-		apiRoutes.GET("/govs", getGovernments)
+		apiRoutes.GET("/govs", getGovernmentsHandlers)
 		apiRoutes.POST("/govs/save", authMiddleware.MiddlewareFunc(), postEditGovernments)
 
 		//Get regions and edit
-		apiRoutes.GET("/regions", getRegions)
+		apiRoutes.GET("/regions", getRegionsHandler)
 		apiRoutes.POST("/regions/save", authMiddleware.MiddlewareFunc(), postEditRegions)
-		apiRoutes.GET("/adm_actions", getAdmActions)
+		apiRoutes.GET("/adm_actions", getAdministrativeActionsHandler)
 
 		//Show and edit view
-		apiRoutes.GET("/m/get/:mtest_id", getReadMtest)
-		apiRoutes.POST("/m/update", authMiddleware.MiddlewareFunc(), postUpdateMtest)
+		apiRoutes.GET("/m/get/:mtest_id", getMTESTHandler)
+		apiRoutes.POST("/m/update", authMiddleware.MiddlewareFunc(), updateMTESTHandler)
 
 		//Creation of view
-		apiRoutes.POST("/m/create", authMiddleware.MiddlewareFunc(), postCreateMtest)
+		apiRoutes.POST("/m/create", authMiddleware.MiddlewareFunc(), createMTESTHandler)
 
 		//Delete handling
-		apiRoutes.POST("/m/delete", authMiddleware.MiddlewareFunc(), postDeleteMtest)
+		apiRoutes.POST("/m/delete", authMiddleware.MiddlewareFunc(), deleteMTESTHandler)
 
 		//executors and group calculations
 		//Creation of view
-		apiRoutes.POST("/m/excreate", authMiddleware.MiddlewareFunc(), postCreateMtestExecutor)
+		apiRoutes.POST("/m/excreate", authMiddleware.MiddlewareFunc(), createMTESTExecutorHandler)
 		//Delete handling
-		apiRoutes.POST("/m/exdelete", authMiddleware.MiddlewareFunc(), postDeleteExecutor)
+		apiRoutes.POST("/m/exdelete", authMiddleware.MiddlewareFunc(), deleteExecutorHandler)
 
 		//user
-		apiRoutes.GET("/u/cabinet", authMiddleware.MiddlewareFunc(), cabinetHandler)
-		apiRoutes.POST("/u/edituser", authMiddleware.MiddlewareFunc(), editUserField)
-		apiRoutes.POST("/u/reset/", sendResetPasswordLink)
-		apiRoutes.GET("/u/reset/:hash", checkPasswordLink)
-		apiRoutes.POST("/u/reset/:hash", resetPassword)
-		apiRoutes.GET("/u/activate/:hash", activateAccount)
+		apiRoutes.GET("/u/cabinet", authMiddleware.MiddlewareFunc(), userCabinetHandler)
+		apiRoutes.POST("/u/edituser", authMiddleware.MiddlewareFunc(), editUserFieldHandler)
+		apiRoutes.POST("/u/reset/", resetPasswordHandler)
+		apiRoutes.GET("/u/reset/:hash", passwordCheckHandler)
+		apiRoutes.POST("/u/reset/:hash", setNewPasswordHandler)
+		apiRoutes.GET("/u/activate/:hash", activateAccountHandler)
 	}
 
 }

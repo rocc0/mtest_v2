@@ -37,21 +37,21 @@ type (
 )
 
 // page render
-func showIndexPage(c *gin.Context) {
+func renderIndexPage(c *gin.Context) {
 	render(c, gin.H{"title": "Калькулятор"}, "index.html")
 }
 
-func showSearchPage(c *gin.Context) {
+func renderSearchPage(c *gin.Context) {
 	render(c, gin.H{"title": "Пошук АРВ"}, "index.html")
 }
 
-func showUserPage(c *gin.Context) {
+func renderUserPage(c *gin.Context) {
 	render(c, gin.H{"title": "Кабінет користувача"}, "index.html")
 }
 
-func showMtestPage(c *gin.Context) {
+func renderMTESTPage(c *gin.Context) {
 	id := c.Param("mtest_id")
-	mtest, err := readMtest(id)
+	mtest, err := getMTEST(id)
 	if err == nil {
 		render(c, gin.H{"title": "Редагування | " + mtest.Name}, "index.html")
 	} else {
@@ -60,10 +60,9 @@ func showMtestPage(c *gin.Context) {
 
 }
 
-// api mtest
-func getReadMtest(c *gin.Context) {
+func getMTESTHandler(c *gin.Context) {
 	id := c.Param("mtest_id")
-	mtest, err := readMtest(id)
+	mtest, err := getMTEST(id)
 	if err == nil {
 		c.JSON(http.StatusOK, gin.H{"mtest": mtest})
 	} else {
@@ -72,7 +71,7 @@ func getReadMtest(c *gin.Context) {
 	}
 }
 
-func postCreateMtest(c *gin.Context) {
+func createMTESTHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	email, _ := claims["id"].(string)
 
@@ -83,7 +82,7 @@ func postCreateMtest(c *gin.Context) {
 		return
 	}
 
-	if data, err := createNewMTest(m, email); err == nil {
+	if data, err := createMTEST(m, email); err == nil {
 		c.JSON(http.StatusOK, gin.H{"title": "Item added", "records": data})
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -91,7 +90,7 @@ func postCreateMtest(c *gin.Context) {
 	}
 }
 
-func postUpdateMtest(c *gin.Context) {
+func updateMTESTHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	email, _ := claims["id"].(string)
 
@@ -102,7 +101,7 @@ func postUpdateMtest(c *gin.Context) {
 		return
 	}
 
-	if err := updateMtest(form, email); err == nil {
+	if err := updateMTEST(form, email); err == nil {
 		c.JSON(http.StatusOK, gin.H{"title": "Mtest updated", "data": form})
 	} else {
 		log.Print(err)
@@ -110,7 +109,7 @@ func postUpdateMtest(c *gin.Context) {
 	}
 }
 
-func postDeleteMtest(c *gin.Context) {
+func deleteMTESTHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	email, _ := claims["id"].(string)
 
@@ -121,7 +120,7 @@ func postDeleteMtest(c *gin.Context) {
 		return
 	}
 
-	if err := deleteMtest(id.Id, email); err == nil {
+	if err := deleteMTEST(id.Id, email); err == nil {
 		c.JSON(http.StatusOK, gin.H{"title": "Item removed"})
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -129,8 +128,8 @@ func postDeleteMtest(c *gin.Context) {
 }
 
 //api govs
-func getGovernments(c *gin.Context) {
-	res, err := getGovs()
+func getGovernmentsHandlers(c *gin.Context) {
+	res, err := getGovernments()
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
@@ -138,8 +137,8 @@ func getGovernments(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"govs": res})
 }
 
-func getRegions(c *gin.Context) {
-	res, err := getRegs()
+func getRegionsHandler(c *gin.Context) {
+	res, err := getRegions()
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
@@ -149,7 +148,7 @@ func getRegions(c *gin.Context) {
 
 //executors and group calculations
 //add executor
-func postCreateMtestExecutor(c *gin.Context) {
+func createMTESTExecutorHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	email, _ := claims["id"].(string)
 
@@ -160,7 +159,7 @@ func postCreateMtestExecutor(c *gin.Context) {
 		return
 	}
 
-	if mid, err := createMtestExecutor(email, executor); err == nil {
+	if mid, err := createMTESTExecutor(email, executor); err == nil {
 		c.JSON(http.StatusOK, gin.H{"mid": mid})
 	} else {
 		log.Print(err)
@@ -168,7 +167,7 @@ func postCreateMtestExecutor(c *gin.Context) {
 	}
 }
 
-func postDeleteExecutor(c *gin.Context) {
+func deleteExecutorHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	email, _ := claims["id"].(string)
 
@@ -179,7 +178,7 @@ func postDeleteExecutor(c *gin.Context) {
 		return
 	}
 
-	if err := deleteMtestExecutor(email, delRequest); err == nil {
+	if err := deleteMTESTExecutor(email, delRequest); err == nil {
 		c.JSON(http.StatusOK, gin.H{"response": "ok"})
 	} else {
 		log.Print(err)
@@ -188,8 +187,8 @@ func postDeleteExecutor(c *gin.Context) {
 }
 
 //api administrative actions
-func getAdmActions(c *gin.Context) {
-	res, err := getAdmactions()
+func getAdministrativeActionsHandler(c *gin.Context) {
+	res, err := getAdministrativeActions()
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return

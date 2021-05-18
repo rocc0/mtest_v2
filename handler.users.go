@@ -25,10 +25,10 @@ type (
 	}
 )
 
-func cabinetHandler(c *gin.Context) {
+func userCabinetHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	user, _ := claims["id"].(string)
-	userData, err := readUser(user)
+	userData, err := getUser(user)
 	if err != nil {
 		c.JSON(200, gin.H{"data": err})
 	} else {
@@ -36,7 +36,7 @@ func cabinetHandler(c *gin.Context) {
 	}
 }
 
-func registerHandler(c *gin.Context) {
+func registrationHandler(c *gin.Context) {
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	var user User
 	if err := json.Unmarshal(x, &user); err != nil {
@@ -52,7 +52,7 @@ func registerHandler(c *gin.Context) {
 	}
 }
 
-func editUserField(c *gin.Context) {
+func editUserFieldHandler(c *gin.Context) {
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	var field userField
 	if err := json.Unmarshal(x, &field); err != nil {
@@ -66,7 +66,7 @@ func editUserField(c *gin.Context) {
 	}
 }
 
-func resetPassword(c *gin.Context) {
+func setNewPasswordHandler(c *gin.Context) {
 	var pass map[string]string
 	email := c.Param("hash")
 	if err := c.BindJSON(&pass); err != nil {
@@ -81,7 +81,7 @@ func resetPassword(c *gin.Context) {
 	}
 }
 
-func activateAccount(c *gin.Context) {
+func activateAccountHandler(c *gin.Context) {
 	hash := c.Param("hash")
 	var user User
 
@@ -103,7 +103,7 @@ func activateAccount(c *gin.Context) {
 	}
 }
 
-func sendResetPasswordLink(c *gin.Context) {
+func resetPasswordHandler(c *gin.Context) {
 	var user userEmail
 	if err := c.BindJSON(&user); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -127,7 +127,7 @@ func sendResetPasswordLink(c *gin.Context) {
 	}
 }
 
-func checkPasswordLink(c *gin.Context) {
+func passwordCheckHandler(c *gin.Context) {
 	var u User
 	hash, err := u.readHash(c.Param("hash"))
 	if hash == nil {

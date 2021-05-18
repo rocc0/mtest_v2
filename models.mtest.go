@@ -58,7 +58,7 @@ const calculations = `{"1":[{"type":"container","id":3,"columns":[[{"type":"item
                 {"type":"container","id":null,"columns":[[{"type":"itemplus","id":4,"columns":[[{"type":"item","id":3,"name":"Додати дію","subsum":0},
                             {"type":"item","id":4,"name":"Додати дію","subsum":0}]],"name":"Додати складову інф. вимоги"}]],"name":"Додати інф. вимогу","contsub":0}]}`
 
-func createNewMTest(m newMtest, email string) (*map[string]interface{}, error) {
+func createMTEST(m newMtest, email string) (*map[string]interface{}, error) {
 	var (
 		id        int
 		dbRecords string
@@ -113,7 +113,7 @@ func createNewMTest(m newMtest, email string) (*map[string]interface{}, error) {
 	return &records, nil
 }
 
-func readMtest(id string) (*Mtest, error) {
+func getMTEST(id string) (*Mtest, error) {
 	var (
 		mid                  uuid.UUID
 		rowId, calcType      int
@@ -135,7 +135,7 @@ func readMtest(id string) (*Mtest, error) {
 		CalcData: calcData, Executors: executors, PubDate: pubDate, Author: author}, nil
 }
 
-func updateMtest(m map[string]interface{}, email string) error {
+func updateMTEST(m map[string]interface{}, email string) error {
 	var (
 		id        int
 		dbRecords string
@@ -203,7 +203,7 @@ func updateMtest(m map[string]interface{}, email string) error {
 	return nil
 }
 
-func deleteMtest(mid, email string) error {
+func deleteMTEST(mid, email string) error {
 	var (
 		id        int
 		dbRecords string
@@ -243,7 +243,7 @@ func deleteMtest(mid, email string) error {
 	return nil
 }
 
-func getGovs() (*[]governmentRegion, error) {
+func getGovernments() (*[]governmentRegion, error) {
 	var (
 		govs    []governmentRegion
 		govId   int
@@ -268,7 +268,7 @@ func getGovs() (*[]governmentRegion, error) {
 	return &govs, nil
 }
 
-func getRegs() (*[]governmentRegion, error) {
+func getRegions() (*[]governmentRegion, error) {
 	var (
 		regions []governmentRegion
 		regId   int
@@ -294,7 +294,7 @@ func getRegs() (*[]governmentRegion, error) {
 	return &regions, nil
 }
 
-func getAdmactions() (*[]AdmAction, error) {
+func getAdministrativeActions() (*[]AdmAction, error) {
 	var (
 		actId   int
 		actName string
@@ -321,7 +321,7 @@ func getAdmactions() (*[]AdmAction, error) {
 
 }
 
-func createMtestExecutor(email string, ex newExecutor) (*uuid.UUID, error) {
+func createMTESTExecutor(email string, ex newExecutor) (*uuid.UUID, error) {
 	var (
 		id, devId                             int
 		dbRecords, devDbRecords, getExecutors string
@@ -329,7 +329,7 @@ func createMtestExecutor(email string, ex newExecutor) (*uuid.UUID, error) {
 		devRecords                            map[string]UserMtest
 	)
 
-	if isUsernameAvailable(ex.Email) == true {
+	if checkUserExists(ex.Email) == true {
 		return nil, errors.New("користувач не зареєстрований")
 	}
 
@@ -422,7 +422,7 @@ func createMtestExecutor(email string, ex newExecutor) (*uuid.UUID, error) {
 	return &mId, nil
 }
 
-func deleteMtestExecutor(devEmail string, del delExecutorReq) error {
+func deleteMTESTExecutor(devEmail string, del delExecutorReq) error {
 	var (
 		id         int
 		dbRecords  string
