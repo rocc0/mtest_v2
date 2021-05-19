@@ -1,4 +1,4 @@
-package mtest
+package dataprocessor
 
 import (
 	"encoding/json"
@@ -25,7 +25,7 @@ func (mt *Service) CreateExecutor(email string, ex Executor) (string, error) {
 		devRecords                            map[string]UserMtest
 	)
 
-	if ok, err := mt.CheckUserExists(ex.Email); err != nil || !ok {
+	if ok := mt.CheckUserExists(ex.Email); !ok {
 		return "", errors.New("користувач не зареєстрований")
 	}
 

@@ -1,4 +1,4 @@
-package mtest
+package dataprocessor
 
 import "github.com/sirupsen/logrus"
 

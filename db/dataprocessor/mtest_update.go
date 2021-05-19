@@ -1,4 +1,4 @@
-package mtest
+package dataprocessor
 
 import (
 	"database/sql"
@@ -57,7 +57,7 @@ type (
 	}
 )
 
-func (mt *Service) updateMTEST(m map[string]interface{}, email string) error {
+func (mt *Service) UpdateMTEST(m map[string]interface{}, email string) error {
 	if m["calculations"] != nil && m["name"] == nil {
 		return mt.updateCalculations(m)
 	} else if m["executors"] != nil && m["name"] == nil {
