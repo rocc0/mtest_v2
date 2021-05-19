@@ -31,3 +31,20 @@ func (mt *Service) GetGovernments() (*[]Government, error) {
 	}
 	return &govs, nil
 }
+
+func (mt *Service) EditGovernmentName(id int, name string) error {
+	stmt, err := mt.db.Prepare("UPDATE governments SET gov_name=? WHERE id=?;")
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := stmt.Close(); err != nil {
+			log.Error(err)
+		}
+	}()
+
+	if _, err = stmt.Exec(name, id); err != nil {
+		return err
+	}
+	return nil
+}
