@@ -6,11 +6,13 @@
                 <div class='requlatory'>
                         <div class="col-md-12 pull-left input-group">
                             <div class="input-group-addon" style="width: 176px;padding: 4px;">Назва органу влади</div>
+                            <label>
                             <input type="text" class="form-control" name="subj" ng-model="list[0].subj">
+                            </label>
                         </div>
                         <div class="col-md-12 pull-left input-group">
                             <div class="input-group-addon">Назва регуляторного акта</div>
-                            <input type="text" class="form-control" name="regact" ng-model="list[0].regact">
+                            <label><input type="text" class="form-control" name="regact" ng-model="list[0].regact"></label>
                     </div>
                 </div>
                 <div ng-include="'list.html'" ></div>
@@ -27,8 +29,11 @@
                             Кількість – кількість суб`єктів малого бізнесу, на яких поширюється регулювання/ІВ. В формулі позначається
                             " popover-trigger="'mouseenter'">
                             </span>Кількість суб'єктів(шт.):</div>
-                        <input type="number" style="width: 70%;height: 30px;" class="form-control" name="ki"
-                               ng-model="list[0].ki" placeholder='Кі (шт.)'>
+                        <label>
+                            <input type="number" style="width: 70%;height: 30px;" class="form-control" name="ki"
+                                                              ng-model="list[0].ki" placeholder='Кі (шт.)'>
+                        </label>
+
                     </div>
                     <div class="col-md-5 input-group">
                         <div style="padding-right: 5px;width: 66%;line-height: 29px;float:right;height: 30px;">Загальна
@@ -57,7 +62,7 @@
                         dnd-copied="item.id = item.id + 1"
                         >
                         <h3 class="itemname">{[{item.name}]}</h3>
-                        <div class="dragitem"><img src="/static/img/{[{ item.type }]}.png"></div>
+                        <div class="dragitem"><img alt=""  src="/static/img/{[{ item.type }]}.png"></div>
                     </li>
                 </ul>
                 <div class='brdr'></div>
@@ -65,13 +70,14 @@
 
             <div class="trashcan box box-grey box-padding">
                 <ul dnd-list="[]">
-                    <li><img src="/static/img/trashcan.png"></li>
+                    <li><img alt="" src="/static/img/trashcan.png"></li>
                 </ul>
             </div>
             <div class='brdr'></div>
             <div class='faq'>
                 <div class="buttons">
                     <div class="btn1">
+                        <div>
                         <a type="button"
                            id='btn-dwn'
                            class="btn btn-default btn-sm"
@@ -80,14 +86,16 @@
                             <span class="glyphicon glyphicon-cloud-download"></span>
                             <span>Завантажити</span>
                         </a>
-                        <switcher ng-model="reportToggler"
-                                  true-value="'1'" true-label="" false-value="'0'" false-label="" class="corr_toggle"></switcher>
-                        <code class="small">
-                            <i ng-show="reportToggler==1">М-ТЕСТ</i>
-                            <i ng-show="reportToggler==0">Кор.</i>
-                        </code>
+                        </div>
+                        <div>
+                            <switcher ng-model="reportToggler"
+                                      true-value="'1'" true-label="" false-value="'0'" false-label="" class="corr_toggle"></switcher>
+                            <code class="small">
+                                <i ng-show="reportToggler==1">М-ТЕСТ</i>
+                                <i ng-show="reportToggler==0">Кор.</i>
+                            </code>
+                        </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -105,8 +113,7 @@
             ng-class="{selected: models.selected === item}"
             ng-include="item.type + '.html'" 
             class="ng-scope"
-            id="{[{ item.type }]}"
-            >
+            id="{[{ item.type }]}">
         </li>
         <li class="dndPlaceholder">Перетягніть сюди</li>
     </ul>
@@ -124,8 +131,7 @@
             ng-class="{selected: models.selected === item}"
             ng-include="item.type + '.html'" 
             class="ng-scope"
-            id="{[{ item.type }]}"
-            >
+            id="{[{ item.type }]}">
         </li>
         <li class="dndPlaceholder">Перетягніть сюди</li>
     </ul>
@@ -163,12 +169,14 @@
                            ng-click="openModal('col-sm-9','static/html/tmpl/ask_requirement.html','mTestController')">
                      </span>
                     Інформаційна вимога:</div>
+                    <label>
                     <input  class="form-control"
                             ng-model="item.zob"
                             name="zob"
                             placeholder="Введіть назву інформаційної вимоги"
                             typeahead-min-length="0"
                             style="width: 96%;">
+                    </label>
                     <a class="clear" ng-click="item.zob = null">
                     <span class="glyphicon glyphicon-remove-circle"></span>
                 </a>
@@ -197,11 +205,13 @@
                       ng-click="openModal('col-sm-9','static/html/tmpl/ask_constituent.html','mTestController')">
                 </span>
                 Складова інформаційної вимоги:</div>
+                <label>
                 <input  class="form-control ng-valid ng-dirty"
                         ng-model="item.zob" name="zob"
                         placeholder="Введіть назву складової"
                         typeahead-min-length="0"
                         style="width: 96%;">
+                </label>
                     <a class="clear" ng-click="item.zob = null">
                     <span class="glyphicon glyphicon-remove-circle"></span>
                 </a>
@@ -239,8 +249,7 @@
 
             </div>
             <div class="item" style="display:none;">{[{item.id}]}</div>
-            <div class="sum_hidden" ng-model="subsum"> {[{ item.subsum = item.chi * (item.vchi / 22 / 8) * item.kri +
-                item.pvri}]}</div>
+            <div class="sum_hidden" ng-model="subsum"> {[{ item.subsum = item.chi * (item.vchi / 22 / 8) * item.kri + item.pvri}]}</div>
     </dnd-nodrag>
 </script>
 
