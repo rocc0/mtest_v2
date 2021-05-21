@@ -15,12 +15,6 @@ type HashData struct {
 	Hash  string `json:"hash"`
 }
 
-type hasher interface {
-	WriteHash(hash, email string) (HashData, error)
-	ReadHash(hash string) (HashData, error)
-	DeleteHash(hash string) (err error)
-}
-
 type HashHandler struct {
 	*mongo.Client
 }

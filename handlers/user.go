@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"mtest.com.ua/mail"
+
 	"mtest.com.ua/db/dataprocessor"
 
 	jwt "github.com/appleboy/gin-jwt"
@@ -82,15 +84,13 @@ func (hd *Handlers) setNewPasswordHandler(c *gin.Context) {
 
 func (hd *Handlers) activateAccountHandler(c *gin.Context) {
 	hash := c.Param("hash")
-	var user User
-
-	if usr, err := user.readHash(hash); err == nil {
-		if err = user.deleteHash(hash); err != nil {
+	if usr, err := hd.ReadHash(hash); err == nil {
+		if err = hd.DeleteHash(hash); err != nil {
 			c.JSON(400, gin.H{"title": err})
 			return
 		}
 
-		if err = setActiveField(usr.Email); err != nil {
+		if err = hd.SetActiveField(usr.Email); err != nil {
 			c.JSON(400, gin.H{"title": err})
 			return
 		}
@@ -111,7 +111,7 @@ func (hd *Handlers) resetPasswordHandler(c *gin.Context) {
 	var u User
 	u.Email = user.Email
 	u.Name = user.Email
-	hash, err := u.writeHash()
+	hash, err := hd.WriteHash()
 	if err != nil {
 		if err := c.AbortWithError(404, errors.New("код застарілий")); err != nil {
 			log.Error(err)
@@ -119,7 +119,7 @@ func (hd *Handlers) resetPasswordHandler(c *gin.Context) {
 		return
 	}
 
-	if err = doSendEmail(u, hash, "email_password"); err != nil {
+	if err = mail.SendEmail(u, hash, "email_password"); err != nil {
 		if err := c.AbortWithError(404, err); err != nil {
 			log.Error(err)
 		}
@@ -127,8 +127,7 @@ func (hd *Handlers) resetPasswordHandler(c *gin.Context) {
 }
 
 func (hd *Handlers) passwordCheckHandler(c *gin.Context) {
-	var u User
-	hash, err := u.readHash(c.Param("hash"))
+	hash, err := hd.ReadHash(c.Param("hash"))
 	if hash == nil {
 		if err := c.AbortWithError(404, err); err != nil {
 			log.Error(err)

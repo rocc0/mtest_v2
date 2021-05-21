@@ -38,24 +38,12 @@ type regionDataProcessor interface {
 	EditGovernmentName(id int, name string) error
 }
 
-type userDataProcessor interface {
-	CheckUserActivation(email string) bool
-	CheckUserExists(email string) bool
-	CreateUser() (string, error)
-	DeleteUser(id int) error
-	GetUser(email string) (*dataprocessor.User, error)
-	InitUsersTable() error
-	PasswordCheck(email, password string) bool
-	SetActiveField(email string) error
-	UpdatePassword(password, hash string) error
-	UpdateUser(field, data string, id int) error
-}
-
 type Handlers struct {
 	mtestDataProcessor
 	executorDataProcessor
 	regionDataProcessor
 	userDataProcessor
+	hasher
 }
 
 func (hd *Handlers) RenderIndexPage(c *gin.Context) {
