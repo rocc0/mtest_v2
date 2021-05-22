@@ -1,10 +1,9 @@
-package dataprocessor
+package hash
 
 import (
 	"math/rand"
 	"time"
 
-	"go.mongodb.org/mongo-driver/mongo"
 	"gopkg.in/mgo.v2"
 )
 
@@ -15,27 +14,38 @@ type HashData struct {
 	Hash  string `json:"hash"`
 }
 
+//todo replace with official cclient
 type HashHandler struct {
-	*mongo.Client
+	*mgo.DialInfo
 }
 
-func (u *HashHandler) WriteHash(hash, email string) (HashData, error) {
-	dialInfo, err := mgo.ParseURL("mongodb://hasher:password@localhost:27017")
+func NewHashHandler(address string) (*HashHandler, error) {
+	if address == "" {
+		address = "mongodb://hasher:password@localhost:27017"
+	}
+	dialInfo, err := mgo.ParseURL(address)
 	if err != nil {
-		return HashData{}, err
+		return nil, err
 	}
 	dialInfo.Direct = true
 	dialInfo.FailFast = true
-	session, err := mgo.DialWithInfo(dialInfo)
+	return &HashHandler{DialInfo: dialInfo}, nil
+}
+
+func (u *HashHandler) WriteHash(email string) (string, error) {
+
+	h := u.generateHash(20)
+
+	session, err := mgo.DialWithInfo(u.DialInfo)
 	if err != nil {
-		return HashData{}, err
+		return "", err
 	}
 	defer session.Close()
 
 	session.SetMode(mgo.Monotonic, true)
-	c := session.DB("hashes").C(hash)
-	h := HashData{email, hash}
-	return h, c.Insert(&h)
+	c := session.DB("hashes").C(h)
+
+	return h, c.Insert(&HashData{Email: email, Hash: h})
 }
 
 func (u *HashHandler) ReadHash(hash string) (HashData, error) {
@@ -62,7 +72,7 @@ func (u *HashHandler) ReadHash(hash string) (HashData, error) {
 }
 
 func (u *HashHandler) DeleteHash(hash string) (err error) {
-	session, err := mgo.Dial("mongodb://hasher:password@localhost:27017")
+	session, err := mgo.DialWithInfo(u.DialInfo)
 	if err != nil {
 		return err
 	}

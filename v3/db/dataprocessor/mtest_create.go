@@ -22,7 +22,7 @@ const defaultCalculations = `{"1":[{"type":"container","id":3,"columns":[[{"type
                 {"type":"container","id":null,"columns":[[{"type":"itemplus","id":4,"columns":[[{"type":"item","id":3,"name":"Додати дію","subsum":0},
                             {"type":"item","id":4,"name":"Додати дію","subsum":0}]],"name":"Додати складову інф. вимоги"}]],"name":"Додати інф. вимогу","contsub":0}]}`
 
-func (mt *Service) CreateMTEST(m NewMTEST, email string) (*map[string]interface{}, error) {
+func (mt *Service) CreateMTEST(m NewMTEST, email string) (UserMtest, error) {
 	var (
 		id        int
 		dbRecords string
@@ -30,7 +30,7 @@ func (mt *Service) CreateMTEST(m NewMTEST, email string) (*map[string]interface{
 
 	stmt, err := mt.db.Prepare(createMTESTQuery)
 	if err != nil {
-		return nil, err
+		return UserMtest{}, err
 	}
 
 	mtestID := uuid.New().String()
@@ -42,34 +42,34 @@ func (mt *Service) CreateMTEST(m NewMTEST, email string) (*map[string]interface{
 
 	result, err := stmt.Exec(mtestID, m.Name, m.Region, m.Government, defaultCalculations, m.CalcType, time.Now(), email)
 	if err != nil {
-		return nil, err
+		return UserMtest{}, err
 	}
 
 	idRes, err := result.LastInsertId()
 	if err != nil {
-		return nil, err
+		return UserMtest{}, err
 	}
 	idStmt := mt.db.QueryRow("SELECT id, records FROM users WHERE email=?", email)
 	if err := idStmt.Scan(&id, &dbRecords); err != nil {
-		return nil, err
+		return UserMtest{}, err
 	}
 
 	var records map[string]interface{}
 	if err := json.Unmarshal([]byte(dbRecords), &records); err != nil {
-		return nil, err
+		return UserMtest{}, err
 	}
-
-	records[mtestID] = UserMtest{Id: mtestID, Name: m.Name, Region: m.Region, Government: m.Government, CalcType: m.CalcType}
+	data := UserMtest{Id: mtestID, Name: m.Name, Region: m.Region, Government: m.Government, CalcType: m.CalcType, RecID: idRes}
+	records[mtestID] = data
 
 	out, err := json.Marshal(records)
 	if err != nil {
-		return nil, err
+		return UserMtest{}, err
 	}
 
 	if err = mt.UpdateUser("records", string(out), id); err != nil {
-		return nil, err
+		return UserMtest{}, err
 	}
 
 	//need check
-	return &records, mt.UpdateIndex(idRes)
+	return data, nil
 }

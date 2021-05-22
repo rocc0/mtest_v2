@@ -190,31 +190,19 @@ func (mt *Service) SetActiveField(email string) error {
 
 const updatePasswordQuery = `UPDATE users SET password=? WHERE email=?`
 
-func (mt *Service) UpdatePassword(password, hash string) error {
+func (mt *Service) UpdatePassword(password, email, hash string) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
-	var u User
-	//todo move outside
-	h, err := u.ReadHash(hash)
-	if err != nil {
-		return err
-	}
-	if h == nil {
-		return errors.New("посилання не існує")
-	}
+
 	res, err := mt.db.Prepare(updatePasswordQuery)
 	if err != nil {
 		return err
 	}
-	if _, err = res.Exec(hashedPassword, h.Email); err != nil {
+	if _, err = res.Exec(hashedPassword, email); err != nil {
 		return err
 	}
 
-	//todo move outside
-	if err = u.DeleteHash(h.Hash); err != nil {
-		return err
-	}
 	return nil
 }

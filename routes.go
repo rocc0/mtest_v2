@@ -7,18 +7,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type Login struct {
+	Username string `form:"username" json:"username" binding:"required"`
+	Password string `form:"password" json:"password" binding:"required"`
+}
+
 func initializeRoutes() {
 	// Use the setUserStatus middleware for every route to set a flag
 	// indicating whether the request was from an authenticated user or not
 	authMiddleware := &jwt.GinJWTMiddleware{
 		Realm: "test zone", Key: []byte("secret key"),
 		Timeout: time.Hour, MaxRefresh: time.Hour,
-		Authenticator: func(eMail string, password string, c *gin.Context) (interface{}, bool) {
-			if passwordCheck(eMail, password) {
-				return eMail, true
+		Authenticator: func(c *gin.Context) (interface{}, error) {
+			var loginVals Login
+			if binderr := c.ShouldBind(&loginVals); binderr != nil {
+				return "", jwt.ErrMissingLoginValues
 			}
 
-			return eMail, false
+			if passwordCheck(loginVals.Username, loginVals.Password) {
+				return loginVals.Username, nil
+			}
+
+			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(userId interface{}, c *gin.Context) bool {
 			return checkUserActivated(userId.(string))

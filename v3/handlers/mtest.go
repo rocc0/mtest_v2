@@ -6,9 +6,10 @@ import (
 	"log"
 	"net/http"
 
-	"mtest.com.ua/db/dataprocessor"
+	"github.com/sirupsen/logrus"
 
-	"mtest.com.ua/handlers/internal"
+	dataprocpkg "mtest.com.ua/v3/db/dataprocessor"
+	internal2 "mtest.com.ua/v3/handlers/internal"
 
 	jwt "github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
@@ -21,21 +22,25 @@ type deleteRequest struct {
 type mtestDataProcessor interface {
 	UpdateMTEST(m map[string]interface{}, email string) error
 	DeleteMTEST(mid, email string) error
-	GetAdministrativeActions() (*[]dataprocessor.AdmAction, error)
-	GetMTEST(id string) (*dataprocessor.MTEST, error)
-	CreateMTEST(m dataprocessor.NewMTEST, email string) (*map[string]interface{}, error)
+	GetAdministrativeActions() (*[]dataprocpkg.AdmAction, error)
+	GetMTEST(id string) (*dataprocpkg.MTEST, error)
+	CreateMTEST(m dataprocpkg.NewMTEST, email string) (dataprocpkg.UserMtest, error)
 }
 
 type executorDataProcessor interface {
-	CreateExecutor(email string, ex dataprocessor.Executor) (string, error)
-	DeleteExecutor(devEmail string, del dataprocessor.DeleteExecutor) error
+	CreateExecutor(email string, ex dataprocpkg.Executor) (string, error)
+	DeleteExecutor(devEmail string, del dataprocpkg.DeleteExecutor) error
 }
 
 type regionDataProcessor interface {
-	GetRegions() (*[]dataprocessor.Region, error)
+	GetRegions() (*[]dataprocpkg.Region, error)
 	EditRegionName(id int, name string) error
-	GetGovernments() (*[]dataprocessor.Government, error)
+	GetGovernments() (*[]dataprocpkg.Government, error)
 	EditGovernmentName(id int, name string) error
+}
+
+type indexUpdater interface {
+	UpdateIndex(id int64) error
 }
 
 type Handlers struct {
@@ -44,25 +49,25 @@ type Handlers struct {
 	regionDataProcessor
 	userDataProcessor
 	hasher
+	indexUpdater
 }
 
 func (hd *Handlers) RenderIndexPage(c *gin.Context) {
-	internal.Render(c, gin.H{"title": "Калькулятор"}, "index.html")
+	internal2.Render(c, gin.H{"title": "Калькулятор"}, "index.html")
 }
 
 func (hd *Handlers) RenderSearchPage(c *gin.Context) {
-	internal.Render(c, gin.H{"title": "Пошук АРВ"}, "index.html")
+	internal2.Render(c, gin.H{"title": "Пошук АРВ"}, "index.html")
 }
 
 func (hd *Handlers) RenderUserPage(c *gin.Context) {
-	internal.Render(c, gin.H{"title": "Кабінет користувача"}, "index.html")
+	internal2.Render(c, gin.H{"title": "Кабінет користувача"}, "index.html")
 }
 
 func (hd *Handlers) RenderMTESTPage(c *gin.Context) {
-	id := c.Param("mtest_id")
-	mtest, err := hd.GetMTEST(id)
+	mtest, err := hd.GetMTEST(c.Param("mtest_id"))
 	if err == nil {
-		internal.Render(c, gin.H{"title": "Редагування | " + mtest.Name}, "index.html")
+		internal2.Render(c, gin.H{"title": "Редагування | " + mtest.Name}, "index.html")
 	} else {
 		c.AbortWithStatus(http.StatusNotFound)
 	}
@@ -70,8 +75,7 @@ func (hd *Handlers) RenderMTESTPage(c *gin.Context) {
 }
 
 func (hd *Handlers) GetMTESTHandler(c *gin.Context) {
-	id := c.Param("mtest_id")
-	mtest, err := hd.GetMTEST(id)
+	mtest, err := hd.GetMTEST(c.Param("mtest_id"))
 	if err == nil {
 		c.JSON(http.StatusOK, gin.H{"mtest": mtest})
 	} else {
@@ -81,35 +85,48 @@ func (hd *Handlers) GetMTESTHandler(c *gin.Context) {
 }
 
 func (hd *Handlers) CreateMTESTHandler(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	email, ok := claims["id"].(string)
+	em, ok := jwt.ExtractClaims(c)["id"]
 	if !ok {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-
+	email, ok := em.(string)
+	if !ok {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
 	x, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	var m dataprocessor.NewMTEST
+	var m dataprocpkg.NewMTEST
 	if err := json.Unmarshal(x, &m); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
 	if data, err := hd.CreateMTEST(m, email); err == nil {
+		go func() {
+			if err := hd.UpdateIndex(data.RecID); err != nil {
+				logrus.Error(err)
+			}
+		}()
 		c.JSON(http.StatusOK, gin.H{"title": "Item added", "records": data})
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)
-		log.Print(err)
+		return
 	}
+
 }
 
 func (hd *Handlers) UpdateMTESTHandler(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	email, ok := claims["id"].(string)
+	em, ok := jwt.ExtractClaims(c)["id"]
+	if !ok {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	email, ok := em.(string)
 	if !ok {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
@@ -135,8 +152,12 @@ func (hd *Handlers) UpdateMTESTHandler(c *gin.Context) {
 }
 
 func (hd *Handlers) DeleteMTESTHandler(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	email, ok := claims["id"].(string)
+	em, ok := jwt.ExtractClaims(c)["id"]
+	if !ok {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	email, ok := em.(string)
 	if !ok {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
@@ -179,19 +200,22 @@ func (hd *Handlers) GetRegionsHandler(c *gin.Context) {
 }
 
 func (hd *Handlers) CreateMTESTExecutorHandler(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	email, ok := claims["id"].(string)
+	em, ok := jwt.ExtractClaims(c)["id"]
 	if !ok {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-
+	email, ok := em.(string)
+	if !ok {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
 	x, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	var executor dataprocessor.Executor
+	var executor dataprocpkg.Executor
 	if err := json.Unmarshal(x, &executor); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
@@ -206,18 +230,23 @@ func (hd *Handlers) CreateMTESTExecutorHandler(c *gin.Context) {
 }
 
 func (hd *Handlers) DeleteExecutorHandler(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	email, ok := claims["id"].(string)
+	em, ok := jwt.ExtractClaims(c)["id"]
 	if !ok {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
+	email, ok := em.(string)
+	if !ok {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
 	x, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	var delRequest dataprocessor.DeleteExecutor
+	var delRequest dataprocpkg.DeleteExecutor
 	if err := json.Unmarshal(x, &delRequest); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return

@@ -6,9 +6,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"mtest.com.ua/mail"
+	dataprocessor2 "mtest.com.ua/v3/db/dataprocessor"
+	hashpkg "mtest.com.ua/v3/db/hasher"
 
-	"mtest.com.ua/db/dataprocessor"
+	"mtest.com.ua/mail"
 
 	jwt "github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
@@ -24,6 +25,12 @@ type (
 	userEmail struct {
 		Email string `json:"email" binding:"required"`
 	}
+
+	hasher interface {
+		WriteHash(email string) (string, error)
+		ReadHash(hash string) (hashpkg.HashData, error)
+		DeleteHash(hash string) (err error)
+	}
 )
 
 func (hd *Handlers) UserCabinetHandler(c *gin.Context) {
@@ -37,9 +44,9 @@ func (hd *Handlers) UserCabinetHandler(c *gin.Context) {
 	}
 }
 
-func (hd *Handlers) registrationHandler(c *gin.Context) {
+func (hd *Handlers) RegistrationHandler(c *gin.Context) {
 	x, _ := ioutil.ReadAll(c.Request.Body)
-	var user dataprocessor.User
+	var user dataprocessor2.User
 	if err := json.Unmarshal(x, &user); err != nil {
 		c.AbortWithStatus(400)
 		return
@@ -53,7 +60,7 @@ func (hd *Handlers) registrationHandler(c *gin.Context) {
 	}
 }
 
-func (hd *Handlers) editUserFieldHandler(c *gin.Context) {
+func (hd *Handlers) EditUserFieldHandler(c *gin.Context) {
 	x, _ := ioutil.ReadAll(c.Request.Body)
 	var field userField
 	if err := json.Unmarshal(x, &field); err != nil {
@@ -67,25 +74,30 @@ func (hd *Handlers) editUserFieldHandler(c *gin.Context) {
 	}
 }
 
-func (hd *Handlers) setNewPasswordHandler(c *gin.Context) {
+func (hd *Handlers) SetNewPasswordHandler(c *gin.Context) {
 	var pass map[string]string
-	email := c.Param("hash")
+	hsh := c.Param("hash")
 	if err := c.BindJSON(&pass); err != nil {
 		c.JSON(400, gin.H{"title": "Невірний параметр"})
 		return
 	}
 
-	if err := hd.UpdatePassword(pass["password"], email); err == nil {
+	defer func() {
+		if err := hd.DeleteHash(hsh); err != nil {
+			log.Error(err)
+		}
+	}()
+
+	if err := hd.UpdatePassword(pass["password"], pass["email"], hsh); err == nil {
 		c.JSON(200, gin.H{"title": "Пароль змінено"})
 	} else {
 		c.JSON(400, gin.H{"title": "Невірне посилання"})
 	}
 }
 
-func (hd *Handlers) activateAccountHandler(c *gin.Context) {
-	hash := c.Param("hash")
-	if usr, err := hd.ReadHash(hash); err == nil {
-		if err = hd.DeleteHash(hash); err != nil {
+func (hd *Handlers) ActivateAccountHandler(c *gin.Context) {
+	if usr, err := hd.ReadHash(c.Param("hash")); err == nil {
+		if err = hd.DeleteHash(c.Param("hash")); err != nil {
 			c.JSON(400, gin.H{"title": err})
 			return
 		}
@@ -102,16 +114,14 @@ func (hd *Handlers) activateAccountHandler(c *gin.Context) {
 	}
 }
 
-func (hd *Handlers) resetPasswordHandler(c *gin.Context) {
+func (hd *Handlers) ResetPasswordHandler(c *gin.Context) {
 	var user userEmail
 	if err := c.BindJSON(&user); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	var u User
-	u.Email = user.Email
-	u.Name = user.Email
-	hash, err := hd.WriteHash()
+
+	hashData, err := hd.WriteHash(user.Email)
 	if err != nil {
 		if err := c.AbortWithError(404, errors.New("код застарілий")); err != nil {
 			log.Error(err)
@@ -119,16 +129,22 @@ func (hd *Handlers) resetPasswordHandler(c *gin.Context) {
 		return
 	}
 
-	if err = mail.SendEmail(u, hash, "email_password"); err != nil {
+	if err = mail.SendEmail(user.Email, user.Email, hashData, "email_password"); err != nil {
 		if err := c.AbortWithError(404, err); err != nil {
 			log.Error(err)
 		}
 	}
 }
 
-func (hd *Handlers) passwordCheckHandler(c *gin.Context) {
-	hash, err := hd.ReadHash(c.Param("hash"))
-	if hash == nil {
+func (hd *Handlers) PasswordCheckHandler(c *gin.Context) {
+	hashData, err := hd.ReadHash(c.Param("hash"))
+	if err != nil {
+		if err := c.AbortWithError(404, err); err != nil {
+			log.Error(err)
+		}
+		return
+	}
+	if hashData.Hash == "" {
 		if err := c.AbortWithError(404, err); err != nil {
 			log.Error(err)
 		}

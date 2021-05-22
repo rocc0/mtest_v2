@@ -9,30 +9,6 @@ import (
 
 type Service struct {
 	db *sql.DB
-	userUpdate
-	indexUpdater
-	userChecker
-}
-
-func NewService(db *sql.DB, update userUpdate, updater indexUpdater, checker userChecker) Service {
-	return Service{
-		db:           db,
-		userUpdate:   update,
-		indexUpdater: updater,
-		userChecker:  checker,
-	}
-}
-
-type userUpdate interface {
-	UpdateUser(field, data string, id int) error
-}
-
-type indexUpdater interface {
-	UpdateIndex(id int64) error
-}
-
-type userChecker interface {
-	CheckUserExists(name string) (bool, error)
 }
 
 type (
@@ -45,6 +21,7 @@ type (
 		Developer  string                  `json:"developer"`
 		DevMid     string                  `json:"dev_mid"`
 		Executors  map[string]newExecutors `json:"executors"`
+		RecID      int64
 	}
 	AdmAction struct {
 		ActId   int    `json:"act_id"`
