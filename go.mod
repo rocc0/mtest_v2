@@ -4,10 +4,13 @@ go 1.13
 
 require (
 	github.com/appleboy/gin-jwt v2.5.0+incompatible
+	github.com/caarlos0/env/v6 v6.6.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/gin-gonic/gin v1.5.0
+	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/google/uuid v1.1.1
+	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.4.2
 	go.mongodb.org/mongo-driver v1.5.2
 	golang.org/x/crypto v0.0.0-20200302210943-78000ba7a073

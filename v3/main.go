@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 
+	"mtest.com.ua/v3/config"
+
 	"github.com/sirupsen/logrus"
 	"mtest.com.ua/v3/db/dataprocessor"
 	hashpkg "mtest.com.ua/v3/db/hasher"
@@ -12,12 +14,17 @@ import (
 )
 
 func main() {
-	hash, err := hashpkg.NewHashHandler("")
+	cfg, err := config.FromEnv()
 	if err != nil {
 		logrus.Fatal(err)
 	}
 
-	db, err := connectToSQL("")
+	hash, err := hashpkg.NewHashHandler(cfg.MongoURL)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	db, err := connectToSQL(cfg.PostgresURL)
 	if err != nil {
 		logrus.Fatal(err)
 	}
@@ -32,7 +39,7 @@ func main() {
 		logrus.Fatal(err)
 	}
 
-	if err := searchService.Connect(""); err != nil {
+	if err := searchService.Connect(cfg.ElasticURL); err != nil {
 		logrus.Fatal(err)
 	}
 
