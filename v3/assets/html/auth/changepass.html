@@ -1,0 +1,25 @@
+<form name="registerForm">
+    <div class="form-group input-group">
+        <label for="passwowrd" class="input-group-addon">Пароль</label>
+        <input type="password" class="form-control" id="password" name="password"
+               placeholder="Введіть пароль" ng-model="userdata.password" required>
+    </div>
+    <div class='msg-block'>
+                 <div ng-show="userdata.show == 1">
+                    <span class='msg-error'  ng-hide='registerForm.confirm.$valid'>
+                          Паролі не співпадають
+                     </span>
+                 </div>
+    </div>
+    <div class="form-group input-group">
+        <label for="passwowrd" class="input-group-addon">Пароль повторно</label>
+        <input type="password" class="form-control" id="confirm"
+               name="confirm"
+               placeholder="Введіть пароль повторно" ng-model="userdata.confirm"
+               ng-pattern="userdata.password"
+               ng-change="userdata.show = 1"
+               required>
+    </div>
+    <button type="submit" class="btn btn-success paschange-bnt"
+            ng-click="changeUserField('password',userdata.id,userdata.password);changepass = !changepass">Змінити пароль</button>
+</form>

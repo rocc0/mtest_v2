@@ -1,0 +1,157 @@
+<div ng-repeat="mt in records" class="mtests-list">
+    <div class="mtest-row-info">
+        <div class="mtest-item"><a href="/track/{[{ mt.id }]}" target="_blank">{[{ mt.name }]}</a></div>
+        <div class="mtest-buttons">
+            <div class="mtest-icon">
+                <button ng-click="removeMtestItem(mt.id)" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove">
+                    </span>
+                </button>
+            </div>
+            <div class="mtest-icon">
+                <button ng-click="dynamicPopover.open($index, 'emailTemplate.html', 'm')"
+                        uib-popover-template="dynamicPopover.templateUrl[$index + 'm']"
+                        popover-title="Надіслати посилання на email"
+                        type="button"
+                        class="btn btn-success"
+                        popover-placement="left-top"
+                        popover-is-open="dynamicPopover.isOpen[$index + 'm']"
+                        popover-class="email-popover">
+                    <span class="glyphicon glyphicon-envelope"></span>
+                </button>
+            </div>
+            <div class="mtest-icon">
+                <button ng-click="dynamicPopover.open($index, 'settingsTemplate.html', 's');"
+                        uib-popover-template="dynamicPopover.templateUrl[$index + 's']"
+                        type="button"
+                        class="btn btn-primary"
+                        popover-placement="left-top"
+                        popover-is-open="dynamicPopover.isOpen[$index+'s']">
+                    <span class="glyphicon glyphicon-cog"></span>
+                </button>
+            </div>
+            <div class="mtest-icon" ng-show="mt.calc_type == 1">
+                <button ng-click="mt.rowSharing=!mt.rowSharing"
+                        type="button"
+                        class="btn btn-primary">
+                    <span class="glyphicon glyphicon-list-alt"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="mtest-sharing clearfix" ng-show="mt.rowSharing==1">
+        <h5 ng-show="mt.executors != null">Виконавці:</h5>
+        <div class="sharing-row clearfix" ng-repeat="ex in mt.executors track by $index">
+            <div class="mtest-item"><a href="/track/{[{ ex.mid }]}">{[{ ex.email }]}</a> </div>
+            <div class="mtest-buttons">
+                <div class="mtest-icon">
+                    <button ng-click="removeExecutor(ex.email,ex.mid,mt.id)" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove">
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="add-executor">
+            <div class="pull-left col-md-10 input-group">
+                <span class="input-group-addon">@Email</span>
+                <input name="executor" type="email" class="form-control input-sm"
+                       placeholder="Введіть email" ng-model="executor"/>
+            </div>
+            <div class="pull-left col-md-2">
+                <button ng-click="addExecutor(mt.name, executor, mt.region, mt.govern, mt.id);executor=''"
+                        class="btn btn-primary btn-sm">Додати виконавця</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="add-mtest">
+    <button ng-click="dynamicPopover.open('add', 'static/html/tmpl/modal_add_mtest.html', '')"
+            uib-popover-template="dynamicPopover.templateUrl['add']"
+            type="button"
+            class="btn btn-success"
+            popover-placement="auto top"
+            popover-is-open="dynamicPopover.isOpen['add']"
+            popover-class="email-popover">
+        <span class="glyphicon glyphicon-add"></span>
+        Додати розрахунок
+    </button>
+</div>
+
+<script type="text/ng-template" id="settingsTemplate.html">
+    <div id="edit-mtest">
+        <div class="modal-body" id="modal-body">
+            <form method="POST" class="post-form" name="addMtestForm">
+                <div class="form-group input-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">Назва</div>
+                        <input name="name" class="form-control" ng-model="mt.name"/>
+                    </div>
+                </div>
+                <div class="form-group input-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">Регіон</div>
+                        <input class="form-control region"
+                               ng-model="mt.region"
+                               name="region"
+                               placeholder="Оберіть область"
+                               uib-typeahead="region as region.name for region in regions | limitTo:15 | filter:$viewValue"
+                               typeahead-min-length="0"
+                               typeahead-focus-on-select="true"
+                               typeahead-editable="false"
+                               typeahead-on-select="formatLabel($model, mt.id, 'region')"
+                               typeahead-input-formatter="regions[$model].name" >
+                    </div>
+                </div>
+                <div class="form-group input-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">Орган</div>
+                        <input class="form-control govern"
+                               ng-model="mt.govern"
+                               name="govern"
+                               placeholder="Оберіть орган влади"
+                               uib-typeahead="gov as gov.name for gov in governs | limitTo:15 | filter:$viewValue"
+                               typeahead-min-length="0"
+                               typeahead-focus-on-select="true"
+                               typeahead-editable="false"
+                               typeahead-on-select="formatLabel($model, mt.id, 'govern')"
+                               typeahead-input-formatter="governs[$model].name">
+                    </div>
+                </div>
+                <div class="pull-right buttons">
+                    <button class="btn btn-success btn-sm"
+                            ng-click="updateMtestItem(mt);dynamicPopover.close($index,'s')">
+                        Зберегти</button>
+                    <button class="btn btn-danger btn-sm"
+                            ng-click="dynamicPopover.close($index,'s');settingsMtestItem(mt.id)">
+                        Закрити</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>
+        
+<script type="text/ng-template" id="emailTemplate.html">
+<div id="send-mtest">
+    <form method="POST" class="post-form" name="emailform">
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon">Email</div>
+                <tags-input name="emailfor" placeholder="Введіть email" class="form-control emails" type="email"
+                            ng-model="emails" add-on-space="true" add-on-enter="false"
+                            allowed-tags-pattern="\S+@\S+\.\S+"/></tags-input>
+            </div>
+        </div>
+        <div class="pull-right buttons">
+            <button class="btn btn-success btn-sm "
+                    ng-click="dynamicPopover.close($index,'m');multiActsSave($event)">
+                Надіслати</button>
+            <button class="btn btn-danger btn-sm "
+                    ng-click="dynamicPopover.close($index,'m');">
+                Закрити</button>
+        </div>
+
+    </form>
+</div>
+</script>

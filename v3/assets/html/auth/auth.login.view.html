@@ -1,0 +1,38 @@
+<div class="row">
+    <div class="col-md-4" id="login-form" ng-show="template_name">
+        <h1>Вхід</h1>
+        <h5 class="bg-danger">{[{ message }]}</h5>
+        <form class="form-inline" ng-submit="onLogin()">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">Email</div>
+                    <input type="email" class="form-control" id="email" placeholder="Введіть email" ng-model="user.username" required>
+                </div>
+                <div class="input-group">
+                    <div class="input-group-addon">Пароль</div>
+                    <input type="password" class="form-control" id="passwowrd" placeholder="Введіть пароль" ng-model="user.password" required>
+                </div>
+            </div>
+            <div class="pull-right clearfix resetpass"><a href="#" ng-click="template_name = !template_name">Забули пароль?</a></div>
+            <button type="submit" class="btn btn-primary clearfix">Увійти</button>
+        </form>
+    </div>
+
+    <div class="form-group col-md-5" id="reset-form"  ng-hide="template_name">
+        <h1>Відновлення паролю</h1>
+        <h5 class="bg-danger">{[{ message }]}</h5>
+        <div class="form-group">
+            <form ng-submit="sendResetRequest(reset.email)">
+                <div class="input-group pull-left">
+                    <div class="input-group-addon">Email</div>
+                    <input type="email" class="form-control" id="resetemail" placeholder="Введіть email" ng-model="resetpass.email" required>
+                    <button type="submit" class="btn btn-primary" class=" pull-right">Надіслати</button>
+                </div>
+                <div class="pull-left" style="width: 100%;">
+                    <a href="#" ng-click="template_name = !template_name" class=" pull-left"><<< Повернутись до входу</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

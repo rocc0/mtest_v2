@@ -1,0 +1,29 @@
+        <div class="modal-header">
+            <h3 class="modal-title" id="modal-title">Надіслати форму третій особі</h3>
+        </div>
+        <div class="modal-body" id="modal-body">
+            <form method="POST" class="post-form" name="emailform">
+                <div class="form-group">
+                    <div class="input-group">
+                            <div class="input-group-addon">Ваше імя*</div>
+                            <input name= "author" class="form-control" ng-model="eauthor"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">Ваш email*</div>
+                        <input name="email" class="form-control" type="text" ng-model="eemail"/> 
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">Email отримувача*</div>
+                        <tags-input name="emailfor" placeholder="Введіть email" class="form-control emails" type="email"
+                                    ng-model="emails" add-on-space="true" add-on-enter="false"
+                                    allowed-tags-pattern="\S+@\S+\.\S+"/></tags-input>
+                    </div>
+                </div>
+                <div class="g-recaptcha" data-sitekey="6LdRhA4UAAAAAMrSW7AB0n2h84JZUAWlt0aLDP7q"></div>
+                <button class="btn btn-primary btn-lg btn-block" type="submit" name="submitform" ng-click="m.multiActsSave($event)">Надіслати</button>
+            </form> 
+        </div>

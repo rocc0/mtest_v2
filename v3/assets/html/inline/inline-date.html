@@ -1,0 +1,16 @@
+<div>
+    <div class="input-group">
+        <input type="date"
+                on-enter="save()"
+                on-esc="cancel()"
+                ng-model="model"
+                ng-show="editMode"
+                class="form-control"
+                placeholder="yyyy-MM-dd"/>
+        <div ng-hide="editMode" ng-click="edit()" class="inline-show">
+            <span ng-hide="model != ''">інф. відсутня</span>
+            <span ng-show="model != ''">{{model | date:'yyyy-MM-dd'}}</span>
+        </div>
+    </div>
+</div>
+
