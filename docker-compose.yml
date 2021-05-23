@@ -13,7 +13,7 @@ services:
         - "/root/data/mysql:/var/lib/mysql"
   mongodb:
     container_name: trace_mongo
-    build: mongo/
+    build: infra/mongo/
     restart: always
     ports:
         - "27017:27017"
@@ -25,7 +25,7 @@ services:
         - MONGO_INITDB_ROOT_PASSWORD=password
   elastic:
      container_name: trace_elastic
-     build: elastic/
+     build: infra/elastic/
      restart: always
      ports:
           - "9200:9200"
@@ -35,5 +35,5 @@ services:
           - xpack.security.enabled=false
      volumes:
           - "/root/data/escfg:/usr/share/elasticsearch/config"
-          - "./elastic:/data/elastic"
+          - "./infra/elastic:/data/elastic"
           - "/root/data/elastic:/usr/share/elasticsearch/data"
