@@ -1,38 +1,78 @@
 package main
 
 import (
-	"html/template"
+	"database/sql"
 
-	"github.com/gin-gonic/gin"
+	"mtest.com.ua/config"
+
+	"github.com/sirupsen/logrus"
+	"mtest.com.ua/db/dataprocessor"
+	hashpkg "mtest.com.ua/db/hasher"
+	handlerspkg "mtest.com.ua/handlers"
+	routes "mtest.com.ua/router"
+	searchpkg "mtest.com.ua/search"
 )
 
-var router *gin.Engine
-
 func main() {
-	// Set Gin to production mode
-	gin.SetMode(gin.DebugMode)
-	// Set the router as the default one provided by Gin
-	router = gin.Default()
-	// Set static routes
-	router.Static("static/", "assets/")
-	// Set favicon path
-	router.StaticFile("/favicon.ico", "static/favicon.ico")
-	//Set templates path
-	if tmpl, err := template.New("projectViews").Funcs(template.FuncMap{
-		"toString": func(s []uint8) string {
-			return string(s)
-		},
-	}).ParseGlob("templates/*"); err == nil {
-		router.SetHTMLTemplate(tmpl)
-	} else {
-		panic(err)
+	cfg, err := config.FromEnv()
+	if err != nil {
+		logrus.Fatal(err)
 	}
-	//Create admin user
-	userInit()
-	// Initialize the routes
-	initializeRoutes()
-	//Search indexing
-	elasticIndex()
+
+	hash, err := hashpkg.NewHashHandler(cfg.MongoURL)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	db, err := connectToSQL(cfg.DatabaseURL)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	data, err := dataprocessor.NewService(db)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	searchService, err := searchpkg.NewService(db)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	if err := searchService.Connect(cfg.ElasticURL); err != nil {
+		logrus.Fatal(err)
+	}
+
+	router := routes.NewRouter(handlerspkg.NewService(data, hash, searchService), data)
+	if err := router.Init(); err != nil {
+		logrus.Fatal(err)
+	}
+
+	if err := data.InitUsersTable(); err != nil {
+		logrus.Fatal(err)
+	}
+
+	if err := searchService.Init(); err != nil {
+		logrus.Fatal(err)
+	}
+
 	// Start serving the application
 	router.Run(":80")
+}
+
+func connectToSQL(address string) (*sql.DB, error) {
+	if address == "" {
+		address = "root:password@tcp(localhost:3306)/mtest"
+	}
+
+	db, err := sql.Open("mysql", address)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = db.Ping(); err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }

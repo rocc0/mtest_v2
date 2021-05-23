@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	datapkg "mtest.com.ua/v3/db/dataprocessor"
-	"mtest.com.ua/v3/handlers/internal"
+	datapkg "mtest.com.ua/db/dataprocessor"
+	"mtest.com.ua/handlers/internal"
 
 	"github.com/gin-gonic/gin"
 )

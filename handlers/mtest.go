@@ -7,8 +7,8 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	datapkg "mtest.com.ua/v3/db/dataprocessor"
-	"mtest.com.ua/v3/handlers/internal"
+	datapkg "mtest.com.ua/db/dataprocessor"
+	"mtest.com.ua/handlers/internal"
 
 	jwt "github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"

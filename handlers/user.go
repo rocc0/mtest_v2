@@ -6,10 +6,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	mail "mtest.com.ua/v3/mail"
+	mail "mtest.com.ua/mail"
 
-	datapkg "mtest.com.ua/v3/db/dataprocessor"
-	hashpkg "mtest.com.ua/v3/db/hasher"
+	datapkg "mtest.com.ua/db/dataprocessor"
+	hashpkg "mtest.com.ua/db/hasher"
 
 	jwt "github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"

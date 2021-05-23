@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	datapkg "mtest.com.ua/v3/db/dataprocessor"
-	hashpkg "mtest.com.ua/v3/db/hasher"
+	datapkg "mtest.com.ua/db/dataprocessor"
+	hashpkg "mtest.com.ua/db/hasher"
 )
 
 func NewService(data *datapkg.Service, hash *hashpkg.HashHandler, search indexUpdater) *Handlers {
