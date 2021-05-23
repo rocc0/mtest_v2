@@ -9,8 +9,10 @@ import (
 
 type Config struct {
 	ElasticURL  string `env:"ELASTIC_URL" validate:"required,url"`
-	PostgresURL string `env:"POSTGRES_URL" validate:"required,url"`
+	DatabaseURL string `env:"DATABASE_URL" validate:"required,url"`
 	MongoURL    string `env:"MONGO_URL" validate:"required,url"`
+	Email       string `env:"SMTP_EMAIL" validate:"required,email"`
+	Password    string `env:"SMTP_PASS" validate:"required"`
 }
 
 func FromEnv() (*Config, error) {

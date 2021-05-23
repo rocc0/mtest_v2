@@ -24,7 +24,7 @@ func main() {
 		logrus.Fatal(err)
 	}
 
-	db, err := connectToSQL(cfg.PostgresURL)
+	db, err := connectToSQL(cfg.DatabaseURL)
 	if err != nil {
 		logrus.Fatal(err)
 	}
