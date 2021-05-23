@@ -95,16 +95,6 @@ func (mt *Service) CreateUser() (string, error) {
 		return "", err
 	}
 
-	//todo move this part outside this library
-	//hash, err := u.writeHash()
-	//if err != nil {
-	//	return "", err
-	//}
-
-	//if err = doSendEmail(u, hash, "email_activate"); err != nil {
-	//	return "", err
-	//}
-
 	return u.Name, nil
 }
 

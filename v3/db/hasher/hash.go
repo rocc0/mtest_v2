@@ -14,7 +14,7 @@ type HashData struct {
 	Hash  string `json:"hash"`
 }
 
-//todo replace with official cclient
+//todo replace with official client
 type HashHandler struct {
 	*mgo.DialInfo
 }
