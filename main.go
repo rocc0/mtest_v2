@@ -1,12 +1,10 @@
 package main
 
 import (
-	"database/sql"
+	"github.com/sirupsen/logrus"
 
 	"mtest.com.ua/config"
-
-	"github.com/sirupsen/logrus"
-	"mtest.com.ua/db/dataprocessor"
+	datapkg "mtest.com.ua/db/dataprocessor"
 	hashpkg "mtest.com.ua/db/hasher"
 	handlerspkg "mtest.com.ua/handlers"
 	routes "mtest.com.ua/router"
@@ -19,7 +17,7 @@ func main() {
 		logrus.Fatal(err)
 	}
 
-	db, err := connectToSQL(cfg.DatabaseURL)
+	db, err := datapkg.ConnectToSQL(cfg.DatabaseURL)
 	if err != nil {
 		logrus.Fatal(err)
 	}
@@ -33,7 +31,7 @@ func main() {
 		logrus.Fatal(err)
 	}
 
-	data, err := dataprocessor.NewService(db)
+	data, err := datapkg.NewService(db)
 	if err != nil {
 		logrus.Fatal(err)
 	}
@@ -62,21 +60,4 @@ func main() {
 
 	// Start serving the application
 	router.Run(":80")
-}
-
-func connectToSQL(address string) (*sql.DB, error) {
-	if address == "" {
-		address = "root:password@tcp(localhost:3306)/mtest"
-	}
-
-	db, err := sql.Open("mysql", address)
-	if err != nil {
-		return nil, err
-	}
-
-	if err = db.Ping(); err != nil {
-		return nil, err
-	}
-
-	return db, nil
 }
