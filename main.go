@@ -42,13 +42,15 @@ func main() {
 	}
 
 	if err := searchService.Connect(cfg.ElasticURL); err != nil {
-		logrus.Fatal("Elastic connect:", err)
-	}
-	if err := searchService.Init(); err != nil {
-		logrus.Fatal("Elastic init:", err)
-	}
-	if err := searchService.ElasticIndex(); err != nil {
-		logrus.Fatal("Elastic index:", err)
+		logrus.Error("Elastic connect:", err)
+	} else {
+		if err := searchService.Init(); err != nil {
+			logrus.Error("Elastic init:", err)
+		} else {
+			if err := searchService.ElasticIndex(); err != nil {
+				logrus.Errorf("Elastic index:", err)
+			}
+		}
 	}
 
 	router := routes.NewRouter(handlerspkg.NewService(data, hash, searchService), data)
