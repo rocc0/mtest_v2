@@ -37,15 +37,13 @@ services:
         - MONGO_INITDB_ROOT_PASSWORD=password
   elastic:
      container_name: trace_elastic
-     build: infra/elastic/
+     build: infra/elastic/docker
      restart: always
      ports:
           - "9200:9200"
      environment:
-          - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-          - vm.max_map_count=262144
           - xpack.security.enabled=false
      volumes:
-          - "/root/data/escfg:/usr/share/elasticsearch/config"
-          - "./infra/elastic:/data/elastic"
-          - "/root/data/elastic:/usr/share/elasticsearch/data"
+          - "./infra/elastic/config:/usr/share/elasticsearch/config"
+          - "./infra/elastic/docker:/data/elastic"
+          - "./infra/elastic/data:/usr/share/elasticsearch/data"
