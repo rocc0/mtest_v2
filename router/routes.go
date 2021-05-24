@@ -4,7 +4,9 @@ import (
 	"html/template"
 	"time"
 
-	jwt "github.com/appleboy/gin-jwt"
+	log "github.com/sirupsen/logrus"
+
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )
 
@@ -71,27 +73,48 @@ func (r *Router) Init() error {
 	authMiddleware := &jwt.GinJWTMiddleware{
 		Realm: "test zone", Key: []byte("secret key"),
 		Timeout: time.Hour, MaxRefresh: time.Hour,
+		PayloadFunc: func(data interface{}) jwt.MapClaims {
+			if v, ok := data.(string); ok {
+				return jwt.MapClaims{"id": v}
+			}
+			log.Errorf("data not in string format %v", data)
+			return jwt.MapClaims{}
+		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
 			var loginVals Login
-			if binderr := c.ShouldBind(&loginVals); binderr != nil {
+			if err := c.ShouldBind(&loginVals); err != nil {
 				return "", jwt.ErrMissingLoginValues
 			}
-
 			if r.PasswordCheck(loginVals.Username, loginVals.Password) {
 				return loginVals.Username, nil
 			}
-
 			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(userId interface{}, c *gin.Context) bool {
-			return r.CheckUserActivation(userId.(string))
+			id, ok := userId.(string)
+			if !ok {
+				return false
+			}
+			return r.CheckUserActivation(id)
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{"code": code, "message": message})
 		},
 		TokenLookup: "header:Authorization", TokenHeadName: "Bearer", TimeFunc: time.Now,
+		IdentityHandler: func(c *gin.Context) interface{} {
+			claims := jwt.ExtractClaims(c)
+			if cl, ok := claims["id"]; ok {
+				if c, ok := cl.(string); ok {
+					return c
+				}
+			}
+			log.Errorf("IdentityHandler: id is not string %v", claims)
+			return nil
+		},
 	}
-
+	if err := authMiddleware.MiddlewareInit(); err != nil {
+		return err
+	}
 	// Handle the index route
 	r.GET("/", r.RenderIndexPage)
 	r.GET("/search", r.RenderSearchPage)

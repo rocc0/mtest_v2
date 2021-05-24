@@ -11,7 +11,7 @@ import (
 	datapkg "mtest.com.ua/db/dataprocessor"
 	hashpkg "mtest.com.ua/db/hasher"
 
-	jwt "github.com/appleboy/gin-jwt"
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"

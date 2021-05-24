@@ -10,7 +10,7 @@ import (
 	datapkg "mtest.com.ua/db/dataprocessor"
 	"mtest.com.ua/handlers/internal"
 
-	jwt "github.com/appleboy/gin-jwt"
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )
 
