@@ -9,7 +9,7 @@ type Region struct {
 
 const (
 	editRegNameQuery = `UPDATE regions SET reg_name=? WHERE reg_id=?;`
-	getRegionsQuery  = `SELECT reg_id, reg_name FROM regions`
+	getRegionsQuery  = `SELECT reg_id, reg_name FROM regions;`
 )
 
 func (mt *Service) GetRegions() (*[]Region, error) {

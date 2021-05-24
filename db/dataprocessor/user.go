@@ -14,12 +14,12 @@ const (
     users (id SERIAL NOT NULL PRIMARY KEY, name VARCHAR(100) NOT NULL, 
     surename VARCHAR(20) NOT NULL, email VARCHAR(100), password VARCHAR(100) NOT NULL, 
     rights VARCHAR(100) NOT NULL, records VARCHAR(100) NOT NULL, activated INTEGER DEFAULT 0);`
-	checkActivationQuery = `SELECT activated FROM users WHERE email=?`
-	createUserQuery      = `INSERT INTO users (name, surename, email, records, password) VALUES (?,?,?,?,?)`
-	getUserQuery         = `SELECT name, surename, email, id, rights, records FROM users WHERE email = ?`
+	checkActivationQuery = `SELECT activated FROM users WHERE email=?;`
+	createUserQuery      = `INSERT INTO users (name, surename, email, records, password) VALUES (?,?,?,?,?);`
+	getUserQuery         = `SELECT name, surename, email, id, rights, records FROM users WHERE email = ?;`
 	deleteUserQuery      = `DELETE FROM users WHERE id=?;`
-	checkUserExistsQuery = `SELECT email FROM users WHERE email=?`
-	passwordCheckQuery   = `SELECT password FROM users WHERE email=?`
+	checkUserExistsQuery = `SELECT email FROM users WHERE email=?;`
+	passwordCheckQuery   = `SELECT password FROM users WHERE email=?;`
 )
 
 type User struct {

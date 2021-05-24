@@ -19,13 +19,17 @@ func main() {
 		logrus.Fatal(err)
 	}
 
-	hash, err := hashpkg.NewHashHandler(cfg.MongoURL)
+	db, err := connectToSQL(cfg.DatabaseURL)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	hash, err := hashpkg.NewHashHandler(db)
 	if err != nil {
 		logrus.Error(err)
 	}
 
-	db, err := connectToSQL(cfg.DatabaseURL)
-	if err != nil {
+	if err := hash.Init(); err != nil {
 		logrus.Fatal(err)
 	}
 
