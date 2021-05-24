@@ -81,9 +81,9 @@
                 <h5>Виконавці:</h5>
                 <div ng-repeat="ex in executors track by $index" class="execs">
                     <div class="checkbox">
-                        <label><input type="checkbox" value="checked" ng-model="ex.checked"
+                        <input type="checkbox" value="checked" ng-model="ex.checked"
                                       ng-click="updateExecutors()">
-                            <a href="/track/{[{ ex.mid }]}">{[{ ex.email }]}</a></label>
+                            <a href="/track/{[{ ex.mid }]}">{[{ ex.email }]}</a>
                     </div>
                 </div>
             </div>

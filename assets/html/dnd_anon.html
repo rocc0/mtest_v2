@@ -6,13 +6,11 @@
                 <div class='requlatory'>
                         <div class="col-md-12 pull-left input-group">
                             <div class="input-group-addon" style="width: 176px;padding: 4px;">Назва органу влади</div>
-                            <label>
                             <input type="text" class="form-control" name="subj" ng-model="list[0].subj">
-                            </label>
                         </div>
                         <div class="col-md-12 pull-left input-group">
                             <div class="input-group-addon">Назва регуляторного акта</div>
-                            <label><input type="text" class="form-control" name="regact" ng-model="list[0].regact"></label>
+                            <input type="text" class="form-control" name="regact" ng-model="list[0].regact">
                     </div>
                 </div>
                 <div ng-include="'list.html'" ></div>
@@ -29,10 +27,8 @@
                             Кількість – кількість суб`єктів малого бізнесу, на яких поширюється регулювання/ІВ. В формулі позначається
                             " popover-trigger="'mouseenter'">
                             </span>Кількість суб'єктів(шт.):</div>
-                        <label>
                             <input type="number" style="width: 70%;height: 30px;" class="form-control" name="ki"
                                                               ng-model="list[0].ki" placeholder='Кі (шт.)'>
-                        </label>
 
                     </div>
                     <div class="col-md-5 input-group">
@@ -169,14 +165,12 @@
                            ng-click="openModal('col-sm-9','static/html/tmpl/ask_requirement.html','mTestController')">
                      </span>
                     Інформаційна вимога:</div>
-                    <label>
                     <input  class="form-control"
                             ng-model="item.zob"
                             name="zob"
                             placeholder="Введіть назву інформаційної вимоги"
                             typeahead-min-length="0"
                             style="width: 96%;">
-                    </label>
                     <a class="clear" ng-click="item.zob = null">
                     <span class="glyphicon glyphicon-remove-circle"></span>
                 </a>
@@ -205,13 +199,11 @@
                       ng-click="openModal('col-sm-9','static/html/tmpl/ask_constituent.html','mTestController')">
                 </span>
                 Складова інформаційної вимоги:</div>
-                <label>
                 <input  class="form-control ng-valid ng-dirty"
                         ng-model="item.zob" name="zob"
                         placeholder="Введіть назву складової"
                         typeahead-min-length="0"
                         style="width: 96%;">
-                </label>
                     <a class="clear" ng-click="item.zob = null">
                     <span class="glyphicon glyphicon-remove-circle"></span>
                 </a>
