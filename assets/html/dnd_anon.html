@@ -46,7 +46,7 @@
     </div>
 </div>
                                                                             <!--  LEFT BLOCK  -->
-<div class="col-md-2 tools">
+<div id="tools-bar" class="col-md-2 tools">
     <div class="tools inner" sticky offset="30">
         <div class="tools main">
             <div class="toolbox box box-grey box-padding"> 
@@ -73,7 +73,7 @@
             <div class='faq'>
                 <div class="buttons">
                     <div class="btn1">
-                        <div>
+                        <div class="download-btn">
                         <a type="button"
                            id='btn-dwn'
                            class="btn btn-default btn-sm"
@@ -83,7 +83,7 @@
                             <span>Завантажити</span>
                         </a>
                         </div>
-                        <div>
+                        <div class="download-switch">
                             <switcher ng-model="reportToggler"
                                       true-value="'1'" true-label="" false-value="'0'" false-label="" class="corr_toggle"></switcher>
                             <code class="small">

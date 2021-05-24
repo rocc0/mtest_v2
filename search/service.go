@@ -8,7 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/google/uuid"
-	"gopkg.in/olivere/elastic.v5"
+	"github.com/olivere/elastic/v7"
 )
 
 type Idx struct {
@@ -25,27 +25,28 @@ const mapping = `
 		"number_of_shards": 1,
 		"number_of_replicas": 0
 	},
+	"aliases": {
+    	"mtest": {}
+  	},
 	"mappings":{
-		"mtest":{
 			"properties":{
 				"mid":{
-					"type":"string"
+					"type":"text"
 				},
 				"name":{
 					"type":"text",
 					"analyzer": "ukrainian"
 				},
 				"region":{
-					"type":"integer"
+					"type":"long"
 				},
 				"govern":{
-					"type":"integer"
+					"type":"long"
 				},
 				"author":{
-					"type":"string"
+					"type":"text"
 				}
 			}
-		}
 	}
 }`
 
@@ -55,7 +56,7 @@ type Service struct {
 }
 
 func NewService(db *sql.DB) (*Service, error) {
-	return &Service{}, nil
+	return &Service{DB: db}, nil
 }
 
 func (s *Service) Connect(address string) error {
@@ -64,7 +65,7 @@ func (s *Service) Connect(address string) error {
 	}
 
 	client, err := elastic.NewClient(
-		elastic.SetURL(address, address),
+		elastic.SetURL(address),
 		elastic.SetSniff(false),
 		elastic.SetBasicAuth("elastic", "changeme"),
 	)
@@ -99,15 +100,16 @@ func (s *Service) Init() error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 	// Use the IndexExists service to check if a specified index exists.
-	if _, err := s.DeleteIndex("mtests").Do(ctx); err != nil {
-		return err
-	}
+
 	exists, err := s.IndexExists("mtests").Do(ctx)
 	if err != nil {
 		return err
 	}
+
 	if exists {
-		return nil
+		if _, err := s.DeleteIndex("mtests").Do(ctx); err != nil {
+			return err
+		}
 	}
 
 	createIndex, err := s.CreateIndex("mtests").BodyString(mapping).Do(ctx)
@@ -146,8 +148,7 @@ func (s *Service) ElasticIndex() error {
 			return err
 		}
 		trk = Idx{Mid: mid.String(), Name: name, Region: region, Govern: govern, Author: author}
-		if _, err = s.Index().
-			Index("mtests").Type("mtest").Id(mid.String()).BodyJson(trk).Do(ctx); err != nil {
+		if _, err = s.Index().Index("mtests").Id(mid.String()).BodyJson(trk).Do(ctx); err != nil {
 			return err
 		}
 	}

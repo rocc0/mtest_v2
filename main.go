@@ -24,7 +24,7 @@ func main() {
 
 	hash, err := hashpkg.NewHashHandler(db)
 	if err != nil {
-		logrus.Error(err)
+		logrus.Fatal(err)
 	}
 
 	if err := hash.Init(); err != nil {
@@ -38,15 +38,17 @@ func main() {
 
 	searchService, err := searchpkg.NewService(db)
 	if err != nil {
-		logrus.Error(err)
+		logrus.Fatal(err)
 	}
 
 	if err := searchService.Connect(cfg.ElasticURL); err != nil {
-		logrus.Error(err)
-	} else {
-		if err := searchService.Init(); err != nil {
-			logrus.Error(err)
-		}
+		logrus.Fatal("Elastic connect:", err)
+	}
+	if err := searchService.Init(); err != nil {
+		logrus.Fatal("Elastic init:", err)
+	}
+	if err := searchService.ElasticIndex(); err != nil {
+		logrus.Fatal("Elastic index:", err)
 	}
 
 	router := routes.NewRouter(handlerspkg.NewService(data, hash, searchService), data)

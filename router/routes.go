@@ -62,7 +62,7 @@ type Login struct {
 
 func (r *Router) Init() error {
 	// Set Gin to production mode
-	gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
 
 	if err := r.initStatic(); err != nil {
 		return err

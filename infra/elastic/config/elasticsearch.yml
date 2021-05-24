@@ -4,3 +4,4 @@ http.cors.allow-headers: X-Requested-With,X-Auth-Token,Content-Type, Content-Len
 http.cors.allow-methods: OPTIONS, HEAD, GET, POST, PUT, DELETE
 #transport.host: 0.0.0.0
 http.host: 0.0.0.0
+node.name: mtest
