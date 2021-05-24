@@ -21,7 +21,7 @@ func main() {
 
 	hash, err := hashpkg.NewHashHandler(cfg.MongoURL)
 	if err != nil {
-		logrus.Fatal(err)
+		logrus.Error(err)
 	}
 
 	db, err := connectToSQL(cfg.DatabaseURL)
@@ -36,11 +36,15 @@ func main() {
 
 	searchService, err := searchpkg.NewService(db)
 	if err != nil {
-		logrus.Fatal(err)
+		logrus.Error(err)
 	}
 
 	if err := searchService.Connect(cfg.ElasticURL); err != nil {
-		logrus.Fatal(err)
+		logrus.Error(err)
+	} else {
+		if err := searchService.Init(); err != nil {
+			logrus.Error(err)
+		}
 	}
 
 	router := routes.NewRouter(handlerspkg.NewService(data, hash, searchService), data)
@@ -49,10 +53,6 @@ func main() {
 	}
 
 	if err := data.InitUsersTable(); err != nil {
-		logrus.Fatal(err)
-	}
-
-	if err := searchService.Init(); err != nil {
 		logrus.Fatal(err)
 	}
 
