@@ -50,7 +50,7 @@
 </div>
 
                                                                             <!--  LEFT BLOCK -->
-<div class="col-md-2 tools">
+<div id="tools-bar"  class="col-md-2 tools">
     <div class="tools inner" sticky offset="30">
         <div class="tools main">
     <div class="toolbox box box-grey box-padding">
@@ -88,16 +88,20 @@
                 </div>
             </div>
             <div class="btn1">
+                <div class="download-btn">
                 <a type="button" id='btn-dwn' class="btn btn-default btn-sm" download="Звіт.html" ng-href="{[{ saveToPdf }]}">
                     <span class="glyphicon glyphicon-cloud-download"></span>
                     <span>Завантажити</span>
                 </a>
+                </div>
+                <div class="download-btn">
                 <switcher ng-model="reportToggler"
                           true-value="'1'" true-label="" false-value="'0'" false-label="" class="corr_toggle"></switcher>
                 <code class="small">
                     <i ng-show="reportToggler==1">М-ТЕСТ</i>
                     <i ng-show="reportToggler==0">Кор.</i>
                 </code>
+                </div>
             </div>
 
             <div class="btn2 {[{ getClass }]}" ng-show="isLoggedIn">
