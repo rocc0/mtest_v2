@@ -170,11 +170,9 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
     $scope.corr_bar = function (total, length) {
         var a = '';
         if (total > length / 2) {
-            a = 'danger';
             $scope.barText = "Критична корупційна складова!";
         } else {
             $scope.barText = "Кількість корупційних ризиків:" + total;
-            a = 'success'
         }
         return a
     };
@@ -341,6 +339,11 @@ mTestApp.controller("mTestDBController",
                 for (var i = 0; i < x.length; i++) {
                     tmp_sum += x[i]
                 }
+
+                if (isNaN(tmp_sum / x.length)) {
+                    return 0
+                }
+
                 return tmp_sum / x.length
             }
         }, 200);
@@ -362,11 +365,9 @@ mTestApp.controller("mTestDBController",
         $scope.corr_bar = function (total, length) {
             var a = '';
             if (total > length / 2) {
-                a = 'danger';
                 $scope.barText = "Критична корупційна складова!";
             } else {
                 $scope.barText = "Кількість корупційних ризиків:" + total;
-                a = 'success'
             }
             return a
         };
