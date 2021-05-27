@@ -855,7 +855,7 @@ mTestApp.controller("authResetController", function ($scope, $routeParams, $http
 });
 
 
-mTestApp.controller("adminController", function ($scope, $http) {
+mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$location, authService) {
     $scope.changepass = false;
     const token = localStorage.getItem('token');
     if (token) {
@@ -872,4 +872,40 @@ mTestApp.controller("adminController", function ($scope, $http) {
                 $location.path('/u/login');
             });
     }
+    //load governments and regions
+    $http({
+        method: 'GET',
+        url: '/api/v.1/regions',
+    }).then(function (response) {
+        $scope.regions = response.data.regions
+    }).catch( function (reason) {
+        console.log(reason)
+    });
+
+    $http({
+        method: 'GET',
+        url: '/api/v.1/governments',
+    }).then(function (response) {
+        $scope.governments = response.data.govs
+    }).catch( function (reason) {
+        console.log(reason)
+    });
+
+    $http({
+        method: 'GET',
+        url: '/api/v.1/actions',
+    }).then(function (response) {
+        $scope.actions = response.data.actions
+    }).catch( function (reason) {
+        console.log(reason)
+    });
+
+    $http({
+        method: 'GET',
+        url: '/api/v.1/users',
+    }).then(function (response) {
+        $scope.users = response.data.users
+    }).catch( function (reason) {
+        console.log(reason)
+    });
 });

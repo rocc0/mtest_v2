@@ -1,8 +1,10 @@
 package dataprocessor
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
+	"strconv"
 
 	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
@@ -23,13 +25,14 @@ const (
 )
 
 type User struct {
-	Id       int                    `json:"id"`
-	Name     string                 `json:"name"`
-	Surename string                 `json:"surename"`
-	Email    string                 `json:"email"`
-	Rights   int                    `json:"rights"`
-	Password string                 `json:"password"`
-	Records  map[string]interface{} `json:"records"`
+	Id        int                    `json:"id"`
+	Name      string                 `json:"name"`
+	Surename  string                 `json:"surename"`
+	Email     string                 `json:"email"`
+	Rights    int                    `json:"rights"`
+	Password  string                 `json:"password"`
+	Records   map[string]interface{} `json:"records"`
+	Activated int                    `json:"activated"`
 }
 
 func (mt *Service) InitUsersTable() error {
@@ -195,4 +198,45 @@ func (mt *Service) UpdatePassword(password, email, hash string) error {
 	}
 
 	return nil
+}
+
+const getUsersQuery = `SELECT name, surename, email, rights, activated FROM users;`
+
+func (mt *Service) GetUsers(ctx context.Context) ([]User, error) {
+	var (
+		users []User
+	)
+
+	res, err := mt.db.Query(getUsersQuery)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err := res.Close(); err != nil {
+			log.Error(err)
+		}
+	}()
+	for res.Next() {
+		var name, sureName, email, rights string
+		var activated int
+		if err := res.Scan(&name, &sureName, &email, &rights, &activated); err != nil {
+			return nil, err
+		}
+
+		r, err := strconv.Atoi(rights)
+		if err != nil {
+			r = 0
+		}
+
+		users = append(users, User{
+			Id:        0,
+			Name:      name,
+			Surename:  sureName,
+			Email:     email,
+			Rights:    r,
+			Activated: activated,
+		})
+	}
+
+	return users, nil
 }

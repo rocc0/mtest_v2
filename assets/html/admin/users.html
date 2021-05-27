@@ -1,1 +1,10 @@
-Vertical content 0
+<div ng-repeat="user in users" class="admin-row">
+    <div class="admin-row-info">
+
+        <div class="user-row">{[{ user.name }]} | </div>
+        <div class="user-row">{[{ user.surename }]} | </div>
+        <div class="user-row">{[{ user.email }]} | </div>
+        <div class="user-row">{[{ user.rights }]} | </div>
+        <div class="user-row">{[{ user.activated }]}</div>
+    </div>
+</div>

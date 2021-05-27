@@ -29,6 +29,7 @@ type userHandlers interface {
 	regionHandler
 	executorHandler
 	governmentsHandler
+	usersHandler
 }
 
 type governmentsHandler interface {
@@ -49,4 +50,8 @@ type executorHandler interface {
 type userValidator interface {
 	PasswordCheck(email, password string) bool
 	CheckUserActivation(email string) bool
+}
+
+type usersHandler interface {
+	GetUsersHandler(c *gin.Context)
 }

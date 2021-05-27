@@ -1351,3 +1351,18 @@ h2.border-bottom {
     color: #057cac;
     margin-bottom: 10px;
 }
+
+#admin-tabs .admin-row:nth-child(even) {
+    background: #e8e7e7;
+}
+
+#admin-tabs .admin-row .admin-row-info {
+    padding-left: 7px;
+    line-height: 30px;
+    height: 30px;
+}
+
+#admin-tabs .admin-row .admin-row-info .user-row {
+    float: left;
+    width: 260px;
+}

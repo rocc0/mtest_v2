@@ -87,6 +87,8 @@ func (r *Router) Init() error {
 		apiRoutes.PUT("/actions", authMiddleware.MiddlewareFunc(), r.GetAdministrativeActionsHandler)
 		apiRoutes.DELETE("/actions", authMiddleware.MiddlewareFunc(), r.GetAdministrativeActionsHandler)
 
+		//users
+		apiRoutes.GET("/users", r.GetUsersHandler)
 		//Show and edit view
 		apiRoutes.GET("/m/get/:mtest_id", r.GetMTESTHandler)
 		apiRoutes.POST("/m/update", authMiddleware.MiddlewareFunc(), r.UpdateMTESTHandler)
@@ -110,6 +112,7 @@ func (r *Router) Init() error {
 		apiRoutes.GET("/u/reset/:hash", r.PasswordCheckHandler)
 		apiRoutes.POST("/u/reset/:hash", r.SetNewPasswordHandler)
 		apiRoutes.GET("/u/activate/:hash", r.ActivateAccountHandler)
+
 	}
 	return nil
 }

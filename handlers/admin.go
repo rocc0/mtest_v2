@@ -1,9 +1,12 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 
 	datapkg "mtest.com.ua/db/dataprocessor"
 	"mtest.com.ua/handlers/internal"
@@ -22,6 +25,7 @@ type userDataProcessor interface {
 	SetActiveField(email string) error
 	UpdatePassword(password, email, hash string) error
 	UpdateUser(field, data string, id int) error
+	GetUsers(c context.Context) ([]datapkg.User, error)
 }
 
 type editGovRequest struct {
@@ -71,5 +75,15 @@ func (hd *Handlers) PostEditRegions(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"title": "Gov name changed"})
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)
+	}
+}
+
+func (hd *Handlers) GetUsersHandler(c *gin.Context) {
+	users, err := hd.GetUsers(c)
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"users": users})
+	} else {
+		logrus.Error(err)
+		c.AbortWithStatus(http.StatusInternalServerError)
 	}
 }
