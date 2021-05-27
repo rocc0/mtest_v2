@@ -130,7 +130,7 @@ mTestApp.service('mtCrud', function ($http) {
     this.addMtestExecutor = function (title, email, region, gov, dev_mid, token) {
         return $http({
             method: 'POST',
-            url:baseURL + "/api/v.1/m/excreate",
+            url:baseURL + "/api/v.1/m/executor",
             data: {title: title, email: email, region: region, government: gov, dev_mid: dev_mid, },
             headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }
@@ -138,8 +138,8 @@ mTestApp.service('mtCrud', function ($http) {
     };
     this.removeMtestExecutor = function (email, exIndex, devIndex, token) {
         return $http({
-            method: 'POST',
-            url:baseURL + "/api/v.1/m/exdelete",
+            method: 'DELETE',
+            url:baseURL + "/api/v.1/m/executor",
             data: {ex_email: email, ex_mtest_id: exIndex, dev_mtest_id: devIndex},
             headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }

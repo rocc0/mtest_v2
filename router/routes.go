@@ -124,9 +124,9 @@ func (r *Router) Init() error {
 
 		//executors and group calculations
 		//Creation of view
-		apiRoutes.POST("/m/excreate", authMiddleware.MiddlewareFunc(), r.CreateMTESTExecutorHandler)
+		apiRoutes.POST("/m/executor", authMiddleware.MiddlewareFunc(), r.CreateMTESTExecutorHandler)
 		//Delete handling
-		apiRoutes.POST("/m/exdelete", authMiddleware.MiddlewareFunc(), r.DeleteExecutorHandler)
+		apiRoutes.DELETE("/m/executor", authMiddleware.MiddlewareFunc(), r.DeleteExecutorHandler)
 
 		//user
 		apiRoutes.GET("/u/cabinet", authMiddleware.MiddlewareFunc(), r.UserCabinetHandler)
