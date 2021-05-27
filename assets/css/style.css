@@ -1362,7 +1362,30 @@ h2.border-bottom {
     height: 30px;
 }
 
+#admin-tabs .admin-row .admin-row-info .admin-row-name {
+    width: 96%;
+    float: left;
+}
+
+#admin-tabs .admin-row .admin-row-info .admin-row-icon {
+    width: 3%;
+    float: left;
+}
+
+#admin-tabs .admin-row .admin-row-info .admin-row-icon button {
+    margin-top: -4px;
+    line-height: 21px;
+    padding: 2px 5px 0 5px;
+}
+
 #admin-tabs .admin-row .admin-row-info .user-row {
     float: left;
-    width: 260px;
+    margin-right: 9px;
+    width: 253px;
+}
+
+#admin-tabs .admin-row .admin-row-info .user-row .name {
+    display: block;
+    width: 88%;
+    float: left;
 }

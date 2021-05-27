@@ -1,3 +1,15 @@
 <div ng-repeat="government in governments" class="admin-row">
-  <div class="admin-row-info">{[{ government.name }]}</div>
+  <div class="admin-row-info">
+  <div class="admin-row-name">{[{ government.name }]}</div>
+  <div class="admin-row-icon">
+    <button ng-click="dynamicPopover.open($index, 'settingsTemplate.html', 's');"
+            uib-popover-template="dynamicPopover.templateUrl[$index + 's']"
+            type="button"
+            class="btn btn-primary"
+            popover-placement="left-top"
+            popover-is-open="dynamicPopover.isOpen[$index+'s']">
+      <span class="glyphicon  glyphicon-pencil"></span>
+    </button>
+  </div>
+  </div>
 </div>
