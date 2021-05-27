@@ -32,7 +32,7 @@ mTestApp.config(function($compileProvider, $interpolateProvider, $routeProvider,
             controller: 'mTestController'
         })
         .when('/a/cabinet', {
-            title: 'Кабінет адміністратор',
+            title: 'Кабінет адміністратора',
             templateUrl: 'static/html/admin/cabinet.html',
             controller: 'adminController',
             resolve: {

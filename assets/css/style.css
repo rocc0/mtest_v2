@@ -50,18 +50,18 @@ header {
 
 .mTest .dropzone ul[dnd-list] {
     min-height: 42px;
-    margin: 0px;
-    padding-left: 0px;
+    margin: 0;
+    padding-left: 0;
     padding-bottom: 25px;
 }
 
 .mTest .dropzone li {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-    box-shadow: inset 0px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 4px rgba(0, 0, 0, 0.2);
     width: 100%;
     background-color: rgba(0, 0, 0, 0.2);
     display: block;
-    padding: 0px;
+    padding: 0;
     margin: 6px auto;
 }
 
@@ -115,11 +115,11 @@ header {
 
 .mTest .dropzone .item {
     float: left;
-    padding: 0px;
+    padding: 0;
 }
 .mTest .dropzone .container-element {
     border: none;
-    margin: 0px;
+    margin: 0;
     background: transparent;
 }
 .mTest .dropzone .container-element .column {
@@ -133,7 +133,7 @@ header {
     cursor: pointer;
     height: auto;
     border-radius: 3px;
-    box-shadow: 0px 2px rgb(5, 124, 172);
+    box-shadow: 0 2px rgb(5, 124, 172);
     color: #888;
     -webkit-user-select: none;
     transition: all 0.2s ease;
@@ -177,9 +177,9 @@ header {
     margin: 0 6px;
 }
 .mTest .dropzone .container-element li .handle {
-    margin: 0px;
+    margin: 0;
     height: 58px;
-    padding: 17px 0px 0px 3px;
+    padding: 17px 0 0 3px;
     width: 2.3%;
     cursor: pointer;
     line-height: 22px;
@@ -218,7 +218,7 @@ input::-webkit-inner-spin-button {
     /* <-- Apparently some margin are still there even though it's hidden */
 }
 .input_one {
-        padding-right: 0px!important;
+        padding-right: 0!important;
 }
 .input_one .dia {
    width: 96%;
@@ -227,16 +227,16 @@ input::-webkit-inner-spin-button {
        font-size: 19px;
        height: 23px;
        float: right;
-       margin-top: 0px;
+       margin-top: 0;
        background-color: #ffffff;
        width: 4%;
-       border-radius: 0px 5px 5px 0px;
+       border-radius: 0 5px 5px 0;
        text-align: center;
    }
 .input_one,
 .input_two,
 .input_three {
-    margin: 3px 0px;
+    margin: 3px 0;
     float: left!important;
 }
 #input_group {
@@ -249,7 +249,7 @@ ul.nav.nav-pills {
     display: none;
 }
 
-.tab-pane.ng-scope:nth-child(2) {
+.handle .tab-pane.ng-scope:nth-child(2) {
     margin-right: -4px;
     background-color: #0074b3;
 }
@@ -270,25 +270,25 @@ ul.nav.nav-pills {
 
 .tabbuttons button:nth-child(1) {
     font-size: 20px;
-    border: 0px;
-    border-radius: 0px 4px 0px 0px;
+    border: 0;
+    border-radius: 0 4px 0 0;
     color: #fff;
     background: #02486f;
 }
 .tabbuttons button:nth-child(2) {
     color: white;
     background: url(../img/corrupt.png) no-repeat 52% 55% #0074b3;
-    border: 0px;
+    border: 0;
 }
 
 .tabbuttons button {
-    border-radius: 0px;
+    border-radius: 0;
     height: 34px;
     width: 46px;
     line-height: 20px;
     vertical-align: middle;
     font-size: 15px;
-    padding: 2px 7px 0px 7px;
+    padding: 2px 7px 0 7px;
     float: right;
 
 }
@@ -316,11 +316,11 @@ ul.nav.nav-pills {
     width: 54%;
 }
 #input_group .input-group-addon {
-    padding: 0px 9px;
+    padding: 0 9px;
     line-height: 9px;
 }
 .input-group-addon.leftinputs {
-    padding: 0px!important;
+    padding: 0!important;
     width: 40%;
 }
 .first,
@@ -334,7 +334,7 @@ ul.nav.nav-pills {
     margin-left: 2px;
 }
 .input-group.first {
-    margin-left: 0px;
+    margin-left: 0;
 }
 
 .save_alert {
@@ -353,16 +353,16 @@ ul.nav.nav-pills {
     display: block;
 }
 .input_two .col-md-6 {
-    margin: 1px 0px;
+    margin: 1px 0;
 }
 .col-md-12.floatleft {
-    margin: 0px 0px;
+    margin: 0 0;
 }
 /***************************** Toolbox *****************************/
 
 .mTest .toolbox ul {
     list-style: none;
-    padding-left: 0px;
+    padding-left: 0;
     cursor: move;
 }
 .mTest .toolbox button {
@@ -383,11 +383,11 @@ ul.nav.nav-pills {
 }
 .mTest .trashcan ul {
     list-style: none;
-    padding-left: 0px;
+    padding-left: 0;
 }
 .mTest .trashcan img {
     height: 40px;
-    padding: 0px;
+    padding: 0;
     border-radius: 25px;
     -webkit-filter: grayscale(50%);
     -moz-filter: grayscale(50%);
@@ -428,11 +428,10 @@ ul.nav.nav-pills {
     margin-bottom: 0;
 }
 .box-padding {
-    padding: 0px;
+    padding: 0;
 }
 .box-padding > h3 {
-    margin: -15px;
-    margin-bottom: 15px;
+    margin: -15px -15px 15px -15px;
 }
 .box-grey {
     border-color: #ddd;
@@ -447,7 +446,7 @@ ul.nav.nav-pills {
 }
 .box-blue > div > h3 {
     text-shadow: none;
-    border-radius: 0px;
+    border-radius: 0;
     font-weight: bold;
     color: #fff;
     background-color: rgb(24, 134, 205);
@@ -456,7 +455,7 @@ ul.nav.nav-pills {
 .input-group-addon {
     background: #0073af;
     color: #fff;
-    border: 0px;
+    border: 0;
 }
 div#header-sub {
     height: 26px;
@@ -466,7 +465,7 @@ div#header-sub .input-group-addon {
 }
 
 .container-header {
-    padding: 0px 1px;
+    padding: 0 1px;
 }
 .container-header .input-group-addon {
     padding-top: 2px;
@@ -487,7 +486,7 @@ width: 30%;
 }
 
 .box-darkblue {
-    border-radius: 0px;
+    border-radius: 0;
     background: #d1c9b7;
 }
 .box-darkblue > h3 {
@@ -501,18 +500,18 @@ width: 30%;
     padding-top: 1px;
 }
 .tools {
-    padding: 0px 0px;
+    padding: 0 0;
 }
 .tools.inner {
     width: 100%;
     text-align: center;
-    padding: 0px;
+    padding: 0;
 }
 .tools.main {
     background: #d1c9b7;
     width: 100%;
     text-align: center;
-    padding: 0px;
+    padding: 0;
 }
 /*---------------------------form-------------------------*/
 
@@ -522,7 +521,7 @@ width: 30%;
 label.col-md-2.control-label {
     line-height: 32px;
     text-align: left;
-    padding-left: 0px;
+    padding-left: 0;
     color: #fff;
 }
 select.form-control {
@@ -540,11 +539,11 @@ li.ng-scope {
 }
 form.form-horizontal .col-md-9 {
     height: 35px;
-    padding: 0px;
+    padding: 0;
 }
 .sum-footer {
     border-top: 2px solid #a47904;
-    margin: 0px -4px -5px -4px;
+    margin: 0 -4px -5px -4px;
     height: 41px;
     background: rgba(0, 0, 0, 0.2);
     font-size: 17px;
@@ -558,7 +557,7 @@ form.form-horizontal .col-md-9 {
 }
 
 .reset button {
-    border-radius: 0px 4px 4px 0px;
+    border-radius: 0 4px 4px 0;
     height: 30px;
     margin: 0 auto;
     float: left;
@@ -566,7 +565,7 @@ form.form-horizontal .col-md-9 {
     line-height: 18px;
 }
 .requlatory {
-    padding-top: 0px;
+    padding-top: 0;
     background: #948f83;
     margin: -5px -4px 11px -4px;
     height: 63px;
@@ -576,30 +575,30 @@ form.form-horizontal .col-md-9 {
     height: 25px;
 }
 .requlatory .col-md-12 {
-    padding: 4px 4px 0px 4px;
+    padding: 4px 4px 0 4px;
 }
 .form-group.col-md-2 {
     float: right;
-    padding: 0px;
+    padding: 0;
 }
 li.ng-scope img,
 .trashcan img {
     padding: 4px;
-    box-shadow: 0px 4px #009de4, 0px 10px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px #009de4, 0 10px 15px rgba(0, 0, 0, 0.2);
     background: rgba(248, 248, 248, 0.39);
     border-radius: 6px;
 }
 li.ng-scope img:hover,
 .trashcan img:hover {
-    box-shadow: 0px 4px #f0b858, 0px 10px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px #f0b858, 0 10px 15px rgba(0, 0, 0, 0.2);
 }
 .form-horizontal .form-group {
-    margin-right: 0px;
-    margin-left: 0px;
+    margin-right: 0;
+    margin-left: 0;
 }
 .trashcan.box.box-grey.box-padding h3 {
     font-size: 19px;
-    text-shadow: 1px 1px 0px #cecdcd;
+    text-shadow: 1px 1px 0 #cecdcd;
     color: #fff;
 }
 .toolbox.box.box-grey.box-padding a {
@@ -626,7 +625,7 @@ li.ng-scope img:hover,
     float: left;
 }
 #slogan {
-    margin: 5px 0px 0px 5px;
+    margin: 5px 0 0 5px;
     width: 100%;
     padding: 1px 4px;
 }
@@ -638,11 +637,11 @@ li.ng-scope img:hover,
 }
 #nav {
     width: 100%;
-    margin: 10px 0px 5px 0px;
+    margin: 10px 0 5px 0;
 }
 #nav .btn {
     font-weight: bolder;
-    border: 0px;
+    border: 0;
     color: #0075b6;
     background: transparent;
     font-size: 24px;
@@ -699,7 +698,7 @@ ul.questions li a:focus {
 }
 
 #nav .profile ul {
-    margin-bottom: 0px;
+    margin-bottom: 0;
     float: right;
     list-style: none;
 }
@@ -739,7 +738,7 @@ div#sponsors .logo {
 div#cont-id {
     line-height: 22px;
     text-shadow: none;
-    border-radius: 0px;
+    border-radius: 0;
     font-weight: bold;
     color: #fff;
     border-color: rgba(93, 93, 93, 0.79);
@@ -801,24 +800,24 @@ code.small {
 
 
 .faq {
-    margin: 0px 0px 12px 0px;
+    margin: 0 0 12px 0;
 }
 #btn-save {
     font-size: 14px;
     width: 100%;
-    border: 0px;
+    border: 0;
     color: white;
-    box-shadow: 0px 2px #66b2dc, 0px 10px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px #66b2dc, 0 10px 15px rgba(0, 0, 0, 0.2);
     background-color: #0075b5;
-    border-radius: 0px 0px 2px 2px;
+    border-radius: 0 0 2px 2px;
 }
 #btn-dwn {
 
     padding-top: 9px;
     height: 39px;
     font-size: 14px;
-    border-radius: 0px 0px 0px 0px;
-    border: 0px;
+    border-radius: 0 0 0 0;
+    border: 0;
     color: white;
     background-color: #9e566c;
     float: left;
@@ -861,14 +860,14 @@ code.small {
 
     .ng-scope ul li input.form-control {
 
-        padding: 0px 12px;
+        padding: 0 12px;
         height: 23px;
     }
 
     ul.dropdown-menu.ng-isolate-scope li {
-        padding: 0px 0px !important;
-        margin: 0px auto !important;
-        border-radius: 0px !important;
+        padding: 0 0 !important;
+        margin: 0 auto !important;
+        border-radius: 0 !important;
         box-shadow: none !important;
         background-color: #ffffff !important;
         width: 100% !important;
@@ -887,7 +886,7 @@ code.small {
 
     li#itemplus {
         width: 96%;
-        box-shadow: 0px -2px 0px #bc647d;
+        box-shadow: 0 -2px 0 #bc647d;
         background: #9e576c !important;
         height: auto;
         margin-right: 8px;
@@ -936,22 +935,22 @@ code.small {
     }
 
     .corrbutton {
-        border-radius: 0px !important;
+        border-radius: 0 !important;
         text-shadow: none !important;
         box-shadow: none !important;
     }
 
     .corr {
-        border-radius: 0px !important;
+        border-radius: 0 !important;
         text-shadow: none !important;
-        box-shadow: 0px 1px 0px #FFE !important;
+        box-shadow: 0 1px 0 #FFE !important;
         color: #fff !important;
     }
 
     .corr button {
         font-size: 18px;
         background: none;
-        border: 0px;
+        border: 0;
     }
 
     .corr button:hover {
@@ -972,8 +971,8 @@ code.small {
     }
 
     li.col-md-12.corr.ng-scope {
-        padding: 4px 0px;
-        margin: 1px 0px;
+        padding: 4px 0;
+        margin: 1px 0;
     }
 .green {
     color:white;
@@ -1007,7 +1006,7 @@ ti-tag-item.ng-isolate-scope span {
     padding-right: 9px;
 }
 .form-control.emails {
-    padding: 0px;
+    padding: 0;
 }
 .executors {
     background-color: #fff;
@@ -1058,7 +1057,7 @@ ti-tag-item.ng-isolate-scope span {
 }
 
 #login-form .input-group {
-    margin: 5px 0px;
+    margin: 5px 0;
     width: 100%;
 }
 
@@ -1089,7 +1088,7 @@ ti-tag-item.ng-isolate-scope span {
 }
 
 #register .form-group {
-    padding: 12px 0px;
+    padding: 12px 0;
 }
 
 #register .inner {
@@ -1105,7 +1104,7 @@ ti-tag-item.ng-isolate-scope span {
 }
 
 #register input {
-    border-radius: 0px 5px 5px 0px;
+    border-radius: 0 5px 5px 0;
     width: 62%;
     float: left;
 }
@@ -1139,7 +1138,7 @@ ti-tag-item.ng-isolate-scope span {
 }
 
 #cabinet .passchange .panel-body {
-    padding: 5px 0px;
+    padding: 5px 0;
 }
 
 #cabinet .inline-input span{
@@ -1160,7 +1159,7 @@ ti-tag-item.ng-isolate-scope span {
 }
 
 #add-mtest .modal-body {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 #add-mtest .buttons {
@@ -1185,19 +1184,19 @@ ti-tag-item.ng-isolate-scope span {
 }
 
 #edit-mtest .buttons, #send-mtest .buttons {
-    margin: 3px 0px;
+    margin: 3px 0;
 }
 
 #cabinet .field .col-xs-8 {
-    padding: 0px;
-    border-radius: 0px 4px 4px 0px;
-    margin: 10px 0px;
+    padding: 0;
+    border-radius: 0 4px 4px 0;
+    margin: 10px 0;
     background: #ffffff;
     height: 38px;
 }
 
 #cabinet .field .col-xs-8 input {
-    border-radius: 0px 5px 4px 0px;
+    border-radius: 0 5px 4px 0;
      width: 100%;
  }
 
@@ -1208,7 +1207,7 @@ ti-tag-item.ng-isolate-scope span {
 
 #cabinet .field .col-xs-8 .input-group {
     margin-top: 2px;
-    border-radius: 0px 0px 0px 0px;
+    border-radius: 0 0 0 0;
     width: 100%;
 }
 #cabinet .paschange-bnt {
@@ -1236,18 +1235,18 @@ ti-tag-item.ng-isolate-scope span {
 
 #mtests .add-mtest button{
     width: 30%;
-    margin: 0px 1px 0 5px;
+    margin: 0 1px 0 5px;
 }
 
 #mtests .add-mtest .buttons button {
     height: 28px;
-    margin: 0px 3px 0 3px;
+    margin: 0 3px 0 3px;
 }
 
 #mtests .mtests-list {
 
     width: 100%;
-    margin: 5px 0px;
+    margin: 5px 0;
 }
 
 #mtests .mtests-list:nth-child(odd) {
@@ -1279,7 +1278,7 @@ ti-tag-item.ng-isolate-scope span {
 #mtests .mtest-icon button {
     margin-top: -4px;
     line-height: 21px;
-    padding: 2px 5px 0px 5px;
+    padding: 2px 5px 0 5px;
 }
 #mtests .mtest-row-info {
     padding-left: 7px;
@@ -1291,7 +1290,7 @@ ti-tag-item.ng-isolate-scope span {
     padding-top: 1px;
     height: 32px;
     background: #efd6c0;
-    margin: 3px 0px;
+    margin: 3px 0;
 }
 
 #mtests .mtest-sharing {
@@ -1339,4 +1338,16 @@ h2.border-bottom {
 
 #tools-bar .download-switch .switcher-line {
     float: left;
+}
+
+/*ADMIN*/
+
+#admin-tabs ul.nav.nav-pills {
+    display: block;
+}
+
+#admin-tabs .brdr {
+    display: block;
+    color: #057cac;
+    margin-bottom: 10px;
 }
