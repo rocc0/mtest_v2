@@ -33,7 +33,7 @@ func (hd *Handlers) ShowEditGovernments(c *gin.Context) {
 	internal.Render(c, gin.H{"title": "Пошук відстежень"}, "index.html")
 }
 
-func (hd *Handlers) ShowAdminPage(c *gin.Context) {
+func (hd *Handlers) RenderAdminPage(c *gin.Context) {
 	internal.Render(c, gin.H{"title": "Пошук відстежень"}, "index.html")
 }
 

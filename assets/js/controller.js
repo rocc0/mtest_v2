@@ -853,3 +853,23 @@ mTestApp.controller("authResetController", function ($scope, $routeParams, $http
     }
 
 });
+
+
+mTestApp.controller("adminController", function ($scope, $http) {
+    $scope.changepass = false;
+    const token = localStorage.getItem('token');
+    if (token) {
+        authService.ensureAuthenticated(token)
+            .then(function (user) {
+                if (user.status === 200) {
+                    $scope.userdata = user.data.data;
+                    $scope.records = user.data.data.records;
+                    $rootScope.isLoggedIn = true;
+                }
+            })
+            .catch(function (err) {
+                console.log(err);
+                $location.path('/u/login');
+            });
+    }
+});

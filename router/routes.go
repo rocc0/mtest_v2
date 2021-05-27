@@ -16,34 +16,9 @@ type Router struct {
 	userValidator
 }
 type Handlers interface {
-	UserCabinetHandler(c *gin.Context)
-	RenderIndexPage(c *gin.Context)
-	RenderSearchPage(c *gin.Context)
-	RenderUserPage(c *gin.Context)
-	RenderMTESTPage(c *gin.Context)
-	GetMTESTHandler(c *gin.Context)
-	CreateMTESTHandler(c *gin.Context)
-	UpdateMTESTHandler(c *gin.Context)
-	DeleteMTESTHandler(c *gin.Context)
-	GetGovernmentsHandlers(c *gin.Context)
-	GetRegionsHandler(c *gin.Context)
-	CreateMTESTExecutorHandler(c *gin.Context)
-	DeleteExecutorHandler(c *gin.Context)
-	GetAdministrativeActionsHandler(c *gin.Context)
-	ResetPasswordHandler(c *gin.Context)
-	EditUserFieldHandler(c *gin.Context)
-	PasswordCheckHandler(c *gin.Context)
-	SetNewPasswordHandler(c *gin.Context)
-	ActivateAccountHandler(c *gin.Context)
-	PostEditRegions(c *gin.Context)
-	PostEditGovernments(c *gin.Context)
-	RegistrationHandler(c *gin.Context)
-	ShowAdminPage(c *gin.Context)
-}
-
-type userValidator interface {
-	PasswordCheck(email, password string) bool
-	CheckUserActivation(email string) bool
+	renderer
+	userHandlers
+	mtestHandlers
 }
 
 func NewRouter(handlers Handlers, validator userValidator) Router {
@@ -75,9 +50,9 @@ func (r *Router) Init() error {
 	r.GET("/", r.RenderIndexPage)
 	r.GET("/search", r.RenderSearchPage)
 
-	adminRoutes := r.Group("/admin")
+	adminRoutes := r.Group("/a")
 	{
-		adminRoutes.GET("/cabinet", r.ShowAdminPage)
+		adminRoutes.GET("/cabinet", r.RenderAdminPage)
 	}
 
 	userRoutes := r.Group("/u")

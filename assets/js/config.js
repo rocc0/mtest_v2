@@ -31,6 +31,18 @@ mTestApp.config(function($compileProvider, $interpolateProvider, $routeProvider,
             templateUrl: 'static/html/dnd_anon.html',
             controller: 'mTestController'
         })
+        .when('/a/cabinet', {
+            title: 'Кабінет адміністратор',
+            templateUrl: 'static/html/admin/cabinet.html',
+            controller: 'adminController',
+            resolve: {
+                mTestApp: function ($q) {
+                    var defer = $q.defer();
+                    defer.resolve();
+                    return defer.promise;
+                }
+            }
+        })
         .when('/search', {
             title: 'Пошук АРВ',
             templateUrl: 'static/html/search.html',
