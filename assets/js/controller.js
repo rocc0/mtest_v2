@@ -49,7 +49,7 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
 
     $http({
         method: 'GET',
-        url: '/api/v.1/adm_actions'
+        url: '/api/v.1/actions'
     }).then(function (response) {
         $scope.adm_actions = response.data.actions;
     });
@@ -287,7 +287,7 @@ mTestApp.controller("mTestDBController",
 
         $http({
             method: 'GET',
-            url: '/api/v.1/adm_actions'
+            url: '/api/v.1/actions'
         }).then(function (response) {
             $scope.adm_actions = response.data.actions;
         });
@@ -588,7 +588,7 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
 
     $http({
         method: 'GET',
-        url: '/api/v.1/govs',
+        url: '/api/v.1/governments',
     }).then(function (response) {
         $scope.governs = response.data.govs
     }).catch( function (reason) {
@@ -809,7 +809,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
 
     $http({
         method: 'GET',
-        url: '/api/v.1/govs',
+        url: '/api/v.1/governments',
     }).then(function (response) {
         $scope.governs = response.data.govs
     }).catch( function (reason) {

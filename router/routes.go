@@ -38,7 +38,6 @@ type Handlers interface {
 	PostEditRegions(c *gin.Context)
 	PostEditGovernments(c *gin.Context)
 	RegistrationHandler(c *gin.Context)
-	ShowEditGovernments(c *gin.Context)
 	ShowAdminPage(c *gin.Context)
 }
 
@@ -78,7 +77,6 @@ func (r *Router) Init() error {
 
 	adminRoutes := r.Group("/admin")
 	{
-		adminRoutes.GET("/govs/edit", r.ShowEditGovernments)
 		adminRoutes.GET("/cabinet", r.ShowAdminPage)
 	}
 
@@ -99,14 +97,20 @@ func (r *Router) Init() error {
 
 	apiRoutes := r.Group("/api/v.1/")
 	{
-		//Get goverments names and ids
-		apiRoutes.GET("/govs", r.GetGovernmentsHandlers)
-		apiRoutes.POST("/govs/save", authMiddleware.MiddlewareFunc(), r.PostEditGovernments)
+		//Get governments names and ids
+		apiRoutes.GET("/governments", r.GetGovernmentsHandlers)
+		apiRoutes.POST("/governments", authMiddleware.MiddlewareFunc(), r.PostEditGovernments)
+		apiRoutes.PUT("/governments", authMiddleware.MiddlewareFunc(), r.PostEditGovernments)
+		apiRoutes.DELETE("/governments", authMiddleware.MiddlewareFunc(), r.PostEditGovernments)
 
 		//Get regions and edit
 		apiRoutes.GET("/regions", r.GetRegionsHandler)
-		apiRoutes.POST("/regions/save", authMiddleware.MiddlewareFunc(), r.PostEditRegions)
-		apiRoutes.GET("/adm_actions", r.GetAdministrativeActionsHandler)
+		apiRoutes.PUT("/regions", authMiddleware.MiddlewareFunc(), r.PostEditRegions)
+
+		apiRoutes.GET("/actions", r.GetAdministrativeActionsHandler)
+		apiRoutes.POST("/actions", authMiddleware.MiddlewareFunc(), r.GetAdministrativeActionsHandler)
+		apiRoutes.PUT("/actions", authMiddleware.MiddlewareFunc(), r.GetAdministrativeActionsHandler)
+		apiRoutes.DELETE("/actions", authMiddleware.MiddlewareFunc(), r.GetAdministrativeActionsHandler)
 
 		//Show and edit view
 		apiRoutes.GET("/m/get/:mtest_id", r.GetMTESTHandler)
