@@ -1,5 +1,20 @@
 <div ng-repeat="government in governments" class="admin-row">
   <div class="admin-row-info">
-    <div line-edit="government.name">{[{ government.name }]}</div>
+    <div line-edit="government.name"
+         on-save="saveGovernmentName(government.id, value)"
+         on-cancel="log('CANCEL', value)">{[{ government.name }]}</div>
   </div>
+</div>
+
+<div class="add-admin-filed">
+  <button ng-click="dynamicPopover.open('add', 'static/html/tmpl/modal_add_government.html', '')"
+          uib-popover-template="dynamicPopover.templateUrl['add']"
+          type="button"
+          class="btn btn-success"
+          popover-placement="auto top"
+          popover-is-open="dynamicPopover.isOpen['add']"
+          popover-class="government-popover">
+    <span class="glyphicon glyphicon-add"></span>
+    Додати орган влади
+  </button>
 </div>

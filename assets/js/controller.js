@@ -820,7 +820,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
 });
 
 mTestApp.controller("authActivateController", function ($scope, $routeParams,$http) {
-    const baseURL = 'http://mtest.org.ua/';
+    const baseURL = 'http://localhost:8099';
     $http({
         method: 'GET',
         url: baseURL + 'api/v.1/u/activate/' + $routeParams.hash ,
@@ -833,7 +833,7 @@ mTestApp.controller("authActivateController", function ($scope, $routeParams,$ht
 });
 
 mTestApp.controller("authResetController", function ($scope, $routeParams, $http, $location, authService) {
-    const baseURL = 'http://mtest.org.ua/';
+    const baseURL = 'http://localhost:8099';
     var hash = $routeParams.hash;
     $scope.user = {};
     authService.checkhash(hash)
@@ -908,4 +908,138 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
     }).catch( function (reason) {
         console.log(reason)
     });
+    // popover for setting, mail, add mtest etc..
+    $scope.dynamicPopover = {
+        isOpen: {},
+        title: "heh",
+
+        templateUrl: {},
+
+        open: function open(index, template, tp) {
+            $scope.dynamicPopover.templateUrl[index + tp] = template;
+            $scope.dynamicPopover.isOpen[index + tp] = true;
+            $scope.dynamicPopover.data = 'Hello!';
+        },
+
+        close: function close(index, tp) {
+            $scope.dynamicPopover.isOpen[index + tp] = false;
+        }
+    };
+    $scope.changeAdminUserField = function (field, id, value) {
+        console.log(field, id, value);
+        $http({
+            method: 'POST',
+            url: "/api/v.1/u/edituser",
+            data: {field: field, data: value, id: parseInt(id)},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+    //region
+    $scope.saveRegionName = function (id, value) {
+        console.log(id, value);
+        $http({
+            method: 'PUT',
+            url: "/api/v.1/regions",
+            data: {name: value, id: parseInt(id)},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+    //governments
+    $scope.saveGovernmentName = function (id, value) {
+        console.log(id, value);
+        $http({
+            method: 'PUT',
+            url: "/api/v.1/governments",
+            data: {name: value, id: parseInt(id)},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+    $scope.addGovernment = function (value) {
+        console.log(value);
+        $http({
+            method: 'POST',
+            url: "/api/v.1/governments",
+            data: {name: value},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+            $scope.governments.push({name:value, id: $scope.governments.length+1})
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+    $scope.removeGovernment = function (value) {
+        console.log(value);
+        $http({
+            method: 'DELETE',
+            url: "/api/v.1/governments",
+            data: {id: parseInt(value)},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+    ///actions
+    $scope.saveActionName = function (id, value) {
+        console.log(id, value);
+        $http({
+            method: 'PUT',
+            url: "/api/v.1/actions",
+            data: {name: value, id: parseInt(id)},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+    $scope.addAction = function (value) {
+        console.log(value);
+        $http({
+            method: 'POST',
+            url: "/api/v.1/actions",
+            data: {name: value},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+            $scope.actions.push({act_name:value, id: $scope.actions.length+1})
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+    $scope.removeAction = function (value) {
+        console.log(value);
+        $http({
+            method: 'DELETE',
+            url: "/api/v.1/actions",
+            data: {id: parseInt(value)},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
 });

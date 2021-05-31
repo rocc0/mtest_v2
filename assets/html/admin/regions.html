@@ -1,5 +1,7 @@
 <div ng-repeat="region in regions" class="admin-row">
     <div class="admin-row-info">
-        <div line-edit="region.name">{[{ region.name }]}</div>
+        <div line-edit="region.name"
+             on-save="saveRegionName(region.id, value)"
+             on-cancel="log('CANCEL', value)">{[{ region.name }]}</div>
     </div>
 </div>

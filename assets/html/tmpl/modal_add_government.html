@@ -1,0 +1,18 @@
+<div id="add-mtest">
+    <div class="modal-body" id="modal-body">
+        <form method="POST" class="post-form" name="addGovernmentForm">
+            <div class="form-group input-group">
+                <div class="input-group">
+                    <div class="input-group-addon">Назва</div>
+                    <input name="name" class="form-control input-sm" ng-model="new_government.name"/>
+                </div>
+            </div>
+            <div class="buttons">
+                <button class="btn btn-success btn-xs pull-left"
+                        type="submit" name="submitform" ng-click="addGovernment(new_government.name);dynamicPopover.close('add', '')">Додати</button>
+                <button class="btn btn-danger btn-xs pull-left"
+                        type="submit" name="submitform" ng-click="dynamicPopover.close('add', '')">Закрити</button>
+            </div>
+        </form>
+    </div>
+</div>

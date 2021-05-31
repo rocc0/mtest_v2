@@ -1421,6 +1421,12 @@ h2.border-bottom {
     width: 244px;
 }
 
+#admin-tabs .add-admin-filed button {
+    display: block;
+    width: 207px;
+    margin: 0 auto;
+}
+
 #admin-tabs .admin-row .admin-user-row-info .user-row .name {
     display: block;
     width: 88%;
