@@ -1,77 +1,27 @@
-<div style="width: 100%; display: block; ">
-    <div style="width: 222px;"></div>
-    <div style="width: 222px;"></div>
-    <div style="width: 222px;"></div>
-    <div style="width: 222px;"></div>
-    <div style="width: 222px;"></div>
+<div class="user-list-header">
+    <div class="user-list-item">Ім'я</div>
+    <div class="user-list-item">Прізвище</div>
+    <div class="user-list-item">Email</div>
+    <div class="user-list-item">Адмін. права</div>
+    <div class="user-list-item">Акаунт активований</div>
 </div>
 <div ng-repeat="user in users" class="admin-row">
-    <div class="admin-row-info">
+    <div class="admin-user-row-info">
 
         <div class="user-row">
-            <div class="name">{[{ user.name }]} | </div>
-            <div class="admin-row-icon">
-                <button ng-click="dynamicPopover.open($index, 'settingsTemplate.html', 's');"
-                        uib-popover-template="dynamicPopover.templateUrl[$index + 's']"
-                        type="button"
-                        class="btn btn-primary"
-                        popover-placement="left-top"
-                        popover-is-open="dynamicPopover.isOpen[$index+'s']">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                </button>
-            </div>
+            <div line-edit="user.name">{[{ user.name }]}</div>
         </div>
         <div class="user-row">
-            <div class="name">{[{ user.surename }]} | </div>
-            <div class="admin-row-icon">
-                <button ng-click="dynamicPopover.open($index, 'settingsTemplate.html', 's');"
-                        uib-popover-template="dynamicPopover.templateUrl[$index + 's']"
-                        type="button"
-                        class="btn btn-primary"
-                        popover-placement="left-top"
-                        popover-is-open="dynamicPopover.isOpen[$index+'s']">
-                    <span class="glyphicon  glyphicon-pencil"></span>
-                </button>
-            </div>
+            <div line-edit="user.surename">{[{ user.surename }]}</div>
         </div>
         <div class="user-row">
-            <div class="name">{[{ user.email }]} | </div>
-            <div class="admin-row-icon">
-                <button ng-click="dynamicPopover.open($index, 'settingsTemplate.html', 's');"
-                        uib-popover-template="dynamicPopover.templateUrl[$index + 's']"
-                        type="button"
-                        class="btn btn-primary"
-                        popover-placement="left-top"
-                        popover-is-open="dynamicPopover.isOpen[$index+'s']">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                </button>
-            </div>
+            <div line-edit="user.email">{[{ user.email }]}</div>
         </div>
         <div class="user-row">
-            <div class="name">{[{ user.rights }]} | </div>
-            <div class="admin-row-icon">
-                <button ng-click="dynamicPopover.open($index, 'settingsTemplate.html', 's');"
-                        uib-popover-template="dynamicPopover.templateUrl[$index + 's']"
-                        type="button"
-                        class="btn btn-primary"
-                        popover-placement="left-top"
-                        popover-is-open="dynamicPopover.isOpen[$index+'s']">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                </button>
-            </div>
+            <div line-edit="user.rights">{[{ user.rights }]}</div>
         </div>
         <div class="user-row">
-            <div class="name">{[{ user.activated }]} | </div>
-            <div class="admin-row-icon">
-                <button ng-click="dynamicPopover.open($index, 'settingsTemplate.html', 's');"
-                        uib-popover-template="dynamicPopover.templateUrl[$index + 's']"
-                        type="button"
-                        class="btn btn-primary"
-                        popover-placement="left-top"
-                        popover-is-open="dynamicPopover.isOpen[$index+'s']">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                </button>
-            </div>
+            <div line-edit="user.activated">{[{ user.activated }]}</div>
         </div>
     </div>
 </div>

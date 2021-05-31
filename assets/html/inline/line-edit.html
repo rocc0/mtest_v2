@@ -1,0 +1,27 @@
+
+    <input type="text"
+                  ng-model="model"
+                  on-esc="cancel()"
+                  placeholder="Введіть інформацію"
+                  ng-show="editMode"
+              class="form-control">
+    <div ng-hide="editMode" class="admin-row-name">
+        <span ng-hide="model != ''">інф. відсутня</span>
+        <span ng-show="model != ''">{{model}}</span>
+    </div>
+    <div class="admin-row-icon">
+        <div class="input-control-btns">
+            <button type="button" class="btn btn-primary" aria-label="Bold" ng-show="editMode"
+                    ng-click="save()">
+                <span class="glyphicon glyphicon-ok"></span>
+            </button>
+            <button type="button" class="btn btn-primary" aria-label="Italic"
+                    ng-show="editMode" ng-click="cancel()" >
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+        <button type="button" class="btn btn-primary" ng-hide="editMode" ng-click="edit()">
+            <span class="glyphicon  glyphicon-pencil"></span>
+        </button>
+    </div>
+

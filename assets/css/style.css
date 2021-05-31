@@ -1362,13 +1362,38 @@ h2.border-bottom {
     height: 30px;
 }
 
+#admin-tabs .admin-row .admin-user-row-info {
+    padding-left: 7px;
+    line-height: 30px;
+    height: 30px;
+}
+
 #admin-tabs .admin-row .admin-row-info .admin-row-name {
-    width: 96%;
+    width: 95%;
+    float: left;
+}
+
+#admin-tabs .admin-row .admin-user-row-info .admin-row-name {
+    width: 95%;
+    float: left;
+}
+
+#admin-tabs .admin-row .admin-row-info input {
+    margin-right: 13px;
+    width: 94%;
+    height: 28px;
+    float: left;
+}
+
+#admin-tabs .admin-row .admin-user-row-info input {
+    margin-right: 13px;
+    width: 94%;
+    height: 28px;
     float: left;
 }
 
 #admin-tabs .admin-row .admin-row-info .admin-row-icon {
-    width: 3%;
+    width: 5%;
     float: left;
 }
 
@@ -1378,14 +1403,45 @@ h2.border-bottom {
     padding: 2px 5px 0 5px;
 }
 
-#admin-tabs .admin-row .admin-row-info .user-row {
+#admin-tabs .admin-row .admin-user-row-info .admin-row-icon {
+    width: 5%;
     float: left;
-    margin-right: 9px;
-    width: 253px;
 }
 
-#admin-tabs .admin-row .admin-row-info .user-row .name {
+#admin-tabs .admin-row .admin-user-row-info .admin-row-icon button {
+    margin-top: -4px;
+    line-height: 21px;
+    padding: 2px 5px 0 5px;
+}
+
+
+#admin-tabs .admin-row .admin-user-row-info .user-row {
+    float: left;
+    margin-right: 18px;
+    width: 244px;
+}
+
+#admin-tabs .admin-row .admin-user-row-info .user-row .name {
     display: block;
     width: 88%;
     float: left;
+}
+
+#admin-tabs .admin-row .admin-user-row-info .user-row .input-control-btns {
+    display: none;
+}
+
+.user-list-header {
+    border-top: 1px solid;
+    width: 100%;
+    display: block;
+    height: 24px;
+    margin-top: 10px;
+    border-bottom: 1px solid;
+    margin-bottom: 5px;
+}
+.user-list-header .user-list-item {
+    width: 20%;
+    float: left;
+    text-align: center;
 }
