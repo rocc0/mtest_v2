@@ -2,6 +2,7 @@
   <div class="admin-row-info">
     <div line-edit="government.name"
          on-save="saveGovernmentName(government.id, value)"
+         on-remove="removeGovernment(government.id, value)"
          on-cancel="log('CANCEL', value)">{[{ government.name }]}</div>
   </div>
 </div>

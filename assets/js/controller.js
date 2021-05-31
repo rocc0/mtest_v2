@@ -986,6 +986,7 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
     };
     $scope.removeGovernment = function (value) {
         console.log(value);
+        const index =  $scope.governments.findIndex(a => a.id === parseInt(value))
         $http({
             method: 'DELETE',
             url: "/api/v.1/governments",
@@ -994,6 +995,7 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
                 'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }
         }).then(function (response) {
+            $scope.governments.splice(index,1)
         }).catch(function (err) {
             console.log(err)
         });
@@ -1030,6 +1032,7 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
     };
     $scope.removeAction = function (value) {
         console.log(value);
+        const index =  $scope.actions.findIndex(a => a.id === parseInt(value))
         $http({
             method: 'DELETE',
             url: "/api/v.1/actions",
@@ -1038,6 +1041,7 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
                 'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }
         }).then(function (response) {
+            $scope.actions.splice(index,1)
         }).catch(function (err) {
             console.log(err)
         });

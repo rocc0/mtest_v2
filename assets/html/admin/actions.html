@@ -2,6 +2,7 @@
     <div class="admin-row-info">
         <div line-edit="action.act_name"
              on-save="saveActionName(action.id, value)"
+             on-remove="removeAction(action.id, value)"
              on-cancel="log('CANCEL', value)">{[{ action.act_name }]}</div>
     </div>
 </div>

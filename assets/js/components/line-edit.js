@@ -3,7 +3,8 @@ mTestApp.directive('lineEdit', function ($timeout) {
         scope: {
             model: '=lineEdit',
             handleSave: '&onSave',
-            handleCancel: '&onCancel'
+            handleCancel: '&onCancel',
+            handleRemove: '&onRemove'
         },
         link: function (scope, elm, attr) {
             var previousValue;
@@ -29,6 +30,10 @@ mTestApp.directive('lineEdit', function ($timeout) {
                 scope.model = previousValue;
                 scope.handleCancel({value: scope.model});
             };
+            scope.remove = function () {
+                scope.editMode = false
+                scope.handleRemove({value: scope.model});
+            }
         },
         templateUrl: '/static/html/inline/line-edit.html'
     };
