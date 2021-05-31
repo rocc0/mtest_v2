@@ -24,7 +24,7 @@ type (
 		RecID      int64
 	}
 	AdmAction struct {
-		ActId   int    `json:"act_id"`
+		ActId   int    `json:"id"`
 		ActName string `json:"act_name"`
 	}
 	newExecutors struct {

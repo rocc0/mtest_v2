@@ -1,6 +1,8 @@
 package dataprocessor
 
-import log "github.com/sirupsen/logrus"
+import (
+	log "github.com/sirupsen/logrus"
+)
 
 type Government struct {
 	Id   int    `json:"id"`
@@ -13,7 +15,7 @@ func (mt *Service) GetGovernments() (*[]Government, error) {
 		govId   int
 		govName string
 	)
-	res, err := mt.db.Query("SELECT gov_id, gov_name FROM govs")
+	res, err := mt.db.Query("SELECT id, gov_name FROM govs")
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +35,7 @@ func (mt *Service) GetGovernments() (*[]Government, error) {
 }
 
 func (mt *Service) EditGovernmentName(id int, name string) error {
-	stmt, err := mt.db.Prepare("UPDATE governments SET gov_name=? WHERE id=?;")
+	stmt, err := mt.db.Prepare("UPDATE govs SET gov_name=? WHERE id=?;")
 	if err != nil {
 		return err
 	}
@@ -44,6 +46,40 @@ func (mt *Service) EditGovernmentName(id int, name string) error {
 	}()
 
 	if _, err = stmt.Exec(name, id); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (mt *Service) RemoveGovernment(id int) error {
+	stmt, err := mt.db.Prepare("DELETE FROM govs WHERE id=?;")
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := stmt.Close(); err != nil {
+			log.Error(err)
+		}
+	}()
+
+	if _, err = stmt.Exec(id); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (mt *Service) AddGovernment(name string) error {
+	stmt, err := mt.db.Prepare("INSERT INTO govs (gov_name) VALUES (?) ;")
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := stmt.Close(); err != nil {
+			log.Error(err)
+		}
+	}()
+
+	if _, err = stmt.Exec(name); err != nil {
 		return err
 	}
 	return nil

@@ -21,9 +21,15 @@ type deleteRequest struct {
 type mtestDataProcessor interface {
 	UpdateMTEST(m map[string]interface{}, email string) error
 	DeleteMTEST(mid, email string) error
-	GetAdministrativeActions() (*[]datapkg.AdmAction, error)
 	GetMTEST(id string) (*datapkg.MTEST, error)
 	CreateMTEST(m datapkg.NewMTEST, email string) (datapkg.UserMtest, error)
+}
+
+type admActionsProcessor interface {
+	GetAdministrativeActions() (*[]datapkg.AdmAction, error)
+	EditAdministrativeActionName(id int, name string) error
+	AddAdministrativeAction(name string) error
+	DeleteAdministrativeAction(id int) error
 }
 
 type executorDataProcessor interface {
@@ -34,8 +40,13 @@ type executorDataProcessor interface {
 type regionDataProcessor interface {
 	GetRegions() (*[]datapkg.Region, error)
 	EditRegionName(id int, name string) error
+}
+
+type governmentDataProcessor interface {
+	AddGovernment(name string) error
 	GetGovernments() (*[]datapkg.Government, error)
 	EditGovernmentName(id int, name string) error
+	RemoveGovernment(id int) error
 }
 
 type indexUpdater interface {
@@ -49,6 +60,8 @@ type Handlers struct {
 	userDataProcessor
 	hasher
 	indexUpdater
+	admActionsProcessor
+	governmentDataProcessor
 }
 
 func (hd *Handlers) RenderIndexPage(c *gin.Context) {

@@ -74,18 +74,18 @@ func (r *Router) Init() error {
 	{
 		//Get governments names and ids
 		apiRoutes.GET("/governments", r.GetGovernmentsHandlers)
-		apiRoutes.POST("/governments", authMiddleware.MiddlewareFunc(), r.PostEditGovernments)
-		apiRoutes.PUT("/governments", authMiddleware.MiddlewareFunc(), r.PostEditGovernments)
-		apiRoutes.DELETE("/governments", authMiddleware.MiddlewareFunc(), r.PostEditGovernments)
+		apiRoutes.POST("/governments", authMiddleware.MiddlewareFunc(), r.AddGovernmentHandler)
+		apiRoutes.PUT("/governments", authMiddleware.MiddlewareFunc(), r.EditGovernmentNameHandler)
+		apiRoutes.DELETE("/governments", authMiddleware.MiddlewareFunc(), r.RemoveGovernmentHandler)
 
 		//Get regions and edit
 		apiRoutes.GET("/regions", r.GetRegionsHandler)
 		apiRoutes.PUT("/regions", authMiddleware.MiddlewareFunc(), r.PostEditRegions)
 
 		apiRoutes.GET("/actions", r.GetAdministrativeActionsHandler)
-		apiRoutes.POST("/actions", authMiddleware.MiddlewareFunc(), r.GetAdministrativeActionsHandler)
-		apiRoutes.PUT("/actions", authMiddleware.MiddlewareFunc(), r.GetAdministrativeActionsHandler)
-		apiRoutes.DELETE("/actions", authMiddleware.MiddlewareFunc(), r.GetAdministrativeActionsHandler)
+		apiRoutes.POST("/actions", authMiddleware.MiddlewareFunc(), r.AddAdministrativeActionHandler)
+		apiRoutes.PUT("/actions", authMiddleware.MiddlewareFunc(), r.EditAdministrativeActionsHandler)
+		apiRoutes.DELETE("/actions", authMiddleware.MiddlewareFunc(), r.DeleteAdministrativeActionsHandler)
 
 		//users
 		apiRoutes.GET("/users", r.GetUsersHandler)

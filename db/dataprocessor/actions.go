@@ -1,6 +1,8 @@
 package dataprocessor
 
-import log "github.com/sirupsen/logrus"
+import (
+	log "github.com/sirupsen/logrus"
+)
 
 func (mt *Service) GetAdministrativeActions() (*[]AdmAction, error) {
 	var (
@@ -9,7 +11,7 @@ func (mt *Service) GetAdministrativeActions() (*[]AdmAction, error) {
 		actions []AdmAction
 	)
 
-	res, err := mt.db.Query("SELECT act_id, act_name FROM adm_actions")
+	res, err := mt.db.Query("SELECT id, act_name FROM adm_actions")
 	if err != nil {
 		return nil, err
 	}
@@ -27,4 +29,55 @@ func (mt *Service) GetAdministrativeActions() (*[]AdmAction, error) {
 
 	return &actions, nil
 
+}
+
+func (mt *Service) DeleteAdministrativeAction(id int) error {
+	stmt, err := mt.db.Prepare("DELETE FROM adm_actions WHERE id=?;")
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := stmt.Close(); err != nil {
+			log.Error(err)
+		}
+	}()
+
+	if _, err = stmt.Exec(id); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (mt *Service) EditAdministrativeActionName(id int, name string) error {
+	stmt, err := mt.db.Prepare("UPDATE adm_actions SET act_name=? WHERE id=?;")
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := stmt.Close(); err != nil {
+			log.Error(err)
+		}
+	}()
+	log.Error(name, id)
+	if _, err = stmt.Exec(name, id); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (mt *Service) AddAdministrativeAction(name string) error {
+	stmt, err := mt.db.Prepare("INSERT INTO adm_actions (act_name) VALUES (?) ;")
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := stmt.Close(); err != nil {
+			log.Error(err)
+		}
+	}()
+
+	if _, err = stmt.Exec(name); err != nil {
+		return err
+	}
+	return nil
 }

@@ -25,16 +25,25 @@ type userHandlers interface {
 	SetNewPasswordHandler(c *gin.Context)
 	ActivateAccountHandler(c *gin.Context)
 	RegistrationHandler(c *gin.Context)
-	GetAdministrativeActionsHandler(c *gin.Context)
+	admActionsHandler
 	regionHandler
 	executorHandler
 	governmentsHandler
 	usersHandler
 }
 
+type admActionsHandler interface {
+	GetAdministrativeActionsHandler(c *gin.Context)
+	AddAdministrativeActionHandler(c *gin.Context)
+	EditAdministrativeActionsHandler(c *gin.Context)
+	DeleteAdministrativeActionsHandler(c *gin.Context)
+}
+
 type governmentsHandler interface {
 	GetGovernmentsHandlers(c *gin.Context)
-	PostEditGovernments(c *gin.Context)
+	EditGovernmentNameHandler(c *gin.Context)
+	AddGovernmentHandler(c *gin.Context)
+	RemoveGovernmentHandler(c *gin.Context)
 }
 
 type regionHandler interface {

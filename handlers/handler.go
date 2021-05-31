@@ -7,11 +7,13 @@ import (
 
 func NewService(data *datapkg.Service, hash *hashpkg.HashHandler, search indexUpdater) *Handlers {
 	return &Handlers{
-		mtestDataProcessor:    data,
-		executorDataProcessor: data,
-		regionDataProcessor:   data,
-		userDataProcessor:     data,
-		hasher:                hash,
-		indexUpdater:          search,
+		mtestDataProcessor:      data,
+		executorDataProcessor:   data,
+		regionDataProcessor:     data,
+		userDataProcessor:       data,
+		admActionsProcessor:     data,
+		governmentDataProcessor: data,
+		hasher:                  hash,
+		indexUpdater:            search,
 	}
 }

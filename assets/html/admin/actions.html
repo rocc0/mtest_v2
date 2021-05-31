@@ -1,7 +1,7 @@
 <div ng-repeat="action in actions" class="admin-row">
     <div class="admin-row-info">
         <div line-edit="action.act_name"
-             on-save="saveActionName(government.id, value)"
+             on-save="saveActionName(action.id, value)"
              on-cancel="log('CANCEL', value)">{[{ action.act_name }]}</div>
     </div>
 </div>

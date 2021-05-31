@@ -28,9 +28,9 @@ type userDataProcessor interface {
 	GetUsers(c context.Context) ([]datapkg.User, error)
 }
 
-type editGovRequest struct {
-	Id   int
-	Name string
+type editRequest struct {
+	Id   int    `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
 }
 
 func (hd *Handlers) ShowEditGovernments(c *gin.Context) {
@@ -41,20 +41,58 @@ func (hd *Handlers) RenderAdminPage(c *gin.Context) {
 	internal.Render(c, gin.H{"title": "Пошук відстежень"}, "index.html")
 }
 
-func (hd *Handlers) PostEditGovernments(c *gin.Context) {
+func (hd *Handlers) EditGovernmentNameHandler(c *gin.Context) {
 	x, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	var editGov editGovRequest
-	if err := json.Unmarshal(x, &editGov); err != nil {
+	var edit editRequest
+	if err := json.Unmarshal(x, &edit); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
-	if err := hd.EditGovernmentName(editGov.Id, editGov.Name); err == nil {
+	if err := hd.EditGovernmentName(edit.Id, edit.Name); err == nil {
 		c.JSON(http.StatusOK, gin.H{"title": "Gov name changed"})
+	} else {
+		c.AbortWithStatus(http.StatusBadRequest)
+	}
+}
+
+func (hd *Handlers) AddGovernmentHandler(c *gin.Context) {
+	x, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	var edit editRequest
+	if err := json.Unmarshal(x, &edit); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	if err := hd.AddGovernment(edit.Name); err == nil {
+		c.JSON(http.StatusOK, gin.H{"title": "Adm action add"})
+	} else {
+		c.AbortWithStatus(http.StatusBadRequest)
+	}
+}
+
+func (hd *Handlers) RemoveGovernmentHandler(c *gin.Context) {
+	x, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	var edit editRequest
+	if err := json.Unmarshal(x, &edit); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	if err := hd.RemoveGovernment(edit.Id); err == nil {
+		c.JSON(http.StatusOK, gin.H{"title": "Adm action add"})
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
@@ -66,12 +104,12 @@ func (hd *Handlers) PostEditRegions(c *gin.Context) {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	var editGov editGovRequest
-	if err := json.Unmarshal(x, &editGov); err != nil {
+	var edit editRequest
+	if err := json.Unmarshal(x, &edit); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	if err := hd.EditRegionName(editGov.Id, editGov.Name); err == nil {
+	if err := hd.EditRegionName(edit.Id, edit.Name); err == nil {
 		c.JSON(http.StatusOK, gin.H{"title": "Gov name changed"})
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -85,5 +123,62 @@ func (hd *Handlers) GetUsersHandler(c *gin.Context) {
 	} else {
 		logrus.Error(err)
 		c.AbortWithStatus(http.StatusInternalServerError)
+	}
+}
+
+func (hd *Handlers) AddAdministrativeActionHandler(c *gin.Context) {
+	x, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	var edit editRequest
+	if err := json.Unmarshal(x, &edit); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	if err := hd.AddAdministrativeAction(edit.Name); err == nil {
+		c.JSON(http.StatusOK, gin.H{"title": "Adm action add"})
+	} else {
+		c.AbortWithStatus(http.StatusBadRequest)
+	}
+}
+
+func (hd *Handlers) EditAdministrativeActionsHandler(c *gin.Context) {
+	x, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	var edit editRequest
+	if err := json.Unmarshal(x, &edit); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	if err := hd.EditAdministrativeActionName(edit.Id, edit.Name); err == nil {
+		c.JSON(http.StatusOK, gin.H{"title": "Adm action name changed"})
+	} else {
+		c.AbortWithStatus(http.StatusBadRequest)
+	}
+}
+
+func (hd *Handlers) DeleteAdministrativeActionsHandler(c *gin.Context) {
+	x, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	var edit editRequest
+	if err := json.Unmarshal(x, &edit); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	if err := hd.DeleteAdministrativeAction(edit.Id); err == nil {
+		c.JSON(http.StatusOK, gin.H{"title": "Adm action name deleted"})
+	} else {
+		c.AbortWithStatus(http.StatusBadRequest)
 	}
 }
