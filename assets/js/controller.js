@@ -939,6 +939,22 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
             console.log(err)
         });
     };
+    $scope.removeUser = function (id) {
+        console.log(id);
+        const index =  $scope.users.findIndex(a => a.id === parseInt(id))
+        $http({
+            method: 'DELETE',
+            url: "/api/v.1/u/delete",
+            data: { id: parseInt(id)},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+            $scope.users.splice(index,1)
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
     //region
     $scope.saveRegionName = function (id, value) {
         console.log(id, value);

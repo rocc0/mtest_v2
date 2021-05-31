@@ -7,21 +7,24 @@
 </div>
 <div ng-repeat="user in users" class="admin-row">
     <div class="admin-user-row-info">
+        <div class="user-row">
+            <div line-edit="user.name" on-save="changeAdminUserField('name', user.id, value)">{[{ user.name }]}</div>
+        </div>
+        <div class="user-row">
+            <div line-edit="user.surename" on-save="changeAdminUserField('surename', user.id, value)">{[{ user.surename }]}</div>
+        </div>
+        <div class="user-row">
+            <div line-edit="user.email" on-save="changeAdminUserField('email', user.id, value)">{[{ user.email }]}</div>
+        </div>
+        <div class="user-row">
+            <div line-edit="user.rights" on-save="changeAdminUserField('rights', user.id, value)">{[{ user.rights }]}</div>
+        </div>
+        <div class="user-row">
+            <div line-edit="user.activated" on-save="changeAdminUserField('activated', user.id, value)">{[{ user.activated }]}</div>
+        </div>
 
-        <div class="user-row">
-            <div line-edit="user.name">{[{ user.name }]}</div>
-        </div>
-        <div class="user-row">
-            <div line-edit="user.surename">{[{ user.surename }]}</div>
-        </div>
-        <div class="user-row">
-            <div line-edit="user.email">{[{ user.email }]}</div>
-        </div>
-        <div class="user-row">
-            <div line-edit="user.rights">{[{ user.rights }]}</div>
-        </div>
-        <div class="user-row">
-            <div line-edit="user.activated">{[{ user.activated }]}</div>
-        </div>
     </div>
+    <button ng-click="removeUser(user.id)" class="btn btn-danger remove-usr">
+        <span class="glyphicon glyphicon-remove"></span>
+    </button>
 </div>

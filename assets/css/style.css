@@ -1366,6 +1366,8 @@ h2.border-bottom {
     padding-left: 7px;
     line-height: 30px;
     height: 30px;
+    width: 96%;
+    float: left;
 }
 
 #admin-tabs .admin-row .admin-row-info .admin-row-name {
@@ -1418,7 +1420,7 @@ h2.border-bottom {
 #admin-tabs .admin-row .admin-user-row-info .user-row {
     float: left;
     margin-right: 18px;
-    width: 244px;
+    width: 233px;
 }
 
 #admin-tabs .add-admin-filed button {
@@ -1432,7 +1434,17 @@ h2.border-bottom {
     width: 88%;
     float: left;
 }
+#admin-tabs .admin-row .admin-user-row-info .user-row  .remove-btn {
+    display: none;
+}
 
+#admin-tabs .admin-row .remove-usr {
+    text-align: center;
+    width: 26px;
+    float: left;
+    height: 26px;
+    padding: 0px;
+}
 #admin-tabs .admin-row .admin-user-row-info .user-row .input-control-btns {
     display: none;
 }

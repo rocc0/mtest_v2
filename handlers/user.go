@@ -106,6 +106,7 @@ func (hd *Handlers) EditUserFieldHandler(c *gin.Context) {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
+
 	if err := hd.UpdateUser(field.Field, field.Data, field.Id); err == nil {
 		c.JSON(200, gin.H{"title": "Field modifiyed", "data": "kek"})
 	} else {
