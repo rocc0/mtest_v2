@@ -1,5 +1,9 @@
 <div class="row">
-    <h2 class="border-bottom">Особистий кабінет</h2>
+    <div class="col-md-12 border-bottom user-cabinet-header">
+        <h2 class="col-md-3 floatleft">Особистий кабінет</h2>
+        <h2 class="col-md-3 floatright" ng-show="userdata.rights==1" style=""><a href="/a/cabinet">Кабінет Адміністратора</a></h2>
+    </div>
+
     <div class="col-md-3 clearfix" id="cabinet">
         <h3 class="border-bottom">Дані користувача | ID: {[{ userdata.id }]}</h3>
 

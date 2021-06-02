@@ -24,7 +24,7 @@ type userDataProcessor interface {
 	PasswordCheck(email, password string) bool
 	SetActiveField(email string) error
 	UpdatePassword(password, email, hash string) error
-	UpdateUser(field, data string, id int) error
+	UpdateUser(field string, data interface{}, id int) error
 	GetUsers(c context.Context) ([]datapkg.User, error)
 }
 
@@ -181,4 +181,8 @@ func (hd *Handlers) DeleteAdministrativeActionsHandler(c *gin.Context) {
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
+}
+
+func (hd *Handlers) ValidateAdminRights(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"title": "OK"})
 }

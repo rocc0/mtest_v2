@@ -2,6 +2,8 @@ package routes
 
 import (
 	"html/template"
+	"net/http"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -72,6 +74,7 @@ func (r *Router) Init() error {
 
 	apiRoutes := r.Group("/api/v.1/")
 	{
+		apiRoutes.GET("/admin", authMiddleware.MiddlewareFunc(), r.ValidateAdminRights)
 		//Get governments names and ids
 		apiRoutes.GET("/governments", r.GetGovernmentsHandlers)
 		apiRoutes.POST("/governments", authMiddleware.MiddlewareFunc(), r.AddGovernmentHandler)
@@ -162,7 +165,17 @@ func (r Router) newMiddleware() (*jwt.GinJWTMiddleware, error) {
 			if !ok {
 				return false
 			}
-			return r.CheckUserActivation(id)
+			if !r.CheckUserActivation(id) {
+				return false
+			}
+
+			u := c.Request.URL.String()
+
+			if strings.Contains(u, "admin") || isWriteActions(u, c.Request.Method) {
+				return r.CheckUserAdmin(id)
+			}
+
+			return true
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{"code": code, "message": message})
@@ -184,4 +197,13 @@ func (r Router) newMiddleware() (*jwt.GinJWTMiddleware, error) {
 	}
 
 	return authMiddleware, nil
+}
+
+func isWriteActions(u string, m string) bool {
+	return (strings.Contains(u, "actions") ||
+		strings.Contains(u, "governments") ||
+		strings.Contains(u, "regions")) &&
+		(m == http.MethodPut ||
+			m == http.MethodPost ||
+			m == http.MethodDelete)
 }

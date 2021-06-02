@@ -560,7 +560,7 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
     $scope.changepass = false;
     const token = localStorage.getItem('token');
     if (token) {
-        authService.ensureAuthenticated(token)
+        authService.ensureAuthenticated(token, 'api/v.1/u/cabinet')
             .then(function (user) {
                 if (user.status === 200) {
                     $scope.userdata = user.data.data;
@@ -721,7 +721,7 @@ mTestApp.controller("menuController", function ($scope, $rootScope,$location, au
     $rootScope.isLoggedIn = false;
     const token = localStorage.getItem('token');
     if (token) {
-        authService.ensureAuthenticated(token)
+        authService.ensureAuthenticated(token, 'api/v.1/u/cabinet')
             .then(function (user) {
                 if (user.status === 200) {
                     $rootScope.isLoggedIn = true;
@@ -859,11 +859,9 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
     $scope.changepass = false;
     const token = localStorage.getItem('token');
     if (token) {
-        authService.ensureAuthenticated(token)
+        authService.ensureAuthenticated(token, 'api/v.1/admin')
             .then(function (user) {
                 if (user.status === 200) {
-                    $scope.userdata = user.data.data;
-                    $scope.records = user.data.data.records;
                     $rootScope.isLoggedIn = true;
                 }
             })

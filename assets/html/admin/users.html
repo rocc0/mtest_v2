@@ -17,10 +17,12 @@
             <div line-edit="user.email" on-save="changeAdminUserField('email', user.id, value)">{[{ user.email }]}</div>
         </div>
         <div class="user-row">
-            <div line-edit="user.rights" on-save="changeAdminUserField('rights', user.id, value)">{[{ user.rights }]}</div>
+            <switcher ng-model="user.rights" class="corr_toggle pull-left" ng-change="changeAdminUserField('rights', user.id, newValue)"
+                      true-value="1" true-label="Адміністратор" false-value="0" false-label="Користувач" ></switcher>
         </div>
         <div class="user-row">
-            <div line-edit="user.activated" on-save="changeAdminUserField('activated', user.id, value)">{[{ user.activated }]}</div>
+            <switcher ng-model="user.activated" class="corr_toggle pull-left" ng-change="changeAdminUserField('activated', user.id, newValue)"
+                      true-value="1" true-label="Активований" false-value="0" false-label="Не активований" ></switcher>
         </div>
 
     </div>

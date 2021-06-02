@@ -19,9 +19,9 @@ import (
 
 type (
 	userField struct {
-		Field string `json:"field"`
-		Data  string `json:"data"`
-		Id    int    `json:"id"`
+		Field string      `json:"field"`
+		Data  interface{} `json:"data"`
+		Id    int         `json:"id"`
 	}
 	userEmail struct {
 		Email string `json:"email" binding:"required"`

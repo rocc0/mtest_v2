@@ -17,6 +17,7 @@ const (
     surename VARCHAR(20) NOT NULL, email VARCHAR(100), password VARCHAR(100) NOT NULL, 
     rights VARCHAR(100) NOT NULL, records VARCHAR(100) NOT NULL, activated INTEGER DEFAULT 0);`
 	checkActivationQuery = `SELECT activated FROM users WHERE email=?;`
+	checkRightsQuery     = `SELECT rights FROM users WHERE email=?;`
 	createUserQuery      = `INSERT INTO users (name, surename, email, records, password) VALUES (?,?,?,?,?);`
 	getUserQuery         = `SELECT name, surename, email, id, rights, records FROM users WHERE email = ?;`
 	deleteUserQuery      = `DELETE FROM users WHERE id=?;`
@@ -77,6 +78,17 @@ func (mt *Service) CheckUserActivation(email string) bool {
 	return activated == 1
 }
 
+func (mt *Service) CheckUserAdmin(email string) bool {
+	var rights int
+
+	res := mt.db.QueryRow(checkRightsQuery, email)
+	if err := res.Scan(&rights); err != nil {
+		return false
+	}
+
+	return rights == 1
+}
+
 func (mt *Service) CreateUser() (string, error) {
 	var u User
 	if mt.CheckUserExists(u.Email) == false {
@@ -116,7 +128,7 @@ func (mt *Service) GetUser(email string) (*User, error) {
 	return user, nil
 }
 
-func (mt *Service) UpdateUser(field, data string, id int) error {
+func (mt *Service) UpdateUser(field string, data interface{}, id int) error {
 	stmt, err := mt.db.Prepare("UPDATE users SET " + field + "=? WHERE id=?;")
 	if err != nil {
 		return err
@@ -129,7 +141,7 @@ func (mt *Service) UpdateUser(field, data string, id int) error {
 	}()
 
 	if field == "password" {
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(data), bcrypt.DefaultCost)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(data.(string)), bcrypt.DefaultCost)
 		if _, err = stmt.Exec(field, hashedPassword, id); err != nil {
 			return err
 		}

@@ -47,10 +47,10 @@ mTestApp.service('authService', function ($http) {
             url: baseURL + 'api/v.1/u/reset/' + hash
         })
     }
-    this.ensureAuthenticated = function(token) {
+    this.ensureAuthenticated = function(token, url) {
         return $http({
             method: 'GET',
-            url: baseURL + 'api/v.1/u/cabinet',
+            url: baseURL + url,
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + token

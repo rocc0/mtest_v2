@@ -1314,6 +1314,17 @@ h2.border-bottom {
     border-bottom: 1px solid #ccc;
 }
 
+.user-cabinet-header {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.user-cabinet-header h2 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+
 #search .search-pgn {
     text-align: center;
 }
@@ -1451,7 +1462,7 @@ h2.border-bottom {
 
 .user-list-header {
     border-top: 1px solid;
-    width: 100%;
+    width: 95%;
     display: block;
     height: 24px;
     margin-top: 10px;

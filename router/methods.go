@@ -25,6 +25,7 @@ type userHandlers interface {
 	SetNewPasswordHandler(c *gin.Context)
 	ActivateAccountHandler(c *gin.Context)
 	RegistrationHandler(c *gin.Context)
+	ValidateAdminRights(c *gin.Context)
 	admActionsHandler
 	regionHandler
 	executorHandler
@@ -59,6 +60,7 @@ type executorHandler interface {
 type userValidator interface {
 	PasswordCheck(email, password string) bool
 	CheckUserActivation(email string) bool
+	CheckUserAdmin(email string) bool
 }
 
 type usersHandler interface {
