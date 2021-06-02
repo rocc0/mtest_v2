@@ -102,6 +102,10 @@ func (r *Router) Init() error {
 		//Delete handling
 		apiRoutes.POST("/m/delete", authMiddleware.MiddlewareFunc(), r.DeleteMTESTHandler)
 
+		//Regulatory acts uploading and deletion
+		apiRoutes.POST("/m/regact", authMiddleware.MiddlewareFunc(), r.DeleteMTESTHandler)
+		apiRoutes.DELETE("/m/regact", authMiddleware.MiddlewareFunc(), r.DeleteMTESTHandler)
+
 		//executors and group calculations
 		//Creation of view
 		apiRoutes.POST("/m/executor", authMiddleware.MiddlewareFunc(), r.CreateMTESTExecutorHandler)

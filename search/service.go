@@ -17,6 +17,7 @@ type Idx struct {
 	Region int    `json:"region"`
 	Govern int    `json:"govern"`
 	Author string `json:"author"`
+	RegAct string `json:"reg_act"`
 }
 
 const mapping = `
@@ -45,6 +46,10 @@ const mapping = `
 				},
 				"author":{
 					"type":"text"
+				},
+				"reg_act":{
+					"type":"text",
+					"analyzer": "ukrainian"
 				}
 			}
 	}
@@ -179,7 +184,37 @@ func (s *Service) UpdateIndex(id int64) error {
 	defer cancel()
 	idx := Idx{Mid: mid.String(), Name: name, Region: region, Govern: govern, Author: author}
 
-	if _, err = s.Index().Index("mtests").Type("mtest").Id(mid.String()).BodyJson(idx).Do(ctx); err != nil {
+	if _, err = s.Index().Index("mtests").Id(mid.String()).BodyJson(idx).Do(ctx); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Service) UpdateIndexWithFile(id int64, text string) error {
+	var (
+		mid            uuid.UUID
+		region, govern int
+		name, author   string
+	)
+
+	ind, err := s.Query("SELECT mid, name, region, govern, author FROM mtests WHERE id=?;", id)
+	if err != nil {
+		return err
+	}
+
+	for ind.Next() {
+		if err = ind.Scan(&mid, &name, &region, &govern, &author); err != nil {
+			logrus.Error(err)
+			return err
+		}
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
+	idx := Idx{Mid: mid.String(), Name: name, Region: region, Govern: govern, Author: author, RegAct: text}
+	if _, err = s.Index().Index("mtests").Id(mid.String()).BodyJson(idx).Do(ctx); err != nil {
 		return err
 	}
 

@@ -31,6 +31,7 @@ type userHandlers interface {
 	executorHandler
 	governmentsHandler
 	usersHandler
+	regActHandler
 }
 
 type admActionsHandler interface {
@@ -65,4 +66,11 @@ type userValidator interface {
 
 type usersHandler interface {
 	GetUsersHandler(c *gin.Context)
+}
+
+type regActHandler interface {
+	ActsListHandler(c *gin.Context)
+	ActGetHandler(c *gin.Context)
+	ActUploadHandler(c *gin.Context)
+	ActDeleteHandler(c *gin.Context)
 }

@@ -44,13 +44,14 @@ type regionDataProcessor interface {
 
 type governmentDataProcessor interface {
 	AddGovernment(name string) error
-	GetGovernments() (*[]datapkg.Government, error)
+	GetGovernments() ([]datapkg.Government, error)
 	EditGovernmentName(id int, name string) error
 	RemoveGovernment(id int) error
 }
 
 type indexUpdater interface {
 	UpdateIndex(id int64) error
+	UpdateIndexWithFile(id int64, text string) error
 }
 
 type Handlers struct {
@@ -62,6 +63,7 @@ type Handlers struct {
 	indexUpdater
 	admActionsProcessor
 	governmentDataProcessor
+	regActUpdater
 }
 
 func (hd *Handlers) RenderIndexPage(c *gin.Context) {

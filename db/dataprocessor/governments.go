@@ -9,7 +9,7 @@ type Government struct {
 	Name string `json:"name"`
 }
 
-func (mt *Service) GetGovernments() (*[]Government, error) {
+func (mt *Service) GetGovernments() ([]Government, error) {
 	var (
 		govs    []Government
 		govId   int
@@ -31,7 +31,7 @@ func (mt *Service) GetGovernments() (*[]Government, error) {
 		}
 		govs = append(govs, Government{Id: govId, Name: govName})
 	}
-	return &govs, nil
+	return govs, nil
 }
 
 func (mt *Service) EditGovernmentName(id int, name string) error {
