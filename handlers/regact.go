@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -9,10 +10,10 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	datapkg "mtest.com.ua/db/dataprocessor"
-
 	"code.sajari.com/docconv"
 	"github.com/gin-gonic/gin"
+	"github.com/jung-kurt/gofpdf"
+	datapkg "mtest.com.ua/db/dataprocessor"
 )
 
 type regActUpdater interface {
@@ -28,6 +29,18 @@ type regAct struct {
 }
 
 func (hd *Handlers) ActUploadHandler(c *gin.Context) {
+	x, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		logrus.Error(err)
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	var act regAct
+	if err := json.Unmarshal(x, &act); err != nil {
+		logrus.Error(err)
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
 	file, err := c.FormFile("file")
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "No file is received"})
@@ -42,26 +55,36 @@ func (hd *Handlers) ActUploadHandler(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "invalid file"})
 		return
 	}
-	hd.InsertRegAct("mid", res.Body, file.Filename, filepath.Ext(file.Filename))
 
-	if err := hd.UpdateIndexWithFile(0, res.Body); err != nil {
+	docID, err := hd.InsertRegAct(act.MtestID, res.Body, file.Filename, filepath.Ext(file.Filename))
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+	if err := hd.UpdateIndexWithFile(act.MtestID, res.Body); err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	/*
-		todo
-		reg act name, file name
-		0. convert to text
-		1. upload file to postgres
-		2. upload text to elastic*/
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Your file has been successfully uploaded.",
-	})
+	act.DocID = docID
+	c.JSON(http.StatusOK, gin.H{"act": act})
 }
 
 func (hd *Handlers) ActsListHandler(c *gin.Context) {
-	list, err := hd.ListRegActs("")
+	x, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		logrus.Error(err)
+		c.AbortWithStatus(400)
+		return
+	}
+	var act regAct
+	if err := json.Unmarshal(x, &act); err != nil {
+		logrus.Error(err)
+		c.AbortWithStatus(400)
+		return
+	}
+
+	list, err := hd.ListRegActs(act.MtestID)
 	if err == nil {
 		c.JSON(http.StatusOK, gin.H{"reg_acts": list})
 	} else {
@@ -89,7 +112,24 @@ func (hd *Handlers) ActGetHandler(c *gin.Context) {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"act": actData})
+
+	pdf := gofpdf.New("P", "mm", "A4", "")
+	fontSz := float64(16)
+	lineSz := pdf.PointToUnitConvert(fontSz)
+	pdf.SetFont("Arial", "B", fontSz)
+	pdf.Write(lineSz, actData.Text)
+	defer pdf.Close()
+	filename := actData.Name + "." + actData.Type
+	if err := pdf.OutputFileAndClose("/tmp/" + filename); err != nil {
+		logrus.Error(err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", actData.Name+"."+actData.Type))
+	c.Writer.Header().Add("Content-Type", "application/octet-stream")
+	c.Status(http.StatusOK)
+	c.File("/tmp/" + filename)
 }
 
 func (hd *Handlers) ActDeleteHandler(c *gin.Context) {

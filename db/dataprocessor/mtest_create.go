@@ -40,15 +40,11 @@ func (mt *Service) CreateMTEST(m NewMTEST, email string) (UserMtest, error) {
 		}
 	}()
 
-	result, err := stmt.Exec(mtestID, m.Name, m.Region, m.Government, defaultCalculations, m.CalcType, time.Now(), email)
+	_, err = stmt.Exec(mtestID, m.Name, m.Region, m.Government, defaultCalculations, m.CalcType, time.Now(), email)
 	if err != nil {
 		return UserMtest{}, err
 	}
 
-	idRes, err := result.LastInsertId()
-	if err != nil {
-		return UserMtest{}, err
-	}
 	idStmt := mt.db.QueryRow("SELECT id, records FROM users WHERE email=?", email)
 	if err := idStmt.Scan(&id, &dbRecords); err != nil {
 		return UserMtest{}, err
@@ -58,7 +54,7 @@ func (mt *Service) CreateMTEST(m NewMTEST, email string) (UserMtest, error) {
 	if err := json.Unmarshal([]byte(dbRecords), &records); err != nil {
 		return UserMtest{}, err
 	}
-	data := UserMtest{Id: mtestID, Name: m.Name, Region: m.Region, Government: m.Government, CalcType: m.CalcType, RecID: idRes}
+	data := UserMtest{Id: mtestID, Name: m.Name, Region: m.Region, Government: m.Government, CalcType: m.CalcType}
 	records[mtestID] = data
 
 	out, err := json.Marshal(records)

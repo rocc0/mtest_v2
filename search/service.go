@@ -161,14 +161,14 @@ func (s *Service) ElasticIndex() error {
 	return nil
 }
 
-func (s *Service) UpdateIndex(id int64) error {
+func (s *Service) UpdateIndex(id string) error {
 	var (
 		mid            uuid.UUID
 		region, govern int
 		name, author   string
 	)
 
-	ind, err := s.Query("SELECT mid, name, region, govern, author FROM mtests WHERE id=?;", id)
+	ind, err := s.Query("SELECT mid, name, region, govern, author FROM mtests WHERE mid=?;", id)
 	if err != nil {
 		return err
 	}
@@ -191,7 +191,7 @@ func (s *Service) UpdateIndex(id int64) error {
 	return nil
 }
 
-func (s *Service) UpdateIndexWithFile(id int64, text string) error {
+func (s *Service) UpdateIndexWithFile(id string, text string) error {
 	var (
 		mid            uuid.UUID
 		region, govern int

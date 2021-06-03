@@ -21,7 +21,6 @@ type (
 		Developer  string                  `json:"developer"`
 		DevMid     string                  `json:"dev_mid"`
 		Executors  map[string]newExecutors `json:"executors"`
-		RecID      int64
 	}
 	AdmAction struct {
 		ActId   int    `json:"id"`

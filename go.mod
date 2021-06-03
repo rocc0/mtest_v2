@@ -12,6 +12,7 @@ require (
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/google/uuid v1.1.2
+	github.com/jung-kurt/gofpdf v1.16.2 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/levigross/exp-html v0.0.0-20120902181939-8df60c69a8f5 // indirect

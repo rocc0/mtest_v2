@@ -50,8 +50,8 @@ type governmentDataProcessor interface {
 }
 
 type indexUpdater interface {
-	UpdateIndex(id int64) error
-	UpdateIndexWithFile(id int64, text string) error
+	UpdateIndex(id string) error
+	UpdateIndexWithFile(id string, text string) error
 }
 
 type Handlers struct {
@@ -126,7 +126,7 @@ func (hd *Handlers) CreateMTESTHandler(c *gin.Context) {
 	if data, err := hd.CreateMTEST(m, email); err == nil {
 		logrus.Error(err)
 		go func() {
-			if err := hd.UpdateIndex(data.RecID); err != nil {
+			if err := hd.UpdateIndex(data.Id); err != nil {
 				logrus.Error(err)
 			}
 		}()
