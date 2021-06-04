@@ -30,8 +30,15 @@
                     <span class="glyphicon glyphicon-cog"></span>
                 </button>
             </div>
+            <div class="mtest-icon">
+                <button ng-click="mt.filesList=!mt.filesList;mt.rowSharing=0"
+                        type="button"
+                        class="btn btn-primary">
+                    <span class="glyphicon glyphicon-file"></span>
+                </button>
+            </div>
             <div class="mtest-icon" ng-show="mt.calc_type == 1">
-                <button ng-click="mt.rowSharing=!mt.rowSharing"
+                <button ng-click="mt.rowSharing=!mt.rowSharing;mt.filesList=0"
                         type="button"
                         class="btn btn-primary">
                     <span class="glyphicon glyphicon-list-alt"></span>
@@ -63,6 +70,10 @@
                         class="btn btn-primary btn-sm">Додати виконавця</button>
             </div>
         </div>
+    </div>
+    <div class="mtest-sharing clearfix" ng-show="mt.filesList==1">
+        <h5 ng-show="mt.executors != null">Файли:</h5>
+
     </div>
 </div>
 
@@ -154,4 +165,11 @@
 
     </form>
 </div>
+</script>
+
+
+<script type="text/ng-template" id="filesTemplate.html">
+    <div id="files-list">
+
+    </div>
 </script>
