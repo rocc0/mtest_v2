@@ -157,3 +157,27 @@ mTestApp.filter('objLength', function() {
         return count;
     }
 });
+
+mTestApp.service('fileUploadService', function ($http, $q) {
+
+    this.uploadFileToUrl = function (file, uploadUrl, docId, token) {
+        //FormData, object of key/value pair for form fields and values
+        var fileFormData = new FormData();
+        fileFormData.append('file', file);
+        fileFormData.append('mtestID', docId);
+        var deffered = $q.defer();
+        $http.post(uploadUrl, fileFormData, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined},
+            Authorization: 'Bearer ' + token
+
+        }).then(function successCallback(response) {
+            deffered.resolve(response);
+
+        }, function errorCallback(response) {
+            deffered.reject(response);
+        });
+
+        return deffered.promise;
+    }
+});

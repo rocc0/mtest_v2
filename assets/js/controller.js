@@ -556,7 +556,7 @@ mTestApp.controller("authLoginController", function ($scope, $timeout, $location
 });
 
 mTestApp.controller("userCabinetController", function ($scope, $http, $location, $rootScope,
-                                                       $timeout, authService, mtCrud, ModalWin) {
+                                                       $timeout, authService, mtCrud, ModalWin, fileUploadService) {
     $scope.changepass = false;
     const token = localStorage.getItem('token');
     if (token) {
@@ -664,6 +664,57 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
         mtCrud.updateMtestItem(item, token)
             .then(function (response) {
             }).catch(function (err) {
+            console.log(err)
+        });
+    };
+
+    $scope.uploadRegAct = function (images, mtestID) {
+        var uploadUrl = "/api/v.1/m/regact",
+            promise = fileUploadService.uploadFileToUrl(images, uploadUrl, mtestID, token);
+
+        promise.then(function (response) {
+            if ($scope.files == null) {
+                $scope.files = []
+            }
+            $scope.files.push({
+                "docID": response.data.docID,
+                "mtestID": mtestID,
+                "name": response.data.name,
+                "type": response.data.type
+            })
+        }, function () {
+            $scope.serverResponse = 'An error has occurred';
+        })
+    };
+    $scope.getRegAct = function (mtestID, docID) {
+        console.log(value);
+        $http({
+            method: 'GET',
+            url: "/api/v.1/m/regact",
+            data: {mtestID: mtestID, docID: docID},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+
+    $scope.removeRegAct = function (mtestID, docID) {
+        console.log(value);
+        const index = $scope.records[mtestID].files.findIndex(a => a.docID === docID)
+        $http({
+            method: 'DELETE',
+            url: "/api/v.1/m/regact",
+            data: {mtestID: mtestID, docID: docID},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+            $scope.files.splice(index,1)
+        }).catch(function (err) {
             console.log(err)
         });
     };

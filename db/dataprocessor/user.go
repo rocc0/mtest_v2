@@ -34,6 +34,7 @@ type User struct {
 	Password  string                 `json:"password"`
 	Records   map[string]interface{} `json:"records"`
 	Activated int                    `json:"activated"`
+	Files     RegAct                 `json:"files"`
 }
 
 func (mt *Service) InitUsersTable() error {
@@ -124,6 +125,14 @@ func (mt *Service) GetUser(email string) (*User, error) {
 	if err := json.Unmarshal([]byte(records), &user.Records); err != nil {
 		return nil, err
 	}
+
+	//for k := range user.Records {
+	//	if acts, err := mt.ListRegActs(k); err != nil {
+	//		return nil, err
+	//	} else {
+	//
+	//	}
+	//}
 
 	return user, nil
 }

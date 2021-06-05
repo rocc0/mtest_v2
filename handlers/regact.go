@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 
@@ -26,6 +27,7 @@ type regActUpdater interface {
 type regAct struct {
 	MtestID string `json:"mtest_id"`
 	DocID   string `json:"doc_id"`
+	Name    string `json:"name"`
 }
 
 func (hd *Handlers) ActUploadHandler(c *gin.Context) {
@@ -55,8 +57,8 @@ func (hd *Handlers) ActUploadHandler(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "invalid file"})
 		return
 	}
-
-	docID, err := hd.InsertRegAct(act.MtestID, res.Body, file.Filename, filepath.Ext(file.Filename))
+	ext := filepath.Ext(file.Filename)
+	docID, err := hd.InsertRegAct(act.MtestID, res.Body, strings.TrimSuffix(file.Filename, ext), ext)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -67,6 +69,7 @@ func (hd *Handlers) ActUploadHandler(c *gin.Context) {
 	}
 
 	act.DocID = docID
+	act.Name = file.Filename
 	c.JSON(http.StatusOK, gin.H{"act": act})
 }
 

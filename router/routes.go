@@ -103,8 +103,10 @@ func (r *Router) Init() error {
 		apiRoutes.POST("/m/delete", authMiddleware.MiddlewareFunc(), r.DeleteMTESTHandler)
 
 		//Regulatory acts uploading and deletion
-		apiRoutes.POST("/m/regact", authMiddleware.MiddlewareFunc(), r.DeleteMTESTHandler)
-		apiRoutes.DELETE("/m/regact", authMiddleware.MiddlewareFunc(), r.DeleteMTESTHandler)
+		apiRoutes.POST("/m/regact/list", r.ActsListHandler)
+		apiRoutes.GET("/m/regact", r.ActGetHandler)
+		apiRoutes.POST("/m/regact", authMiddleware.MiddlewareFunc(), r.ActUploadHandler)
+		apiRoutes.DELETE("/m/regact", authMiddleware.MiddlewareFunc(), r.ActDeleteHandler)
 
 		//executors and group calculations
 		//Creation of view

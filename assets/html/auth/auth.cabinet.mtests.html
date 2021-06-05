@@ -72,8 +72,23 @@
         </div>
     </div>
     <div class="mtest-sharing clearfix" ng-show="mt.filesList==1">
-        <h5 ng-show="mt.executors != null">Файли:</h5>
-
+        <h5 ng-show="mt.files != null">Файли:</h5>
+        <div ng-repeat="fl in mt.files" class="mtests-list">
+            <div class="reg-act-file">
+            <button ng-click="getRegAct(fl.mtestID, fl.docID)"
+                    class="btn btn-primary btn-sm">{[{ fl.name }]}.{[{ fl.type }]}</button>
+            <button ng-click="removeRegAct(fl.mtestID, fl.docID);fl=''" class="btn btn-primary btn-sm">
+                     <span class="glyphicon glyphicon-remove">
+                    </span>
+            </button>
+            </div>
+        </div>
+        <div class="upload-regact">
+            <form class="form-group ">
+                <input type="file" demo-file-model="regacts" class="form-control" id="regact-upload-form" />
+            </form>
+            <button ng-click="uploadRegAct(regacts, mt.id)" class="btn btn-primary">Завантажити</button>
+        </div>
     </div>
 </div>
 
