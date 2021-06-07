@@ -286,6 +286,15 @@ mTestApp.controller("mTestDBController",
         //-------------------------------------------- FOR TYPEHEAD ------------------------------------------------
 
         $http({
+            method: 'POST',
+            url: '/api/v.1/m/regact/list',
+            data: {mtest_id: $scope.params.mtest_id},
+        }).then(function (response) {
+            $scope.reg_files = response.data.reg_acts;
+            console.log($scope.reg_files)
+        });
+
+        $http({
             method: 'GET',
             url: '/api/v.1/actions'
         }).then(function (response) {
@@ -494,6 +503,21 @@ mTestApp.controller("mTestDBController",
             }, 1000)
         };
 
+        $scope.getRegAct = function (mtestID, docID) {
+            console.log(mtestID, docID);
+            $http({
+                method: 'POST',
+                url: "/api/v.1/m/regact/get",
+                data: {mtest_id: mtestID, doc_id: docID},
+                headers: {
+                    'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+                }
+            }).then(function (response) {
+                console.log(response)
+            }).catch(function (err) {
+                console.log(err)
+            });
+        };
 
         //---------------------------------------------PDF--------------------------------------------------------
         $interval(function () {

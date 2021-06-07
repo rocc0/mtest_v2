@@ -1507,10 +1507,34 @@ h2.border-bottom {
     border-radius: 7px 0px 0px 7px;
 }
 
+.reg-act-file .download-reg-act:hover {
+    box-shadow: 1px 1px 1px #9e576c;
+}
+
 .reg-act-file  .remove-reg-act {
     margin-left: -3px;
     border: 0;
     color: white;
     background: #bb4e00;
     border-radius: 0px 7px 7px 0px;
+}
+
+
+.tools .reg-act-file .download-reg-act {
+    margin-left: 4px;
+    border: 0;
+    color: white;
+    background: #aea287;
+    border-radius: 7px;
+}
+
+.tools .reg-files {
+    min-height: 63px;
+}
+
+h5.files-header {
+    font-size: 16px;
+    color: #420404;
+    padding-top: 5px;
+    height: 15px;
 }
