@@ -75,12 +75,12 @@
         <h5 ng-show="mt.files != null">Файли:</h5>
         <div ng-repeat="fl in mt.files" class="mtests-list">
             <div class="reg-act-file">
-            <button ng-click="getRegAct(fl.mtestID, fl.docID)"
-                    class="btn btn-primary btn-sm">{[{ fl.name }]}.{[{ fl.type }]}</button>
-            <button ng-click="removeRegAct(fl.mtestID, fl.docID);fl=''" class="btn btn-primary btn-sm">
-                     <span class="glyphicon glyphicon-remove">
-                    </span>
-            </button>
+                <button ng-click="getRegAct(fl.MtestID, fl.DocID)"
+                        class="download-reg-act">{[{ fl.Name }]}{[{ fl.Type }]}</button>
+                <button ng-click="removeRegAct(fl.MtestID, fl.DocID);fl=''" class="remove-reg-act">
+                         <span class="glyphicon glyphicon-remove">
+                        </span>
+                </button>
             </div>
         </div>
         <div class="upload-regact">

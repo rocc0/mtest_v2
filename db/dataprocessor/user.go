@@ -26,15 +26,14 @@ const (
 )
 
 type User struct {
-	Id        int                    `json:"id"`
-	Name      string                 `json:"name"`
-	Surename  string                 `json:"surename"`
-	Email     string                 `json:"email"`
-	Rights    int                    `json:"rights"`
-	Password  string                 `json:"password"`
-	Records   map[string]interface{} `json:"records"`
-	Activated int                    `json:"activated"`
-	Files     RegAct                 `json:"files"`
+	Id        int                   `json:"id"`
+	Name      string                `json:"name"`
+	Surename  string                `json:"surename"`
+	Email     string                `json:"email"`
+	Rights    int                   `json:"rights"`
+	Password  string                `json:"password"`
+	Records   map[string]*MTestData `json:"records"`
+	Activated int                   `json:"activated"`
 }
 
 func (mt *Service) InitUsersTable() error {
@@ -126,13 +125,13 @@ func (mt *Service) GetUser(email string) (*User, error) {
 		return nil, err
 	}
 
-	//for k := range user.Records {
-	//	if acts, err := mt.ListRegActs(k); err != nil {
-	//		return nil, err
-	//	} else {
-	//
-	//	}
-	//}
+	for k := range user.Records {
+		if acts, err := mt.ListRegActs(k); err != nil {
+			return nil, err
+		} else {
+			user.Records[k].Files = acts
+		}
+	}
 
 	return user, nil
 }

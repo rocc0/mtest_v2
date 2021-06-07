@@ -903,7 +903,7 @@ code.small {
 
     li#itemplus li#item {
         margin-right: 3px;
-        width: 96.7%;
+        width: 97.5%;
     }
 
     li#itemplus li#item .input_three {
@@ -1473,4 +1473,25 @@ h2.border-bottom {
     width: 20%;
     float: left;
     text-align: center;
+}
+
+.reg-act-file {
+    margin-bottom: 5px;
+    float: left;
+    width: 100%;
+}
+
+.reg-act-file .download-reg-act {
+    border: 0;
+    color: white;
+    background: #aea287;
+    border-radius: 7px 0px 0px 7px;
+}
+
+.reg-act-file  .remove-reg-act {
+    margin-left: -3px;
+    border: 0;
+    color: white;
+    background: #bb4e00;
+    border-radius: 0px 7px 7px 0px;
 }

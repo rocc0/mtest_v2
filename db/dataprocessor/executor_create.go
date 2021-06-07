@@ -22,7 +22,7 @@ func (mt *Service) CreateExecutor(email string, ex Executor) (string, error) {
 		id, devId                             int
 		dbRecords, devDbRecords, getExecutors string
 		records                               map[string]interface{}
-		devRecords                            map[string]UserMtest
+		devRecords                            map[string]MTestData
 	)
 
 	if ok := mt.CheckUserExists(ex.Email); !ok {
@@ -47,7 +47,7 @@ func (mt *Service) CreateExecutor(email string, ex Executor) (string, error) {
 	}
 
 	//UPDATE MAIN MTEST executors!!!!!!!!!!!
-	saveExecutors := map[string]newExecutors{}
+	saveExecutors := map[string]ExecutorInfo{}
 	if err := mt.db.QueryRow("SELECT executors FROM mtests WHERE mid=?", ex.DevMid).Scan(&getExecutors); err != nil {
 		return "", err
 	}
@@ -56,7 +56,7 @@ func (mt *Service) CreateExecutor(email string, ex Executor) (string, error) {
 		return "", err
 	}
 
-	saveExecutors[mtestID] = newExecutors{ex.Email, mtestID, true}
+	saveExecutors[mtestID] = ExecutorInfo{ex.Email, mtestID, true}
 	updOut, updOutErr := json.Marshal(saveExecutors)
 	if updOutErr != nil {
 		return "", updOutErr
@@ -80,7 +80,7 @@ func (mt *Service) CreateExecutor(email string, ex Executor) (string, error) {
 		return "", err
 	}
 
-	records[mtestID] = UserMtest{Id: mtestID, Name: ex.Title, Region: ex.Region,
+	records[mtestID] = MTestData{Id: mtestID, Name: ex.Title, Region: ex.Region,
 		Government: ex.Government, CalcType: 3, Developer: email, DevMid: ex.DevMid}
 
 	out, err := json.Marshal(records)
@@ -102,7 +102,7 @@ func (mt *Service) CreateExecutor(email string, ex Executor) (string, error) {
 	}
 
 	record := devRecords[ex.DevMid]
-	devRecords[ex.DevMid] = UserMtest{Id: ex.DevMid, Name: record.Name, Region: record.Region,
+	devRecords[ex.DevMid] = MTestData{Id: ex.DevMid, Name: record.Name, Region: record.Region,
 		Government: record.Government, CalcType: record.CalcType, Executors: saveExecutors}
 
 	devOut, err := json.Marshal(devRecords)

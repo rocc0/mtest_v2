@@ -17,7 +17,7 @@ func (mt *Service) DeleteExecutor(devEmail string, del DeleteExecutor) error {
 		id         int
 		dbRecords  string
 		records    map[string]interface{}
-		devRecords map[string]UserMtest
+		devRecords map[string]MTestData
 	)
 	//delete mtest
 

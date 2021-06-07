@@ -22,7 +22,7 @@ type mtestDataProcessor interface {
 	UpdateMTEST(m map[string]interface{}, email string) error
 	DeleteMTEST(mid, email string) error
 	GetMTEST(id string) (*datapkg.MTEST, error)
-	CreateMTEST(m datapkg.NewMTEST, email string) (datapkg.UserMtest, error)
+	CreateMTEST(m datapkg.NewMTEST, email string) (datapkg.MTestData, error)
 }
 
 type admActionsProcessor interface {

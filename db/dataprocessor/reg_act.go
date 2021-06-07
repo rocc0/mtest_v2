@@ -73,7 +73,7 @@ func (mt *Service) ListRegActs(mtestID string) ([]RegAct, error) {
 		users []RegAct
 	)
 
-	res, err := mt.db.Query(listRegActsQuery)
+	res, err := mt.db.Query(listRegActsQuery, mtestID)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (mt *Service) ListRegActs(mtestID string) ([]RegAct, error) {
 			MtestID: mtestID,
 			DocID:   docID,
 			Name:    docName,
-			Text:    docType,
+			Type:    docType,
 		})
 	}
 

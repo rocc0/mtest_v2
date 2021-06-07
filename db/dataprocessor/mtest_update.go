@@ -12,7 +12,7 @@ type Service struct {
 }
 
 type (
-	UserMtest struct {
+	MTestData struct {
 		Id         string                  `json:"id"`
 		Name       string                  `json:"name"`
 		Region     int                     `json:"region"`
@@ -20,13 +20,14 @@ type (
 		CalcType   int                     `json:"calc_type"`
 		Developer  string                  `json:"developer"`
 		DevMid     string                  `json:"dev_mid"`
-		Executors  map[string]newExecutors `json:"executors"`
+		Executors  map[string]ExecutorInfo `json:"executors"`
+		Files      []RegAct                `json:"files"`
 	}
 	AdmAction struct {
 		ActId   int    `json:"id"`
 		ActName string `json:"act_name"`
 	}
-	newExecutors struct {
+	ExecutorInfo struct {
 		Email   string `json:"email"`
 		Mid     string `json:"mid"`
 		Checked bool   `json:"checked"`
@@ -83,7 +84,7 @@ func (mt *Service) updateMTESTAndUser(m map[string]interface{}, email string) er
 	var (
 		id        int
 		dbRecords string
-		records   map[string]UserMtest
+		records   map[string]MTestData
 	)
 
 	govern := int(m["govern"].(float64))
@@ -102,7 +103,7 @@ func (mt *Service) updateMTESTAndUser(m map[string]interface{}, email string) er
 		return err
 	}
 	record := records[m["mid"].(string)]
-	records[m["mid"].(string)] = UserMtest{Id: m["mid"].(string), Name: m["name"].(string),
+	records[m["mid"].(string)] = MTestData{Id: m["mid"].(string), Name: m["name"].(string),
 		Region: region, Government: govern, CalcType: calcType, Executors: record.Executors}
 
 	out, err := json.Marshal(records)

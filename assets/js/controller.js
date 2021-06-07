@@ -703,7 +703,7 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
     };
 
     $scope.removeRegAct = function (mtestID, docID) {
-        console.log(value);
+        console.log(mtestID, docID);
         const index = $scope.records[mtestID].files.findIndex(a => a.docID === docID)
         $http({
             method: 'DELETE',
