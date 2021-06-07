@@ -673,14 +673,14 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
             promise = fileUploadService.uploadFileToUrl(images, uploadUrl, mtestID, token);
 
         promise.then(function (response) {
-            if ($scope.files == null) {
-                $scope.files = []
+            if ($scope.records[mtestID].files == null) {
+                $scope.records[mtestID].files = []
             }
-            $scope.files.push({
-                "docID": response.data.docID,
-                "mtestID": mtestID,
-                "name": response.data.name,
-                "type": response.data.type
+            $scope.records[mtestID].files.push({
+                "DocID": response.data.act.doc_id,
+                "MtestID": mtestID,
+                "Name": response.data.act.name,
+                "Type": response.data.act.type
             })
         }, function () {
             $scope.serverResponse = 'An error has occurred';
@@ -691,7 +691,7 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
         $http({
             method: 'GET',
             url: "/api/v.1/m/regact",
-            data: {mtestID: mtestID, docID: docID},
+            data: {mtest_id: mtestID, doc_id: docID},
             headers: {
                 'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }
@@ -708,12 +708,12 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
         $http({
             method: 'DELETE',
             url: "/api/v.1/m/regact",
-            data: {mtestID: mtestID, docID: docID},
+            data: {mtest_id: mtestID, doc_id: docID},
             headers: {
                 'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }
         }).then(function (response) {
-            $scope.files.splice(index,1)
+            $scope.records[mtestID].files.splice(index,1)
         }).catch(function (err) {
             console.log(err)
         });
