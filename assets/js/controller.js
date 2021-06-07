@@ -687,16 +687,16 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
         })
     };
     $scope.getRegAct = function (mtestID, docID) {
-        console.log(value);
+        console.log(mtestID, docID);
         $http({
-            method: 'GET',
-            url: "/api/v.1/m/regact",
+            method: 'POST',
+            url: "/api/v.1/m/regact/get",
             data: {mtest_id: mtestID, doc_id: docID},
             headers: {
                 'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }
         }).then(function (response) {
-
+            console.log(response)
         }).catch(function (err) {
             console.log(err)
         });

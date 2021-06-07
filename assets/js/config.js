@@ -22,7 +22,7 @@ var interceptor = function ($q, $location) {
 
 mTestApp.config(function($compileProvider, $interpolateProvider, $routeProvider, $locationProvider,$httpProvider) {
     $httpProvider.interceptors.push(interceptor);
-    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|blob):/);
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|blob|pdf):/);
     $locationProvider.html5Mode(true);
     $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
     $routeProvider

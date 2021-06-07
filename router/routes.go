@@ -104,7 +104,7 @@ func (r *Router) Init() error {
 
 		//Regulatory acts uploading and deletion
 		apiRoutes.POST("/m/regact/list", r.ActsListHandler)
-		apiRoutes.GET("/m/regact", r.ActGetHandler)
+		apiRoutes.POST("/m/regact/get", r.ActGetHandler)
 		apiRoutes.POST("/m/regact", authMiddleware.MiddlewareFunc(), r.ActUploadHandler)
 		apiRoutes.DELETE("/m/regact", authMiddleware.MiddlewareFunc(), r.ActDeleteHandler)
 

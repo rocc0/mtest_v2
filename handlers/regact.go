@@ -25,8 +25,8 @@ type regActUpdater interface {
 
 type regAct struct {
 	MtestID string `json:"mtest_id"`
-	DocID   string `json:"doc_id"`
-	Name    string `json:"name"`
+	DocID   string `json:"doc_id,omitempty"`
+	Name    string `json:"name,omitempty"`
 }
 
 func (hd *Handlers) ActUploadHandler(c *gin.Context) {
@@ -101,7 +101,7 @@ func (hd *Handlers) ActGetHandler(c *gin.Context) {
 	var act regAct
 	if err := json.Unmarshal(x, &act); err != nil {
 		logrus.Error(err)
-		c.AbortWithStatus(400)
+		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 	actData, err := hd.GetRegAct(act.MtestID, act.DocID)
@@ -117,15 +117,18 @@ func (hd *Handlers) ActGetHandler(c *gin.Context) {
 	pdf.SetFont("Arial", "B", fontSz)
 	pdf.Write(lineSz, actData.Text)
 	defer pdf.Close()
-	filename := actData.Name + "." + actData.Type
+	filename := actData.Name + ".pdf"
 	if err := pdf.OutputFileAndClose("/tmp/" + filename); err != nil {
 		logrus.Error(err)
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", actData.Name+"."+actData.Type))
+	c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", actData.Name+".pdf"))
 	c.Writer.Header().Add("Content-Type", "application/octet-stream")
+	c.Writer.Header().Add("Content-Description", "File Transfer")
+	c.Writer.Header().Add("Content-Transfer-Encoding", "binary")
+
 	c.Status(http.StatusOK)
 	c.File("/tmp/" + filename)
 }

@@ -1475,11 +1475,16 @@ h2.border-bottom {
     text-align: center;
 }
 
-.mtest-sharing.reg-files {
+.mtest-sharing .reg-files {
     width: 100%;
+    display: block;
+    clear: both;
 }
 
 .upload-regact {
+    clear: both;
+    display: block;
+    width: 100%;
     margin-top: 3px;
 }
 
