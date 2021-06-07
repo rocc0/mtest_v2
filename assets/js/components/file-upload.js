@@ -1,7 +1,4 @@
-
-
-
-    viewDB.directive('demoFileModel', function ($parse) {
+mTestApp.directive('demoFileModel', function ($parse) {
         return {
             restrict: 'A', //the directive can be used as an attribute only
             /*

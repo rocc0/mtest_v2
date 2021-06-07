@@ -168,13 +168,13 @@ mTestApp.service('fileUploadService', function ($http, $q) {
         var deffered = $q.defer();
         $http.post(uploadUrl, fileFormData, {
             transformRequest: angular.identity,
-            headers: {'Content-Type': undefined},
-            Authorization: 'Bearer ' + token
-
+            headers: {'Content-Type': undefined, Authorization: 'Bearer ' + token},
         }).then(function successCallback(response) {
+            console.log(response)
             deffered.resolve(response);
 
         }, function errorCallback(response) {
+            console.log(response)
             deffered.reject(response);
         });
 

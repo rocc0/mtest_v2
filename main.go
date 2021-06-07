@@ -1,6 +1,7 @@
 package main
 
 import (
+	runtime "github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/sirupsen/logrus"
 
 	"mtest.com.ua/config"
@@ -12,6 +13,12 @@ import (
 )
 
 func main() {
+	formatter := runtime.Formatter{ChildFormatter: &logrus.TextFormatter{
+		FullTimestamp: true,
+	}}
+	formatter.Line = true
+	formatter.File = true
+	logrus.SetFormatter(&formatter)
 	cfg, err := config.FromEnv()
 	if err != nil {
 		logrus.Fatal(err)

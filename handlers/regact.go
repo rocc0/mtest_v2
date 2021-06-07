@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"path/filepath"
 	"strings"
@@ -31,39 +30,35 @@ type regAct struct {
 }
 
 func (hd *Handlers) ActUploadHandler(c *gin.Context) {
-	x, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
-		logrus.Error(err)
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
 	var act regAct
-	if err := json.Unmarshal(x, &act); err != nil {
-		logrus.Error(err)
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
+	act.MtestID = c.PostForm("mtestID")
 	file, err := c.FormFile("file")
 	if err != nil {
+		logrus.Error(err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "No file is received"})
 		return
 	}
 	f, err := file.Open()
 	if err != nil {
-		log.Fatal(err)
+		logrus.Error(err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "invalid file"})
+		return
 	}
 	res, err := docconv.Convert(f, docconv.MimeTypeByExtension(file.Filename), true)
 	if err != nil {
+		logrus.Error(err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "invalid file"})
 		return
 	}
 	ext := filepath.Ext(file.Filename)
 	docID, err := hd.InsertRegAct(act.MtestID, res.Body, strings.TrimSuffix(file.Filename, ext), ext)
 	if err != nil {
+		logrus.Error(err)
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 	if err := hd.UpdateIndexWithFile(act.MtestID, res.Body); err != nil {
+		logrus.Error(err)
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
