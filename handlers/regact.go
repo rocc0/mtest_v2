@@ -84,7 +84,11 @@ func (hd *Handlers) ActsListHandler(c *gin.Context) {
 
 	list, err := hd.ListRegActs(act.MtestID)
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"reg_acts": list})
+		resp := gin.H{}
+		if len(list) > 0 {
+			resp["reg_acts"] = list[0]
+		}
+		c.JSON(http.StatusOK, resp)
 	} else {
 		logrus.Error(err)
 		c.AbortWithStatus(http.StatusInternalServerError)

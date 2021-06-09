@@ -72,22 +72,22 @@
         </div>
     </div>
     <div class="mtest-sharing clearfix" ng-show="mt.filesList==1">
-        <div class="reg-files">
-            <h5 ng-show="mt.files != null">Файли:</h5>
-            <div ng-repeat="fl in mt.files" class="reg-act-file">
-                    <button ng-click="getRegAct(fl.MtestID, fl.DocID)"
-                            class="download-reg-act">{[{ fl.Name }]}</button>
-                    <button ng-click="removeRegAct(fl.MtestID, fl.DocID);fl=''" class="remove-reg-act">
-                             <span class="glyphicon glyphicon-remove">
-                            </span>
-                    </button>
-            </div>
-        </div>
-        <div class="upload-regact">
+        <div class="upload-regact" ng-show="mt.files == null">
             <form class="form-group ">
                 <input type="file" name="Регуляторний акт" demo-file-model="regacts" class="form-control" id="regact-upload-form" />
             </form>
             <button ng-click="uploadRegAct(regacts, mt.id)" class="btn btn-primary">Завантажити</button>
+        </div>
+        <div class="reg-files">
+            <h5 ng-show="mt.files != null">Регуляторні акти:</h5>
+            <div ng-repeat="fl in mt.files" class="reg-act-file">
+                <button ng-click="getRegAct(fl.MtestID, fl.DocID)"
+                        class="download-reg-act">{[{ fl.Name }]}</button>
+                <button ng-click="removeRegAct(fl.MtestID, fl.DocID);fl='';mt.files = null" class="remove-reg-act">
+                         <span class="glyphicon glyphicon-remove">
+                        </span>
+                </button>
+            </div>
         </div>
     </div>
 </div>

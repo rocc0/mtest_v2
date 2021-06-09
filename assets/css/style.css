@@ -1305,7 +1305,9 @@ ti-tag-item.ng-isolate-scope span {
     background: #e2f3fb;
     margin-bottom: 2px;
 }
+
 #mtests .mtest-sharing h5 {
+    margin-bottom: 2px;
     border-bottom: 1px solid #cccccc;
 }
 
@@ -1476,20 +1478,20 @@ h2.border-bottom {
 }
 
 .mtest-sharing .reg-files {
-    width: 100%;
+    width: 49%;
     display: block;
-    clear: both;
+    float: left;
 }
 
 .upload-regact {
-    clear: both;
+    margin-right: 5px;
+    float: left;
     display: block;
-    width: 100%;
-    margin-top: 3px;
+    width: 49%;
+    margin-top: 14px;
 }
-
 .upload-regact form {
-    width: 30%;
+    width: 75%;
     float: left;
     margin-right: 10px;
 }
