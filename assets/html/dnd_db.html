@@ -88,13 +88,10 @@
                 </div>
             </div>
 
-            <div class="mtest-sharing clearfix" ng-show="reg_files != null">
+            <div class="mtest-sharing clearfix" ng-show="reg_files != null || reg_files.Name != ''">
                 <div class="reg-files">
                     <h5 class="files-header">Регуляторні акти:</h5>
-                    <div ng-repeat="fl in reg_files" class="reg-act-file">
-                        <button ng-click="getRegAct(fl.MtestID, fl.DocID)"
-                                class="download-reg-act">{[{ fl.Name }]}</button>
-                    </div>
+                        <button ng-click="getRegAct(reg_files.MtestID, reg_files.DocID)" class="download-reg-act">{[{reg_files.Name}]}</button>
                 </div>
             </div>
             <div class="btn1">

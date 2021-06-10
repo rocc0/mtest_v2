@@ -1477,6 +1477,22 @@ h2.border-bottom {
     text-align: center;
 }
 
+
+.faq .mtest-sharing .reg-files {
+    width: 100%;
+}
+
+.faq .mtest-sharing .reg-files button {
+    border-radius: 8px;
+    background-color: #0073af;
+    color: white;
+    border: 0;
+}
+
+.faq .mtest-sharing .reg-files button:hover {
+    box-shadow: 1px 1px 1px #fff;
+}
+
 .mtest-sharing .reg-files {
     width: 49%;
     display: block;

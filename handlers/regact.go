@@ -87,6 +87,8 @@ func (hd *Handlers) ActsListHandler(c *gin.Context) {
 		resp := gin.H{}
 		if len(list) > 0 {
 			resp["reg_acts"] = list[0]
+		} else {
+			resp["reg_acts"] = []datapkg.RegAct{}
 		}
 		c.JSON(http.StatusOK, resp)
 	} else {
@@ -150,6 +152,11 @@ func (hd *Handlers) ActDeleteHandler(c *gin.Context) {
 		c.AbortWithStatus(400)
 		return
 	}
+	defer func() {
+		if err := hd.UpdateIndexWithFile(act.MtestID, ""); err != nil {
+			logrus.Error(err)
+		}
+	}()
 	if err := hd.DeleteRegAct(act.MtestID, act.DocID); err == nil {
 		c.JSON(200, gin.H{"title": "Документ видалено"})
 	} else {

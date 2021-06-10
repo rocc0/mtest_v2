@@ -291,7 +291,6 @@ mTestApp.controller("mTestDBController",
             data: {mtest_id: $scope.params.mtest_id},
         }).then(function (response) {
             $scope.reg_files = response.data.reg_acts;
-            console.log($scope.reg_files)
         });
 
         $http({
@@ -826,7 +825,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
                 "should": {
                     "multi_match": {
                         "query": $scope.phrase,
-                        "fields": ["name"]
+                        "fields": ["name", "reg_act"]
                     }
                 }
             }
@@ -863,7 +862,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
     $scope.doSearch = function () {
         $http({
             method: 'POST',
-            url: "http://mtest.org.ua:9200/mtests/_search",
+            url: "http://localhost:9200/mtests/_search",
             data: $scope.query
         }).then(function (response) {
             $scope.results = response.data;
