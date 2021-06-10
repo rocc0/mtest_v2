@@ -1,0 +1,21 @@
+<div ng-repeat="business in businesses" class="admin-row">
+    <div class="admin-row-info">
+        <div line-edit="business.name"
+             on-save="saveBusinessName(business.id, value)"
+             on-remove="removeBusinessType(business.id, value)"
+             on-cancel="log('CANCEL', value)">{[{ business.name }]}</div>
+    </div>
+</div>
+
+<div class="add-admin-filed">
+    <button ng-click="dynamicPopover.open('add', 'static/html/tmpl/modal_add_business.html', '')"
+            uib-popover-template="dynamicPopover.templateUrl['add']"
+            type="button"
+            class="btn btn-success"
+            popover-placement="auto top"
+            popover-is-open="dynamicPopover.isOpen['add']"
+            popover-class="action-popover">
+        <span class="glyphicon glyphicon-add"></span>
+        Додати вид бізнесу
+    </button>
+</div>

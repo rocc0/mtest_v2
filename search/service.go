@@ -30,28 +30,28 @@ const mapping = `
     	"mtest": {}
   	},
 	"mappings":{
-			"properties":{
-				"mid":{
-					"type":"text"
-				},
-				"name":{
-					"type":"text",
-					"analyzer": "ukrainian"
-				},
-				"region":{
-					"type":"long"
-				},
-				"govern":{
-					"type":"long"
-				},
-				"author":{
-					"type":"text"
-				},
-				"reg_act":{
-					"type":"text",
-					"analyzer": "ukrainian"
-				}
+		"properties":{
+			"mid":{
+				"type":"text"
+			},
+			"name":{
+				"type":"text",
+				"analyzer": "ukrainian"
+			},
+			"region":{
+				"type":"long"
+			},
+			"govern":{
+				"type":"long"
+			},
+			"author":{
+				"type":"text"
+			},
+			"reg_act":{
+				"type":"text",
+				"analyzer": "ukrainian"
 			}
+		}
 	}
 }`
 
@@ -149,7 +149,6 @@ func (s *Service) ElasticIndex() error {
 	}
 
 	logrus.Info("Indexing started")
-
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 

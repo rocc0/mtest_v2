@@ -617,6 +617,16 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
     }).catch( function (reason) {
         console.log(reason)
     });
+
+    $http({
+        method: 'GET',
+        url: '/api/v.1/businesses',
+    }).then(function (response) {
+        $scope.businesses = response.data.businesses
+    }).catch(function (reason) {
+        console.log(reason)
+    });
+
     //end load governments and regions
 
     //format label for typehead on select
@@ -956,6 +966,15 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
 
     $http({
         method: 'GET',
+        url: '/api/v.1/businesses',
+    }).then(function (response) {
+        $scope.businesses = response.data.businesses
+    }).catch(function (reason) {
+        console.log(reason)
+    });
+
+    $http({
+        method: 'GET',
         url: '/api/v.1/governments',
     }).then(function (response) {
         $scope.governments = response.data.govs
@@ -1130,6 +1149,53 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
             }
         }).then(function (response) {
             $scope.actions.splice(index,1)
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+
+    ///actions
+    $scope.saveBusinessName = function (id, value) {
+        console.log(id, value);
+        $http({
+            method: 'PUT',
+            url: "/api/v.1/businesses",
+            data: {name: value, id: parseInt(id)},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+    $scope.addBusinessType = function (value) {
+        console.log(value);
+        $http({
+            method: 'POST',
+            url: "/api/v.1/businesses",
+            data: {name: value},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+            $scope.businesses.push({name:value, id: $scope.businesses.length+1})
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+    $scope.removeBusinessType = function (value) {
+        console.log(value);
+        const index =  $scope.businesses.findIndex(a => a.id === parseInt(value))
+        $http({
+            method: 'DELETE',
+            url: "/api/v.1/businesses",
+            data: {id: parseInt(value)},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+            $scope.businesses.splice(index,1)
         }).catch(function (err) {
             console.log(err)
         });

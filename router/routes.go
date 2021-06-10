@@ -90,6 +90,11 @@ func (r *Router) Init() error {
 		apiRoutes.PUT("/actions", authMiddleware.MiddlewareFunc(), r.EditAdministrativeActionsHandler)
 		apiRoutes.DELETE("/actions", authMiddleware.MiddlewareFunc(), r.DeleteAdministrativeActionsHandler)
 
+		apiRoutes.GET("/businesses", r.GetBusinessesHandler)
+		apiRoutes.POST("/businesses", authMiddleware.MiddlewareFunc(), r.AddBusinessHandler)
+		apiRoutes.PUT("/businesses", authMiddleware.MiddlewareFunc(), r.EditBusinessHandler)
+		apiRoutes.DELETE("/businesses", authMiddleware.MiddlewareFunc(), r.DeleteBusinessHandler)
+
 		//users
 		apiRoutes.GET("/users", r.GetUsersHandler)
 		//Show and edit view

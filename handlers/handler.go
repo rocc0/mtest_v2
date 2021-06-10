@@ -14,6 +14,7 @@ func NewService(data *datapkg.Service, hash *hashpkg.HashHandler, search indexUp
 		admActionsProcessor:     data,
 		governmentDataProcessor: data,
 		regActUpdater:           data,
+		BusinessDataProcessor:   data,
 		hasher:                  hash,
 		indexUpdater:            search,
 	}

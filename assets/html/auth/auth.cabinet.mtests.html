@@ -145,6 +145,21 @@
                                typeahead-input-formatter="governs[$model].name">
                     </div>
                 </div>
+                <div class="form-group input-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">Вид бізнесу</div>
+                        <input class="form-control govern"
+                               ng-model="mt.business"
+                               name="business"
+                               placeholder="Оберіть вид бізнесу"
+                               uib-typeahead="business as business.name for business in businesses | limitTo:15 | filter:$viewValue"
+                               typeahead-min-length="0"
+                               typeahead-focus-on-select="true"
+                               typeahead-editable="false"
+                               typeahead-on-select="formatLabel($model, mt.id, 'busines')"
+                               typeahead-input-formatter="businesses[$model].name">
+                    </div>
+                </div>
                 <div class="pull-right buttons">
                     <button class="btn btn-success btn-sm"
                             ng-click="updateMtestItem(mt);dynamicPopover.close($index,'s')">
@@ -180,11 +195,4 @@
 
     </form>
 </div>
-</script>
-
-
-<script type="text/ng-template" id="filesTemplate.html">
-    <div id="files-list">
-
-    </div>
 </script>

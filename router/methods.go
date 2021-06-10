@@ -32,6 +32,7 @@ type userHandlers interface {
 	governmentsHandler
 	usersHandler
 	regActHandler
+	businessesHandler
 }
 
 type admActionsHandler interface {
@@ -73,4 +74,11 @@ type regActHandler interface {
 	ActGetHandler(c *gin.Context)
 	ActUploadHandler(c *gin.Context)
 	ActDeleteHandler(c *gin.Context)
+}
+
+type businessesHandler interface {
+	GetBusinessesHandler(context *gin.Context)
+	AddBusinessHandler(context *gin.Context)
+	EditBusinessHandler(context *gin.Context)
+	DeleteBusinessHandler(context *gin.Context)
 }

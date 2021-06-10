@@ -49,6 +49,13 @@ type governmentDataProcessor interface {
 	RemoveGovernment(id int) error
 }
 
+type BusinessDataProcessor interface {
+	AddBusiness(name string) error
+	GetBusinesses() ([]datapkg.Government, error)
+	EditBusinessName(id int, name string) error
+	RemoveBusiness(id int) error
+}
+
 type indexUpdater interface {
 	UpdateIndex(id string) error
 	UpdateIndexWithFile(id string, text string) error
@@ -63,6 +70,7 @@ type Handlers struct {
 	indexUpdater
 	admActionsProcessor
 	governmentDataProcessor
+	BusinessDataProcessor
 	regActUpdater
 }
 

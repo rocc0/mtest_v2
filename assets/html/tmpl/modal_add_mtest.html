@@ -34,6 +34,21 @@
                 </div>
             </div>
 
+            <div class="form-group input-group">
+                <div class="input-group">
+                    <div class="input-group-addon">Вид бізнесу</div>
+                    <input class="form-control govern input-sm"
+                           ng-model="new_mtest.business_type"
+                           name="business"
+                           placeholder="Оберіть вид бізнесу"
+                           uib-typeahead="business as business.name for business in businesses | limitTo:15"
+                           typeahead-min-length="0"
+                           typeahead-focus-on-select="true"
+                           typeahead-editable="false">
+                </div>
+            </div>
+
+
             <div class="buttons">
                 <switcher ng-model="new_mtest.calc_type" class="corr_toggle pull-left"
                           true-value="'1'" true-label="Командна" false-value="'0'" false-label="Єдиний" ></switcher>
@@ -41,9 +56,7 @@
                         type="submit" name="submitform" ng-click="addMtest(new_mtest);dynamicPopover.close('add', '')">Додати</button>
                 <button class="btn btn-danger btn-xs pull-left"
                         type="submit" name="submitform" ng-click="dynamicPopover.close('add', '')">Закрити</button>
-
             </div>
-
         </form>
     </div>
 </div>
