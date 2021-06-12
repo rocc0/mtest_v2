@@ -43,6 +43,9 @@ func main() {
 		logrus.Fatal(err)
 	}
 
+	if err := data.Init(); err != nil {
+		logrus.Fatal(err)
+	}
 	searchService, err := searchpkg.NewService(db)
 	if err != nil {
 		logrus.Fatal(err)
@@ -66,10 +69,6 @@ func main() {
 	}
 
 	if err := data.InitUsersTable(); err != nil {
-		logrus.Fatal(err)
-	}
-
-	if err := data.Init(); err != nil {
 		logrus.Fatal(err)
 	}
 
