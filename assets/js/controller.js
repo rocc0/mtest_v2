@@ -872,7 +872,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
     $scope.doSearch = function () {
         $http({
             method: 'POST',
-            url: "http://localhost:9200/mtests/_search",
+            url: "http://mtest.org.ua/mtests/_search",
             data: $scope.query
         }).then(function (response) {
             $scope.results = response.data;
@@ -904,7 +904,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
 });
 
 mTestApp.controller("authActivateController", function ($scope, $routeParams,$http) {
-    const baseURL = 'http://localhost:8099';
+    const baseURL = 'http://mtest.org.ua';
     $http({
         method: 'GET',
         url: baseURL + 'api/v.1/u/activate/' + $routeParams.hash ,
@@ -917,7 +917,7 @@ mTestApp.controller("authActivateController", function ($scope, $routeParams,$ht
 });
 
 mTestApp.controller("authResetController", function ($scope, $routeParams, $http, $location, authService) {
-    const baseURL = 'http://localhost:8099';
+    const baseURL = 'http://mtest.org.ua';
     var hash = $routeParams.hash;
     $scope.user = {};
     authService.checkhash(hash)

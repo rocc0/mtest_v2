@@ -73,5 +73,5 @@ func main() {
 	}
 
 	// Start serving the application
-	router.Run(":8099")
+	router.Run(":80")
 }
