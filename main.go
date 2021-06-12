@@ -69,6 +69,10 @@ func main() {
 		logrus.Fatal(err)
 	}
 
+	if err := data.Init(); err != nil {
+		logrus.Fatal(err)
+	}
+
 	// Start serving the application
 	router.Run(":8099")
 }
