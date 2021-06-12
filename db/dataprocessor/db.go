@@ -29,6 +29,7 @@ func ConnectToSQL(address string) (*sql.DB, error) {
 }
 
 const (
+	disableGroupBy   = `SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));`
 	initRegActsTable = `create table if not exists reg_acts
 (
 	id bigint auto_increment,
@@ -76,7 +77,7 @@ const (
 )
 
 func (mt Service) Init() error {
-	qs := []string{initRegActsTable, initBusinessesTable, initRegionsTable, initGovernmentsTable, initAdmActionsTable}
+	qs := []string{disableGroupBy, initRegActsTable, initBusinessesTable, initRegionsTable, initGovernmentsTable, initAdmActionsTable}
 
 	for _, q := range qs {
 		stmt, err := mt.db.Prepare(q)
