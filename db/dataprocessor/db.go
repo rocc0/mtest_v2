@@ -29,6 +29,18 @@ func ConnectToSQL(address string) (*sql.DB, error) {
 }
 
 const (
+	initRegActsTable = `create table if not exists reg_acts
+(
+	id bigint auto_increment,
+	mid varchar(300), 
+	doc_id varchar(300),
+	doc_text text, 
+	doc_name varchar(300),
+	doc_type varchar(300),
+	constraint businesses_pk
+		primary key (id)
+);
+`
 	initBusinessesTable = `create table if not exists businesses
 (
 	id bigint auto_increment,
@@ -36,7 +48,6 @@ const (
 	constraint businesses_pk
 		primary key (id)
 );
-
 `
 	initGovernmentsTable = `create table if not exists govs(
 	id bigint auto_increment,
@@ -65,7 +76,7 @@ const (
 )
 
 func (mt Service) Init() error {
-	qs := []string{initBusinessesTable, initRegionsTable, initGovernmentsTable, initAdmActionsTable}
+	qs := []string{initRegActsTable, initBusinessesTable, initRegionsTable, initGovernmentsTable, initAdmActionsTable}
 
 	for _, q := range qs {
 		stmt, err := mt.db.Prepare(q)
