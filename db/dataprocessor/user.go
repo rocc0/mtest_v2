@@ -28,7 +28,7 @@ const (
 type User struct {
 	Id        int                   `json:"id"`
 	Name      string                `json:"name"`
-	Surename  string                `json:"surename"`
+	SureName  string                `json:"surename"`
 	Email     string                `json:"email"`
 	Rights    int                   `json:"rights"`
 	Password  string                `json:"password"`
@@ -106,7 +106,7 @@ func (mt *Service) CreateUser() (string, error) {
 			log.Error(err)
 		}
 	}()
-	if _, err = req.Exec(u.Name, u.Surename, u.Email, "{}", hashedPassword); err != nil {
+	if _, err = req.Exec(u.Name, u.SureName, u.Email, "{}", hashedPassword); err != nil {
 		return "", err
 	}
 
@@ -118,7 +118,7 @@ func (mt *Service) GetUser(email string) (*User, error) {
 	user := &User{}
 
 	res := mt.db.QueryRow(getUserQuery, email)
-	if err := res.Scan(&user.Name, &user.Surename, &user.Email, &user.Id, &user.Rights, &records); err != nil {
+	if err := res.Scan(&user.Name, &user.SureName, &user.Email, &user.Id, &user.Rights, &records); err != nil {
 		return nil, err
 	}
 	if err := json.Unmarshal([]byte(records), &user.Records); err != nil {
@@ -252,7 +252,7 @@ func (mt *Service) GetUsers(ctx context.Context) ([]User, error) {
 		users = append(users, User{
 			Id:        id,
 			Name:      name,
-			Surename:  sureName,
+			SureName:  sureName,
 			Email:     email,
 			Rights:    r,
 			Activated: activated,

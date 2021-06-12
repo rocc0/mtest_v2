@@ -827,6 +827,33 @@ mTestApp.controller("menuController", function ($scope, $rootScope,$location, au
 
 mTestApp.controller("searchController", function ($scope, $http) {
     $scope.currentPage = 0;
+    //load governments and regions
+    $http({
+        method: 'GET',
+        url: '/api/v.1/regions',
+    }).then(function (response) {
+        $scope.regions = response.data.regions
+    }).catch( function (reason) {
+        console.log(reason)
+    });
+
+    $http({
+        method: 'GET',
+        url: '/api/v.1/governments',
+    }).then(function (response) {
+        $scope.governs = response.data.govs
+    }).catch( function (reason) {
+        console.log(reason)
+    });
+    $http({
+        method: 'GET',
+        url: '/api/v.1/businesses',
+    }).then(function (response) {
+        $scope.governs = response.data.businesses
+    }).catch( function (reason) {
+        console.log(reason)
+    });
+    //end load governments and regions
     //elastic search
     $scope.query = {
         "from": 0, "size": 10,
@@ -880,26 +907,6 @@ mTestApp.controller("searchController", function ($scope, $http) {
             console.log(err)
         })
     };
-
-    //load governments and regions
-    $http({
-        method: 'GET',
-        url: '/api/v.1/regions',
-    }).then(function (response) {
-        $scope.regions = response.data.regions
-    }).catch( function (reason) {
-        console.log(reason)
-    });
-
-    $http({
-        method: 'GET',
-        url: '/api/v.1/governments',
-    }).then(function (response) {
-        $scope.governs = response.data.govs
-    }).catch( function (reason) {
-        console.log(reason)
-    });
-    //end load governments and regions
 
 });
 

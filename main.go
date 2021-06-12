@@ -58,7 +58,7 @@ func main() {
 			logrus.Error("Elastic init:", err)
 		} else {
 			if err := searchService.ElasticIndex(); err != nil {
-				logrus.Errorf("Elastic index:", err)
+				logrus.Errorf("Elastic index: %v", err)
 			}
 		}
 	}
