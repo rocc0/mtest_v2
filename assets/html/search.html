@@ -68,7 +68,7 @@
                     <a href="/track/{[{ hit._source.mid }]}" target="_blank" class="clearfix"> {[{ hit._source.name }]}</a>
                 </div>
                 <div class="pull-left col-xs-6">Орган влади: {[{ governs[hit._source.govern - 1].name }]}</div>
-                <div class="pull-left col-xs-6">Вид бізнесу: {[{ businesses[hit._source.business - 1].name }]}</div>
+                <div class="pull-left col-xs-6">Вид бізнесу: {[{ getBusinessNames(hit._source.business) }]}</div>
                 <div class="pull-left col-xs-6">Регіон: {[{ regions[hit._source.region - 1].name }]}</div>
                 <div class="pull-left col-xs-6">Розробник: {[{ hit._source.author }]}</div>
             </div>

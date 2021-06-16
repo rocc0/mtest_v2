@@ -850,7 +850,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
         method: 'GET',
         url: '/api/v.1/businesses',
     }).then(function (response) {
-        $scope.governs = response.data.businesses
+        $scope.businesses = response.data.businesses
     }).catch( function (reason) {
         console.log(reason)
     });
@@ -900,7 +900,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
     $scope.doSearch = function () {
         $http({
             method: 'POST',
-            url: "http://mtest.org.ua/mtests/_search",
+            url: "http://localhost:9200/mtests/_search",
             data: $scope.query
         }).then(function (response) {
             $scope.results = response.data;
@@ -909,10 +909,18 @@ mTestApp.controller("searchController", function ($scope, $http) {
         })
     };
 
+    $scope.getBusinessNames = function (id) {
+        for (var i = 0; i < $scope.businesses.length; i++) {
+            if ($scope.businesses[i].id == id) {
+                return $scope.businesses[i].name
+            }
+        }
+        return "Назву бізнесу не вказано"
+    }
 });
 
 mTestApp.controller("authActivateController", function ($scope, $routeParams,$http) {
-    const baseURL = 'http://mtest.org.ua';
+    const baseURL = 'http://localhost:8099';
     $http({
         method: 'GET',
         url: baseURL + 'api/v.1/u/activate/' + $routeParams.hash ,
@@ -925,7 +933,7 @@ mTestApp.controller("authActivateController", function ($scope, $routeParams,$ht
 });
 
 mTestApp.controller("authResetController", function ($scope, $routeParams, $http, $location, authService) {
-    const baseURL = 'http://mtest.org.ua';
+    const baseURL = 'http://localhost:8099';
     var hash = $routeParams.hash;
     $scope.user = {};
     authService.checkhash(hash)
