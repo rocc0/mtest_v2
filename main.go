@@ -43,6 +43,9 @@ func main() {
 		logrus.Fatal(err)
 	}
 
+	if err := data.Init(); err != nil {
+		logrus.Fatal(err)
+	}
 	searchService, err := searchpkg.NewService(db)
 	if err != nil {
 		logrus.Fatal(err)
@@ -55,7 +58,7 @@ func main() {
 			logrus.Error("Elastic init:", err)
 		} else {
 			if err := searchService.ElasticIndex(); err != nil {
-				logrus.Errorf("Elastic index:", err)
+				logrus.Errorf("Elastic index: %v", err)
 			}
 		}
 	}
@@ -70,5 +73,5 @@ func main() {
 	}
 
 	// Start serving the application
-	router.Run(":8099")
+	router.Run(":80")
 }

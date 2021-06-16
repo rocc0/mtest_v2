@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.7
+-- version 5.1.0
 -- https://www.phpmyadmin.net/
 --
--- Хост: db
--- Час створення: Трв 04 2018 р., 05:31
--- Версія сервера: 5.7.21
--- Версія PHP: 7.1.9
+-- Хост: mysql_db:3306
+-- Час створення: Чрв 12 2021 р., 19:47
+-- Версія сервера: 8.0.24
+-- Версія PHP: 7.4.16
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -29,10 +28,10 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `adm_actions` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `act_id` int(10) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `act_id` int NOT NULL,
   `act_name` varchar(300) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Дамп даних таблиці `adm_actions`
@@ -56,14 +55,25 @@ INSERT INTO `adm_actions` (`id`, `act_id`, `act_name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Структура таблиці `businesses`
+--
+
+CREATE TABLE `businesses` (
+  `id` bigint NOT NULL,
+  `name` varchar(300) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблиці `govs`
 --
 
 CREATE TABLE `govs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `gov_id` int(11) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `gov_id` int NOT NULL,
   `gov_name` varchar(300) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Дамп даних таблиці `govs`
@@ -120,33 +130,46 @@ INSERT INTO `govs` (`id`, `gov_id`, `gov_name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Структура таблиці `hashes`
+--
+
+CREATE TABLE `hashes` (
+  `id` bigint UNSIGNED NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `hash` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблиці `mtests`
 --
 
 CREATE TABLE `mtests` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
   `mid` varchar(100) NOT NULL,
   `name` varchar(500) NOT NULL,
-  `region` int(10) NOT NULL,
-  `govern` int(10) NOT NULL,
+  `region` int NOT NULL,
+  `govern` int NOT NULL,
   `calculations` text NOT NULL,
-  `calc_type` int(1) NOT NULL DEFAULT '0',
+  `calc_type` int NOT NULL DEFAULT '0',
   `calc_data` varchar(1000) NOT NULL DEFAULT '{}',
   `executors` varchar(500) DEFAULT '{}',
   `developer` varchar(100) DEFAULT NULL,
   `dev_mid` varchar(100) DEFAULT NULL,
   `pub_date` date NOT NULL,
-  `author` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `author` varchar(100) NOT NULL,
+  `business` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Дамп даних таблиці `mtests`
 --
 
-INSERT INTO `mtests` (`id`, `mid`, `name`, `region`, `govern`, `calculations`, `calc_type`, `calc_data`, `executors`, `developer`, `dev_mid`, `pub_date`, `author`) VALUES
-(109, '287251ad-8125-4a5d-80da-c9c21fdc8367', 'Тестова назва', 10, 7, '{\"1\":[{\"type\":\"container\",\"id\":3,\"columns\":[[{\"type\":\"itemplus\",\"id\":3,\"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":null},{\"type\":\"item\",\"id\":6,\"name\":\"Додати дію\",\"subsum\":null}]],\"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0,\"awgsub\":null},{\"type\":\"container\",\"id\":null,\"columns\":[[{\"type\":\"itemplus\",\"id\":4,\"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":null},{\"type\":\"item\",\"id\":4,\"name\":\"Додати дію\",\"subsum\":null}]],\"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0,\"awgsub\":null}]}', 1, '{}', '{\"d53467b6-5859-4e6c-aa00-611d08166425\":{\"email\":\"vlad.kotlyarenko@gmail.com\",\"mid\":\"d53467b6-5859-4e6c-aa00-611d08166425\",\"checked\":true}}', NULL, NULL, '2018-01-13', 'vk@clc.com.ua'),
-(117, '7751f388-e0ff-40f9-b7e7-75f05cb8fb15', 'Вирубка корупціонерів', 10, 9, '{\"1\":[{\"type\":\"container\",\"id\":3,\"columns\":[[{\"type\":\"itemplus\",\"id\":3,\n                    \"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":0},{\"type\":\"item\",\"id\":6,\"name\":\"Додати дію\",\"subsum\":0}]],\n                    \"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0},\n                {\"type\":\"container\",\"id\":null,\"columns\":[[{\"type\":\"itemplus\",\"id\":4,\"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":0},\n                            {\"type\":\"item\",\"id\":4,\"name\":\"Додати дію\",\"subsum\":0}]],\"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0}]}', 0, '{}', '{}', NULL, NULL, '2018-01-15', 'vk@clc.com.ua'),
-(125, 'd53467b6-5859-4e6c-aa00-611d08166425', 'Тестова назва', 10, 7, '{\"1\":[{\"type\":\"container\",\"id\":3,\"columns\":[[{\"type\":\"itemplus\",\"id\":3,\n                    \"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":0},{\"type\":\"item\",\"id\":6,\"name\":\"Додати дію\",\"subsum\":0}]],\n                    \"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0},\n                {\"type\":\"container\",\"id\":null,\"columns\":[[{\"type\":\"itemplus\",\"id\":4,\"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":0},\n                            {\"type\":\"item\",\"id\":4,\"name\":\"Додати дію\",\"subsum\":0}]],\"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0}]}', 3, '{}', '{}', 'vk@clc.com.ua', '287251ad-8125-4a5d-80da-c9c21fdc8367', '2018-01-24', 'vlad.kotlyarenko@gmail.com');
+INSERT INTO `mtests` (`id`, `mid`, `name`, `region`, `govern`, `calculations`, `calc_type`, `calc_data`, `executors`, `developer`, `dev_mid`, `pub_date`, `author`, `business`) VALUES
+(109, '287251ad-8125-4a5d-80da-c9c21fdc8367', 'Тестова назва', 10, 7, '{\"1\":[{\"type\":\"container\",\"id\":3,\"columns\":[[{\"type\":\"itemplus\",\"id\":3,\"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":null},{\"type\":\"item\",\"id\":6,\"name\":\"Додати дію\",\"subsum\":null}]],\"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0,\"awgsub\":null},{\"type\":\"container\",\"id\":null,\"columns\":[[{\"type\":\"itemplus\",\"id\":4,\"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":null},{\"type\":\"item\",\"id\":4,\"name\":\"Додати дію\",\"subsum\":null}]],\"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0,\"awgsub\":null}]}', 1, '{}', '{\"d53467b6-5859-4e6c-aa00-611d08166425\":{\"email\":\"vlad.kotlyarenko@gmail.com\",\"mid\":\"d53467b6-5859-4e6c-aa00-611d08166425\",\"checked\":true}}', NULL, NULL, '2018-01-13', 'vk@clc.com.ua', 0),
+(117, '7751f388-e0ff-40f9-b7e7-75f05cb8fb15', 'Вирубка корупціонерів', 10, 9, '{\"1\":[{\"type\":\"container\",\"id\":3,\"columns\":[[{\"type\":\"itemplus\",\"id\":3,\n                    \"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":0},{\"type\":\"item\",\"id\":6,\"name\":\"Додати дію\",\"subsum\":0}]],\n                    \"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0},\n                {\"type\":\"container\",\"id\":null,\"columns\":[[{\"type\":\"itemplus\",\"id\":4,\"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":0},\n                            {\"type\":\"item\",\"id\":4,\"name\":\"Додати дію\",\"subsum\":0}]],\"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0}]}', 0, '{}', '{}', NULL, NULL, '2018-01-15', 'vk@clc.com.ua', 0),
+(125, 'd53467b6-5859-4e6c-aa00-611d08166425', 'Тестова назва', 10, 7, '{\"1\":[{\"type\":\"container\",\"id\":3,\"columns\":[[{\"type\":\"itemplus\",\"id\":3,\n                    \"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":0},{\"type\":\"item\",\"id\":6,\"name\":\"Додати дію\",\"subsum\":0}]],\n                    \"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0},\n                {\"type\":\"container\",\"id\":null,\"columns\":[[{\"type\":\"itemplus\",\"id\":4,\"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":0},\n                            {\"type\":\"item\",\"id\":4,\"name\":\"Додати дію\",\"subsum\":0}]],\"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0}]}', 3, '{}', '{}', 'vk@clc.com.ua', '287251ad-8125-4a5d-80da-c9c21fdc8367', '2018-01-24', 'vlad.kotlyarenko@gmail.com', 0);
 
 -- --------------------------------------------------------
 
@@ -155,10 +178,10 @@ INSERT INTO `mtests` (`id`, `mid`, `name`, `region`, `govern`, `calculations`, `
 --
 
 CREATE TABLE `regions` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `reg_id` int(11) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `reg_id` int NOT NULL,
   `reg_name` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Дамп даних таблиці `regions`
@@ -195,19 +218,34 @@ INSERT INTO `regions` (`id`, `reg_id`, `reg_name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Структура таблиці `reg_acts`
+--
+
+CREATE TABLE `reg_acts` (
+  `id` bigint NOT NULL,
+  `mid` varchar(300) DEFAULT NULL,
+  `doc_id` varchar(300) DEFAULT NULL,
+  `doc_text` text,
+  `doc_name` varchar(300) DEFAULT NULL,
+  `doc_type` varchar(300) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблиці `users`
 --
 
 CREATE TABLE `users` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
   `name` varchar(100) NOT NULL,
   `surename` varchar(20) NOT NULL,
   `email` varchar(100) DEFAULT NULL,
   `password` varchar(100) NOT NULL,
   `rights` varchar(100) NOT NULL DEFAULT '1',
-  `activated` int(11) NOT NULL DEFAULT '0',
+  `activated` int NOT NULL DEFAULT '0',
   `records` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Дамп даних таблиці `users`
@@ -229,9 +267,22 @@ ALTER TABLE `adm_actions`
   ADD UNIQUE KEY `id` (`id`);
 
 --
+-- Індекси таблиці `businesses`
+--
+ALTER TABLE `businesses`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Індекси таблиці `govs`
 --
 ALTER TABLE `govs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`);
+
+--
+-- Індекси таблиці `hashes`
+--
+ALTER TABLE `hashes`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id` (`id`);
 
@@ -251,6 +302,12 @@ ALTER TABLE `regions`
   ADD UNIQUE KEY `id` (`id`);
 
 --
+-- Індекси таблиці `reg_acts`
+--
+ALTER TABLE `reg_acts`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Індекси таблиці `users`
 --
 ALTER TABLE `users`
@@ -265,31 +322,49 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблиці `adm_actions`
 --
 ALTER TABLE `adm_actions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT для таблиці `businesses`
+--
+ALTER TABLE `businesses`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблиці `govs`
 --
 ALTER TABLE `govs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+
+--
+-- AUTO_INCREMENT для таблиці `hashes`
+--
+ALTER TABLE `hashes`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблиці `mtests`
 --
 ALTER TABLE `mtests`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
 
 --
 -- AUTO_INCREMENT для таблиці `regions`
 --
 ALTER TABLE `regions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+
+--
+-- AUTO_INCREMENT для таблиці `reg_acts`
+--
+ALTER TABLE `reg_acts`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблиці `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -20,6 +20,7 @@ type (
 		CalcType   int                     `json:"calc_type"`
 		Developer  string                  `json:"developer"`
 		DevMid     string                  `json:"dev_mid"`
+		Business   int                     `json:"business,omitempty"`
 		Executors  map[string]ExecutorInfo `json:"executors"`
 		Files      []RegAct                `json:"files"`
 	}

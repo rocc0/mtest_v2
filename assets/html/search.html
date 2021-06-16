@@ -32,9 +32,20 @@
                 <input type="text"
                        ng-model="region"
                        placeholder="Регіон"
-                       uib-typeahead="gov as gov.name for gov in regions | filter:$viewValue | limitTo:15"
+                       uib-typeahead="region as region.name for region in regions | filter:$viewValue | limitTo:15"
                        class="form-control"
                        typeahead-on-select="addTerm('region', $item.id)"
+                       typeahead-min-length="0"
+                       typeahead-focus-on-select="true"
+                       typeahead-editable="false">
+            </div>
+            <div class="col-xs-3">
+                <input type="text"
+                       ng-model="business"
+                       placeholder="Вид бізнесу"
+                       uib-typeahead="business as business.name for business in businesses | filter:$viewValue | limitTo:15"
+                       class="form-control"
+                       typeahead-on-select="addTerm('business', $item.id)"
                        typeahead-min-length="0"
                        typeahead-focus-on-select="true"
                        typeahead-editable="false">
@@ -57,8 +68,9 @@
                     <a href="/track/{[{ hit._source.mid }]}" target="_blank" class="clearfix"> {[{ hit._source.name }]}</a>
                 </div>
                 <div class="pull-left col-xs-6">Орган влади: {[{ governs[hit._source.govern - 1].name }]}</div>
-                <div class="pull-left col-xs-3">Регіон: {[{ regions[hit._source.region - 1].name }]}</div>
-                <div class="pull-left col-xs-3">Розробник: {[{ hit._source.author }]}</div>
+                <div class="pull-left col-xs-6">Вид бізнесу: {[{ businesses[hit._source.business - 1].name }]}</div>
+                <div class="pull-left col-xs-6">Регіон: {[{ regions[hit._source.region - 1].name }]}</div>
+                <div class="pull-left col-xs-6">Розробник: {[{ hit._source.author }]}</div>
             </div>
 
         </li>
@@ -77,6 +89,4 @@
             previous-text="Назад"
             ng-change="query.from=currentPage*10;doSearch()"></ul>
     </div>
-
-
 </script>

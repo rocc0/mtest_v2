@@ -828,6 +828,33 @@ mTestApp.controller("menuController", function ($scope, $rootScope,$location, au
 
 mTestApp.controller("searchController", function ($scope, $http) {
     $scope.currentPage = 0;
+    //load governments and regions
+    $http({
+        method: 'GET',
+        url: '/api/v.1/regions',
+    }).then(function (response) {
+        $scope.regions = response.data.regions
+    }).catch( function (reason) {
+        console.log(reason)
+    });
+
+    $http({
+        method: 'GET',
+        url: '/api/v.1/governments',
+    }).then(function (response) {
+        $scope.governs = response.data.govs
+    }).catch( function (reason) {
+        console.log(reason)
+    });
+    $http({
+        method: 'GET',
+        url: '/api/v.1/businesses',
+    }).then(function (response) {
+        $scope.governs = response.data.businesses
+    }).catch( function (reason) {
+        console.log(reason)
+    });
+    //end load governments and regions
     //elastic search
     $scope.query = {
         "from": 0, "size": 10,
@@ -873,7 +900,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
     $scope.doSearch = function () {
         $http({
             method: 'POST',
-            url: "http://localhost:9200/mtests/_search",
+            url: "http://mtest.org.ua/mtests/_search",
             data: $scope.query
         }).then(function (response) {
             $scope.results = response.data;
@@ -882,30 +909,10 @@ mTestApp.controller("searchController", function ($scope, $http) {
         })
     };
 
-    //load governments and regions
-    $http({
-        method: 'GET',
-        url: '/api/v.1/regions',
-    }).then(function (response) {
-        $scope.regions = response.data.regions
-    }).catch( function (reason) {
-        console.log(reason)
-    });
-
-    $http({
-        method: 'GET',
-        url: '/api/v.1/governments',
-    }).then(function (response) {
-        $scope.governs = response.data.govs
-    }).catch( function (reason) {
-        console.log(reason)
-    });
-    //end load governments and regions
-
 });
 
 mTestApp.controller("authActivateController", function ($scope, $routeParams,$http) {
-    const baseURL = 'http://localhost:8099';
+    const baseURL = 'http://mtest.org.ua';
     $http({
         method: 'GET',
         url: baseURL + 'api/v.1/u/activate/' + $routeParams.hash ,
@@ -918,7 +925,7 @@ mTestApp.controller("authActivateController", function ($scope, $routeParams,$ht
 });
 
 mTestApp.controller("authResetController", function ($scope, $routeParams, $http, $location, authService) {
-    const baseURL = 'http://localhost:8099';
+    const baseURL = 'http://mtest.org.ua';
     var hash = $routeParams.hash;
     $scope.user = {};
     authService.checkhash(hash)

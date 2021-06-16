@@ -7,7 +7,7 @@ require (
 	github.com/JalfResi/justext v0.0.0-20170829062021-c0282dea7198 // indirect
 	github.com/advancedlogic/GoOse v0.0.0-20200830213114-1225d531e0ad // indirect
 	github.com/appleboy/gin-jwt/v2 v2.6.4
-	github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20190729070250-5ae5475bae5e // indirect
+	github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20190729070250-5ae5475bae5e
 	github.com/caarlos0/env/v6 v6.6.0
 	github.com/gin-gonic/gin v1.7.2
 	github.com/go-playground/validator v9.31.0+incompatible
@@ -23,6 +23,6 @@ require (
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
-	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
-	gopkg.in/olivere/elastic.v5 v5.0.84
+	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect
+	gopkg.in/olivere/elastic.v5 v5.0.84 // indirect
 )
