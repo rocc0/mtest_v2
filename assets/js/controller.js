@@ -178,24 +178,25 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
     };
 
     $scope.valueToText = function (val, type) {
-        if (type === "yn") {
-            if (val === 1 || val === "Yes") {
+        if (type == "yn") {
+            if (val == 1 || val == "Yes") {
                 return "Так"
-            } else if (val === 0 || val === "No") {
+            } else if (val == 0 || val == "No") {
                 return "Ні"
-            } else if (val === "idk") {
+            } else if (val == "idk") {
                 return "Незнаю"
             } else {
                 return "Не заповнено!"
             }
         } else {
-            if (val === 1) {
+            if (val == 1) {
                 return "Суттєво"
-            } else if (val === 0) {
+            } else if (val == 0) {
                 return "Несуттєво"
-            } else if (val === 100) {
+            } else if (val == 100) {
                 return "Критично"
             } else {
+                console.log(val)
                 return "Не заповнено!"
             }
         }
