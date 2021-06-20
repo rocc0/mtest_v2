@@ -180,6 +180,8 @@ func (hd *Handlers) ResetPasswordHandler(c *gin.Context) {
 		if err := c.AbortWithError(404, err); err != nil {
 			log.Error(err)
 		}
+	} else {
+		c.Status(200)
 	}
 }
 

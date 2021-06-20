@@ -869,6 +869,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
             }
         }
     };
+
     $scope.addPhrase = function () {
         $scope.query.query.bool.should.multi_match.query = $scope.phrase
     };
@@ -897,10 +898,11 @@ mTestApp.controller("searchController", function ($scope, $http) {
             }
         }
     };
+
     $scope.doSearch = function () {
         $http({
             method: 'POST',
-            url: "http://localhost:9200/mtests/_search",
+            url: "http://localhost:8099/api/v.1/search",
             data: $scope.query
         }).then(function (response) {
             $scope.results = response.data;

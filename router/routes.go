@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"mtest.com.ua/search"
+
 	log "github.com/sirupsen/logrus"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -97,6 +99,8 @@ func (r *Router) Init() error {
 
 		//users
 		apiRoutes.GET("/users", r.GetUsersHandler)
+		p := search.NewElasticProxy("http://localhost:9200/mtests/_search", nil)
+		apiRoutes.POST("/search", p.ElasticProxy)
 		//Show and edit view
 		apiRoutes.GET("/m/get/:mtest_id", r.GetMTESTHandler)
 		apiRoutes.POST("/m/update", authMiddleware.MiddlewareFunc(), r.UpdateMTESTHandler)
