@@ -57,7 +57,7 @@ func contains(word string, arr []string) bool {
 	return false
 }
 
-func (mt Service) Create(word string, syn string) error {
+func (mt *Service) AddSynonym(word, syn string) error {
 	stmt, err := mt.db.Prepare("INSERT INTO synonyms (word, synonym) VALUES (?,?) ;")
 	if err != nil {
 		return err
@@ -74,7 +74,7 @@ func (mt Service) Create(word string, syn string) error {
 	return nil
 }
 
-func (mt Service) Delete(word, syn string) error {
+func (mt *Service) RemoveSynonym(word, syn string) error {
 	stmt, err := mt.db.Prepare("DELETE FROM synonyms WHERE word=? and synonym=?;")
 	if err != nil {
 		return err

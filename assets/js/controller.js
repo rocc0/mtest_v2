@@ -993,6 +993,15 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
 
     $http({
         method: 'GET',
+        url: '/api/v.1/synonyms',
+    }).then(function (response) {
+        $scope.synonyms = response.data.synonyms
+    }).catch(function (reason) {
+        console.log(reason)
+    });
+
+    $http({
+        method: 'GET',
         url: '/api/v.1/governments',
     }).then(function (response) {
         $scope.governments = response.data.govs
@@ -1209,6 +1218,38 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
             method: 'DELETE',
             url: "/api/v.1/businesses",
             data: {id: parseInt(value)},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+            $scope.businesses.splice(index,1)
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+
+    $scope.addSynonym = function (word, synonym) {
+        console.log(value);
+        $http({
+            method: 'POST',
+            url: "/api/v.1/synonyms",
+            data: {word: word, synonym:synonym},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+            $scope.synonyms.push({word:word, synonym: synonym})
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+    $scope.removeSynonym = function (word, synonym) {
+        console.log(value);
+        const index =  $scope.businesses.findIndex(a => a.word === word && a.synonym === synonym)
+        $http({
+            method: 'DELETE',
+            url: "/api/v.1/synonyms",
+            data: {word: word, synonym:synonym},
             headers: {
                 'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }

@@ -63,6 +63,8 @@ type indexUpdater interface {
 
 type searchCache interface {
 	Load() (map[string][]string, error)
+	AddSynonym(word, synonym string) error
+	RemoveSynonym(word, synonym string) error
 }
 
 type Handlers struct {

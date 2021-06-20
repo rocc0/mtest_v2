@@ -97,6 +97,9 @@ func (r *Router) Init() error {
 		apiRoutes.PUT("/businesses", authMiddleware.MiddlewareFunc(), r.EditBusinessHandler)
 		apiRoutes.DELETE("/businesses", authMiddleware.MiddlewareFunc(), r.DeleteBusinessHandler)
 
+		apiRoutes.GET("/synonyms", r.GetAllSynonyms)
+		apiRoutes.POST("/synonyms", authMiddleware.MiddlewareFunc(), r.AddSynonymHandler)
+		apiRoutes.DELETE("/synonyms", authMiddleware.MiddlewareFunc(), r.RemoveSynonymHandler)
 		//users
 		apiRoutes.GET("/users", r.GetUsersHandler)
 		p := search.NewElasticProxy("http://localhost:9200/mtests/_search", r.LoadHandler)

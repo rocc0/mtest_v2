@@ -38,6 +38,9 @@ type userHandlers interface {
 
 type cacheLoader interface {
 	LoadHandler() (map[string][]string, error)
+	GetAllSynonyms(c *gin.Context)
+	AddSynonymHandler(c *gin.Context)
+	RemoveSynonymHandler(c *gin.Context)
 }
 
 type admActionsHandler interface {

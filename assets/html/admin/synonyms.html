@@ -1,0 +1,17 @@
+<div class="user-list-header">
+    <div class="user-list-item">Слово</div>
+    <div class="user-list-item">Синонім</div>
+</div>
+<div ng-repeat="syn in synonyms" class="admin-row">
+    <div class="admin-user-row-info">
+        <div class="user-row">
+            <div>{[{ syn.word }]}</div>
+        </div>
+        <div class="user-row">
+            <div>{[{ syn.synonym }]}</div>
+        </div>
+    </div>
+    <button ng-click="removeSynonym(syn.word, syn.synonym)" class="btn btn-danger remove-usr">
+        <span class="glyphicon glyphicon-remove"></span>
+    </button>
+</div>
