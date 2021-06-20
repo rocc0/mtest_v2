@@ -99,7 +99,7 @@ func (r *Router) Init() error {
 
 		//users
 		apiRoutes.GET("/users", r.GetUsersHandler)
-		p := search.NewElasticProxy("http://localhost:9200/mtests/_search", nil)
+		p := search.NewElasticProxy("http://localhost:9200/mtests/_search", r.LoadHandler)
 		apiRoutes.POST("/search", p.ElasticProxy)
 		//Show and edit view
 		apiRoutes.GET("/m/get/:mtest_id", r.GetMTESTHandler)

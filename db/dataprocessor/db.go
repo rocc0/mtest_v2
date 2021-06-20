@@ -77,7 +77,7 @@ const (
 )
 
 func (mt Service) Init() error {
-	qs := []string{disableGroupBy, initRegActsTable, initBusinessesTable, initRegionsTable, initGovernmentsTable, initAdmActionsTable}
+	qs := []string{disableGroupBy, initRegActsTable, initBusinessesTable, initRegionsTable, initGovernmentsTable, initAdmActionsTable, initSynonyms}
 
 	for _, q := range qs {
 		stmt, err := mt.db.Prepare(q)

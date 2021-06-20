@@ -61,6 +61,10 @@ type indexUpdater interface {
 	UpdateIndexWithFile(id string, text string) error
 }
 
+type searchCache interface {
+	Load() (map[string][]string, error)
+}
+
 type Handlers struct {
 	mtestDataProcessor
 	executorDataProcessor
@@ -72,6 +76,7 @@ type Handlers struct {
 	governmentDataProcessor
 	BusinessDataProcessor
 	regActUpdater
+	searchCache
 }
 
 func (hd *Handlers) RenderIndexPage(c *gin.Context) {

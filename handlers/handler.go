@@ -17,5 +17,6 @@ func NewService(data *datapkg.Service, hash *hashpkg.HashHandler, search indexUp
 		BusinessDataProcessor:   data,
 		hasher:                  hash,
 		indexUpdater:            search,
+		searchCache:             data,
 	}
 }

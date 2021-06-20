@@ -2,12 +2,12 @@ package search
 
 import (
 	"bytes"
-	"database/sql"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -43,14 +43,18 @@ type filter struct {
 }
 
 type ElasticProxy struct {
-	db  *sql.DB
-	url string
+	LoadHandler
+	url   string
+	cache map[string][]string
 }
 
-func NewElasticProxy(url string, db *sql.DB) ElasticProxy {
+type LoadHandler func() (map[string][]string, error)
+
+func NewElasticProxy(url string, l LoadHandler) ElasticProxy {
 	return ElasticProxy{
-		db:  db,
-		url: url,
+		LoadHandler: l,
+		url:         url,
+		cache:       map[string][]string{},
 	}
 }
 
@@ -100,11 +104,34 @@ func (e *ElasticProxy) ElasticProxy(c *gin.Context) {
 	proxy.ServeHTTP(c.Writer, c.Request)
 }
 
+func (e *ElasticProxy) LoadCache() error {
+	c, err := e.LoadHandler()
+	if err != nil {
+		return err
+	}
+	e.cache = c
+	return nil
+}
+
 func (e *ElasticProxy) findSynonyms(phrase request) ([]byte, error) {
-	//Query.Bool.Should.MultiMatch.Query
 	if phrase.Query.Bool.Filter == nil || phrase.Query.Bool.Filter.Bool == nil || phrase.Query.Bool.Filter.Bool.Must == nil {
 		phrase.Query.Bool.Filter = nil
 	}
+
+	words := strings.Split(phrase.Query.Bool.Should.MultiMatch.Query, " ")
+	var newWord []string
+	for _, word := range words {
+		ph, ok := e.cache[word]
+		if ok {
+			for _, s := range ph {
+				if !contains(s, newWord) {
+					newWord = append(newWord, s)
+				}
+			}
+		}
+	}
+	q := strings.Join(newWord, " ")
+	phrase.Query.Bool.Should.MultiMatch.Query = q
 	b, err := json.Marshal(phrase)
 	if err != nil {
 		return nil, err
@@ -112,4 +139,13 @@ func (e *ElasticProxy) findSynonyms(phrase request) ([]byte, error) {
 
 	log.Error(string(b))
 	return b, nil
+}
+
+func contains(word string, arr []string) bool {
+	for _, s := range arr {
+		if s == word {
+			return true
+		}
+	}
+	return false
 }

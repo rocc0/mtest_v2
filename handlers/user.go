@@ -201,3 +201,7 @@ func (hd *Handlers) PasswordCheckHandler(c *gin.Context) {
 		c.Status(200)
 	}
 }
+
+func (hd *Handlers) LoadHandler() (map[string][]string, error) {
+	return hd.Load()
+}

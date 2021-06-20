@@ -33,6 +33,11 @@ type userHandlers interface {
 	usersHandler
 	regActHandler
 	businessesHandler
+	cacheLoader
+}
+
+type cacheLoader interface {
+	LoadHandler() (map[string][]string, error)
 }
 
 type admActionsHandler interface {
