@@ -9,6 +9,8 @@ import (
 	"net/url"
 	"strings"
 
+	datapkg "mtest.com.ua/db/dataprocessor"
+
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
@@ -45,16 +47,16 @@ type filter struct {
 type ElasticProxy struct {
 	LoadHandler
 	url   string
-	cache map[string][]string
+	cache []datapkg.Synonym
 }
 
-type LoadHandler func() (map[string][]string, error)
+type LoadHandler func() ([]datapkg.Synonym, error)
 
 func NewElasticProxy(url string, l LoadHandler) ElasticProxy {
 	return ElasticProxy{
 		LoadHandler: l,
 		url:         url,
-		cache:       map[string][]string{},
+		cache:       []datapkg.Synonym{},
 	}
 }
 
@@ -119,18 +121,19 @@ func (e *ElasticProxy) findSynonyms(phrase request) ([]byte, error) {
 	}
 
 	words := strings.Split(phrase.Query.Bool.Should.MultiMatch.Query, " ")
-	var newWord []string
+
 	for _, word := range words {
-		ph, ok := e.cache[word]
-		if ok {
-			for _, s := range ph {
-				if !contains(s, newWord) {
-					newWord = append(newWord, s)
+		for _, w := range e.cache {
+			if w.Word == word {
+				for _, s := range w.Synonyms {
+					if !contains(s, words) {
+						words = append(words, s)
+					}
 				}
 			}
 		}
 	}
-	q := strings.Join(newWord, " ")
+	q := strings.Join(words, " ")
 	phrase.Query.Bool.Should.MultiMatch.Query = q
 	b, err := json.Marshal(phrase)
 	if err != nil {

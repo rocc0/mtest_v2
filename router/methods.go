@@ -1,6 +1,9 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	datapkg "mtest.com.ua/db/dataprocessor"
+)
 
 type renderer interface {
 	RenderIndexPage(c *gin.Context)
@@ -37,7 +40,7 @@ type userHandlers interface {
 }
 
 type cacheLoader interface {
-	LoadHandler() (map[string][]string, error)
+	LoadHandler() ([]datapkg.Synonym, error)
 	GetAllSynonyms(c *gin.Context)
 	AddSynonymHandler(c *gin.Context)
 	RemoveSynonymHandler(c *gin.Context)

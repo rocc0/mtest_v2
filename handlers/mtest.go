@@ -62,7 +62,7 @@ type indexUpdater interface {
 }
 
 type searchCache interface {
-	Load() (map[string][]string, error)
+	Load() ([]datapkg.Synonym, error)
 	AddSynonym(word, synonym string) error
 	RemoveSynonym(word, synonym string) error
 }

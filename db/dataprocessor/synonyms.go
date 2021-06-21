@@ -11,11 +11,19 @@ const initSynonyms = `CREATE TABLE IF NOT EXISTS synonyms
 );
 `
 
-func (mt *Service) Load() (map[string][]string, error) {
+type Synonym struct {
+	Word     string   `json:"word"`
+	Synonyms []string `json:"synonyms"`
+}
+
+func (mt *Service) Load() ([]Synonym, error) {
 	var (
-		synonyms      map[string][]string
 		word, synonym string
 	)
+
+	synonyms := make(map[string][]string)
+	result := []Synonym{}
+
 	res, err := mt.db.Query("SELECT word, synonym FROM synonyms")
 	if err != nil {
 		return nil, err
@@ -36,16 +44,27 @@ func (mt *Service) Load() (map[string][]string, error) {
 			if !contains(word, synonyms[word]) {
 				s = append(s, synonym)
 			}
+		} else {
+			synonyms[word] = []string{synonym}
 		}
 
 		if s, ok := synonyms[synonym]; ok {
 			if !contains(synonym, synonyms[synonym]) {
 				s = append(s, word)
 			}
+		} else {
+			synonyms[synonym] = []string{word}
 		}
 	}
 
-	return synonyms, nil
+	for k, s := range synonyms {
+		result = append(result, Synonym{
+			Word:     k,
+			Synonyms: s,
+		})
+	}
+
+	return result, nil
 }
 
 func contains(word string, arr []string) bool {

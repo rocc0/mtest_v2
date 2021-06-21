@@ -996,6 +996,7 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
         url: '/api/v.1/synonyms',
     }).then(function (response) {
         $scope.synonyms = response.data.synonyms
+        console.log($scope.synonyms)
     }).catch(function (reason) {
         console.log(reason)
     });
@@ -1229,7 +1230,7 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
     };
 
     $scope.addSynonym = function (word, synonym) {
-        console.log(value);
+        console.log(word, synonym);
         $http({
             method: 'POST',
             url: "/api/v.1/synonyms",
@@ -1244,7 +1245,7 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
         });
     };
     $scope.removeSynonym = function (word, synonym) {
-        console.log(value);
+        console.log(word, synonym);
         const index =  $scope.businesses.findIndex(a => a.word === word && a.synonym === synonym)
         $http({
             method: 'DELETE',

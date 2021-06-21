@@ -202,6 +202,6 @@ func (hd *Handlers) PasswordCheckHandler(c *gin.Context) {
 	}
 }
 
-func (hd *Handlers) LoadHandler() (map[string][]string, error) {
+func (hd *Handlers) LoadHandler() ([]datapkg.Synonym, error) {
 	return hd.Load()
 }

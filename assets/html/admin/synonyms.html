@@ -8,10 +8,22 @@
             <div>{[{ syn.word }]}</div>
         </div>
         <div class="user-row">
-            <div>{[{ syn.synonym }]}</div>
+            <div>{[{ syn.synonyms }]}</div>
         </div>
     </div>
-    <button ng-click="removeSynonym(syn.word, syn.synonym)" class="btn btn-danger remove-usr">
+    <button ng-click="removeSynonym(syn.word, syn.synonyms)" class="btn btn-danger remove-usr">
         <span class="glyphicon glyphicon-remove"></span>
+    </button>
+</div>
+<div class="add-admin-filed">
+    <button ng-click="dynamicPopover.open('add', 'static/html/tmpl/modal_add_synonym.html', '')"
+            uib-popover-template="dynamicPopover.templateUrl['add']"
+            type="button"
+            class="btn btn-success"
+            popover-placement="auto top"
+            popover-is-open="dynamicPopover.isOpen['add']"
+            popover-class="action-popover">
+        <span class="glyphicon glyphicon-add"></span>
+        Додати синонім
     </button>
 </div>
