@@ -26,7 +26,28 @@
         </div>
 
     </div>
+    <div class="mtest-icon">
+        <button ng-click="user.showUserMtest=!user.showUserMtest"
+                type="button"
+                class="btn btn-primary remove-usr">
+            <span class="glyphicon glyphicon-list-alt"></span>
+        </button>
+    </div>
     <button ng-click="removeUser(user.id)" class="btn btn-danger remove-usr">
         <span class="glyphicon glyphicon-remove"></span>
     </button>
+    <div class="admin-mtest-list clearfix" ng-show="user.showUserMtest==1">
+        <h5 ng-show="user.records != null">М-ТЕСТи:</h5>
+        <div class="sharing-row clearfix admin-mtest-row" ng-repeat="(k, mt) in user.records track by $index">
+            <div class="admin-mtest-item"><a href="/track/{[{ mt.id }]}">{[{ mt.name }]}</a> </div>
+            <div class="admin-mtest-buttons">
+                <div class="mtest-icon">
+                    <button ng-click="removeUserMtest(mt.id)" class="btn btn-danger remove-usr">
+                        <span class="glyphicon glyphicon-remove">
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

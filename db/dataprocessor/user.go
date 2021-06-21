@@ -220,7 +220,7 @@ func (mt *Service) UpdatePassword(password, email, hash string) error {
 	return nil
 }
 
-const getUsersQuery = `SELECT id, name, surename, email, rights, activated FROM users;`
+const getUsersQuery = `SELECT id, name, surename, email, rights, activated, records FROM users;`
 
 func (mt *Service) GetUsers(ctx context.Context) ([]User, error) {
 	var (
@@ -240,7 +240,8 @@ func (mt *Service) GetUsers(ctx context.Context) ([]User, error) {
 		var id int
 		var name, sureName, email, rights string
 		var activated int
-		if err := res.Scan(&id, &name, &sureName, &email, &rights, &activated); err != nil {
+		var records string
+		if err := res.Scan(&id, &name, &sureName, &email, &rights, &activated, &records); err != nil {
 			return nil, err
 		}
 
@@ -249,14 +250,19 @@ func (mt *Service) GetUsers(ctx context.Context) ([]User, error) {
 			r = 0
 		}
 
-		users = append(users, User{
+		user := User{
 			Id:        id,
 			Name:      name,
 			SureName:  sureName,
 			Email:     email,
 			Rights:    r,
 			Activated: activated,
-		})
+		}
+		if err := json.Unmarshal([]byte(records), &user.Records); err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
 	}
 
 	return users, nil

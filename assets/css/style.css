@@ -1378,7 +1378,6 @@ h2.border-bottom {
 #admin-tabs .admin-row .admin-user-row-info {
     padding-left: 7px;
     line-height: 30px;
-    height: 30px;
     width: 96%;
     float: left;
 }
@@ -1555,4 +1554,41 @@ h5.files-header {
     color: #420404;
     padding-top: 5px;
     height: 15px;
+}
+
+.admin-mtest-list {
+    display: block;
+    background: #8f9193;
+    clear: both;
+}
+
+.admin-mtest-row {
+    border-bottom: 1px solid #fff;
+    margin-bottom: 1px;
+}
+
+.admin-mtest-list h5 {
+    float: left;
+    margin-left: 10px;
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.admin-mtest-row:nth-child(odd) {
+    background: #fff;
+}
+
+.admin-mtest-row:nth-child(even) {
+    background: #e8e7e7;
+}
+
+.admin-mtest-item {
+    line-height: 25px;
+    width: 98%;
+    float: left;
+}
+
+.admin-mtest-buttons {
+    float: left;
 }

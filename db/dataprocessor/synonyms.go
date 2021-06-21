@@ -22,7 +22,7 @@ func (mt *Service) Load() ([]Synonym, error) {
 	)
 
 	synonyms := make(map[string][]string)
-	result := []Synonym{}
+	var result []Synonym
 
 	res, err := mt.db.Query("SELECT word, synonym FROM synonyms")
 	if err != nil {

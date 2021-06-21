@@ -1260,4 +1260,15 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
             console.log(err)
         });
     };
+    $scope.removeUserMtest = function (id) {
+        console.log(id);
+        mtCrud.removeMtestItem(id, token)
+            .then(function () {
+                delete $scope.records[id];
+                $scope.len_records = angular.toJson($scope.records).length
+            }).catch(function (err) {
+            console.log(err)
+        });
+    };
+
 });
