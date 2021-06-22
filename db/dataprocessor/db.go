@@ -74,10 +74,31 @@ const (
 		primary key (id)
 );
 `
+	initMTESTsTable = `create table if not exists mtests (
+	id bigint auto_increment,
+	mid varchar(100) not null,
+	name varchar(500) not null,
+	region int not null,
+	govern int not null,
+	business int not null,
+	calculations text not null,
+	calc_type int default 0,
+	calc_data varchar(1000) default '{}',
+	executors varchar(500) default '{}',
+	developer varchar(100),
+	dev_mid varchar(100),
+	pub_data date,
+	author varchar(100),
+	tags varchar(500) default '{}',
+	math_result int default 0,
+	corr_result int default 0,
+	constraint mtests_pk
+		primary key (id))`
 )
 
 func (mt Service) Init() error {
-	qs := []string{disableGroupBy, initRegActsTable, initBusinessesTable, initRegionsTable, initGovernmentsTable, initAdmActionsTable, initSynonyms}
+	qs := []string{disableGroupBy, initRegActsTable, initBusinessesTable,
+		initRegionsTable, initGovernmentsTable, initAdmActionsTable, initSynonyms, initMTESTsTable}
 
 	for _, q := range qs {
 		stmt, err := mt.db.Prepare(q)
