@@ -402,20 +402,19 @@ mTestApp.controller("mTestDBController",
             item.splice(index, 1);
         };
         $scope.addToSlider = function (res, eft) {
-            if (res === 1 && eft === 1) {
+            if (res == 1 && eft == 1) {
                 return 1
-            } else if (res === 1 && eft > 2) {
+            } else if (res == 1 && eft > 2) {
                 return 100
             } else {
                 return 0
             }
-
         };
 
         $scope.hideQuestion = function (dep, val) {
-            if (dep === 1 && val === 0) {
+            if (dep == 1 && val == 0) {
                 return "none"
-            } else if (dep === 1 && val === 1) {
+            } else if (dep == 1 && val == 1) {
                 return "block"
             } else {
                 return "block"
@@ -423,22 +422,22 @@ mTestApp.controller("mTestDBController",
         };
 
         $scope.valueToText = function (val, type) {
-            if (type === "yn") {
-                if (val === 1 || val === "Yes") {
+            if (type == "yn") {
+                if (val == 1 || val == "Yes") {
                     return "Так"
-                } else if (val === 0 || val === "No") {
+                } else if (val == 0 || val == "No") {
                     return "Ні"
-                } else if (val === "idk") {
+                } else if (val == "idk") {
                     return "Незнаю"
                 } else {
                     return "Не заповнено!"
                 }
             } else {
-                if (val === 1) {
+                if (val == 1) {
                     return "Суттєво"
-                } else if (val === 0) {
+                } else if (val == 0) {
                     return "Несуттєво"
-                } else if (val === 100) {
+                } else if (val == 100) {
                     return "Критично"
                 } else {
                     return "Не заповнено!"

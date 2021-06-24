@@ -7,12 +7,12 @@
                               popover-placement="right"
                               style="margin-right: 2px;">
          </span>
-         {[{ item.adq.header }]} | {[{ corr_bar(item.total, questions[item.proc.id].len) }]}</h4>
+         {[{ item.adq.header }]} | {[{ corr_bar(item.total, questions[item.proc.act_id].len) }]}</h4>
       <div class="col-sm-12">
           <uib-progressbar class="progress-striped"
-                           max="questions[item.proc.id].len"
+                           max="questions[item.proc.act_id].len"
                            value="item.total"
-                           type="{[{ corr_bar(item.total, questions[item.proc.id].len) }]}">
+                           type="{[{ corr_bar(item.total, questions[item.proc.act_id].len) }]}">
             <i>{[{ barText }]}</i>
           </uib-progressbar>
 
@@ -85,7 +85,7 @@
                           class="glyphicon glyphicon-remove-sign"></span>
                 </button>
            </div>
-</div>
+        </div>
           </li>
 
           </div>
