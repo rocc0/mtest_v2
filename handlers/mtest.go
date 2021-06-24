@@ -134,10 +134,10 @@ func (hd *Handlers) CreateMTESTHandler(c *gin.Context) {
 	}
 	var m datapkg.NewMTEST
 	if err := json.Unmarshal(x, &m); err != nil {
+		logrus.Error(err)
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-
 	if data, err := hd.CreateMTEST(m, email); err == nil {
 		logrus.Error(err)
 		go func() {
@@ -147,10 +147,10 @@ func (hd *Handlers) CreateMTESTHandler(c *gin.Context) {
 		}()
 		c.JSON(http.StatusOK, gin.H{"title": "Item added", "records": data})
 	} else {
+		logrus.Error(err)
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-
 }
 
 func (hd *Handlers) UpdateMTESTHandler(c *gin.Context) {
@@ -183,7 +183,11 @@ func (hd *Handlers) UpdateMTESTHandler(c *gin.Context) {
 	if err := hd.UpdateMTEST(form, email); err == nil {
 		c.JSON(http.StatusOK, gin.H{"title": "Mtest updated", "data": form})
 		go func() {
-			if err := hd.UpdateIndex(form["id"].(string)); err != nil {
+			id, ok := form["mid"]
+			if !ok {
+				id = form["id"]
+			}
+			if err := hd.UpdateIndex(id.(string)); err != nil {
 				logrus.Error(err)
 			}
 		}()

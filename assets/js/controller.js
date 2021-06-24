@@ -800,8 +800,7 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
     //end count len of records array for showing-hiding empty array banner
 });
 
-mTestApp.controller("authRegisterController", function ($scope, authService,$location,$timeout) {
-
+mTestApp.controller("authRegisterController", function ($scope, authService, $location,$timeout) {
     $scope.user = {
         password: "",
         confirmPassword: ""
@@ -917,6 +916,14 @@ mTestApp.controller("searchController", function ($scope, $http) {
                 }
             }
         }
+    };
+
+    $scope.propertyName = 'corr_result';
+    $scope.reverse = true;
+
+    $scope.sortBy = function(propertyName) {
+        $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
+        $scope.propertyName = propertyName;
     };
 
     $scope.doSearch = function () {

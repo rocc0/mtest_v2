@@ -74,7 +74,8 @@ mTestApp.service('mtCrud', function ($http) {
             name: newmtest.name,
             region: parseInt(newmtest.region.id),
             government: parseInt(newmtest.government.id),
-            calc_type: parseInt(newmtest.calc_type)
+            calc_type: parseInt(newmtest.calc_type),
+            business: parseInt(newmtest.business)
         };
         if (newmtest.calc_type === 1) {
             data.executors = {}
@@ -103,6 +104,7 @@ mTestApp.service('mtCrud', function ($http) {
             url:baseURL + "/api/v.1/m/update",
             data: {mid:item.id, name:item.name,
                 region: parseInt(item.region),govern: parseInt(item.govern),
+                business: parseInt(newmtest.business),
                 calc_type: parseInt(item.calc_type), executors: item.executors },
             headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }

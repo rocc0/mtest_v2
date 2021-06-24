@@ -1592,3 +1592,10 @@ h5.files-header {
 .admin-mtest-buttons {
     float: left;
 }
+
+.sortorder:after {
+    content: '\25b2';   // BLACK UP-POINTING TRIANGLE
+}
+.sortorder.reverse:after {
+    content: '\25bc';   // BLACK DOWN-POINTING TRIANGLE
+}
