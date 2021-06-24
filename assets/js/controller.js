@@ -168,13 +168,13 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
     };
 
     $scope.corr_bar = function (total, length) {
-        var a = '';
         if (total > length / 2) {
             $scope.barText = "Критична корупційна складова!";
+            return 1;
         } else {
             $scope.barText = "Кількість корупційних ризиків:" + total;
+            return 0;
         }
-        return a
     };
 
     $scope.valueToText = function (val, type) {
@@ -337,6 +337,24 @@ mTestApp.controller("mTestDBController",
             $scope.devs_get = devs_get
         };
 
+        $scope.calculateCorrTotal = function () {
+            var total = 0;
+            var infs = $scope.modelsdb.dropzones['1'];
+            var arr = eval(infs);
+            for(var i = 0; i < arr.length; i++) {
+                var col = arr[i]['columns'][0];
+                for(var j = 0; j < col.length; j++) {
+                    if (col[j]['type'] === 'itemplus'){
+                        var itemplus = col[j]['columns'][0];
+                        for(var k = 0; k < itemplus.length; k++){
+                            total += itemplus[k]['corr_calc']
+                        }
+                    }
+                }
+            }
+            return total
+        }
+
         setTimeout(function () {
             $scope.doGroupMath()
         }, 150);
@@ -372,13 +390,13 @@ mTestApp.controller("mTestDBController",
 
 
         $scope.corr_bar = function (total, length) {
-            var a = '';
             if (total > length / 2) {
                 $scope.barText = "Критична корупційна складова!";
+                return 1;
             } else {
                 $scope.barText = "Кількість корупційних ризиків:" + total;
+                return 0;
             }
-            return a
         };
 
         $scope.addRow = function (item, text) {
@@ -455,7 +473,8 @@ mTestApp.controller("mTestDBController",
             return angular.toJson($scope.modelsdb.dropzones);
         };
         $scope.saveMtestToDB = function () {
-            mtCrud.updateMtestCalculations($scope.params.mtest_id, $scope.mdata(), token)
+            var corr_total = $scope.calculateCorrTotal()
+            mtCrud.updateMtestCalculations($scope.params.mtest_id, $scope.mdata(), corr_total, $scope.calc_total, token)
                 .then(function (value) {
                     console.log(value.data)
                 })
@@ -474,10 +493,12 @@ mTestApp.controller("mTestDBController",
             return MathData.mathSum($scope.modelsdb.dropzones['1'], id)
         };
         $scope.totalSumDb = function () {
-            return MathData.totalSum($scope.modelsdb.dropzones['1'][0]['ki'], $scope.SumDb)
+            $scope.calc_total = MathData.totalSum($scope.modelsdb.dropzones['1'][0]['ki'], $scope.SumDb)
+            return $scope.calc_total
         };
 
         $scope.awgSumDb = function () {
+            $scope.calc_total = MathData.awgSum($scope.modelsdb.dropzones['1'], $scope.modelsdb.dropzones['1'][0]['ki'])
             return MathData.awgSum($scope.modelsdb.dropzones['1'], $scope.modelsdb.dropzones['1'][0]['ki'])
         };
 

@@ -108,11 +108,11 @@ mTestApp.service('mtCrud', function ($http) {
             }
         });
     };
-    this.updateMtestCalculations= function (id, item, token) {
+    this.updateMtestCalculations= function (id, item, corr_total, calc_total, token) {
         return $http({
             method: 'POST',
             url:baseURL + "/api/v.1/m/update",
-            data: {id:id,calculations: item},
+            data: {id:id,calculations: item, calc_total:calc_total, corr_total:corr_total},
             headers: {'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }
         });

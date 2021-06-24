@@ -46,7 +46,7 @@ func (mt *Service) UpdateMTEST(m map[string]interface{}, email string) error {
 }
 
 func (mt *Service) updateCalculations(m map[string]interface{}) error {
-	stmt, err := mt.db.Prepare("UPDATE mtests SET calculations= ? WHERE mid=?;")
+	stmt, err := mt.db.Prepare("UPDATE mtests SET calculations= ?, corr_result=?, math_result=? WHERE mid=?;")
 	if err != nil {
 		return err
 	}
@@ -55,7 +55,7 @@ func (mt *Service) updateCalculations(m map[string]interface{}) error {
 			log.Error(err)
 		}
 	}()
-	if _, err := stmt.Exec(m["calculations"], m["id"]); err != nil {
+	if _, err := stmt.Exec(m["calculations"], m["corr_total"], m["calc_total"], m["id"]); err != nil {
 		return err
 	}
 	return nil
