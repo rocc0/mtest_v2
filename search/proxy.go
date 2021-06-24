@@ -140,7 +140,6 @@ func (e *ElasticProxy) findSynonyms(phrase request) ([]byte, error) {
 		return nil, err
 	}
 
-	log.Error(string(b))
 	return b, nil
 }
 

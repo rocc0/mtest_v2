@@ -12,13 +12,15 @@ import (
 )
 
 type Idx struct {
-	Mid      string `json:"mid"`
-	Name     string `json:"name"`
-	Region   int    `json:"region"`
-	Govern   int    `json:"govern"`
-	Business int    `json:"business"`
-	Author   string `json:"author"`
-	RegAct   string `json:"reg_act"`
+	Mid        string `json:"mid"`
+	Name       string `json:"name"`
+	Region     int    `json:"region"`
+	Govern     int    `json:"govern"`
+	Business   int    `json:"business"`
+	MathResult int    `json:"math_result"`
+	CorrResult int    `json:"corr_result"`
+	Author     string `json:"author"`
+	RegAct     string `json:"reg_act"`
 }
 
 const mapping = `
@@ -46,6 +48,12 @@ const mapping = `
 				"type":"long"
 			},
 			"business":{
+				"type":"long"
+			},
+			"math_result":{
+				"type":"long"
+			},
+			"corr_result":{
 				"type":"long"
 			},
 			"author":{
@@ -137,6 +145,7 @@ func (s *Service) ElasticIndex() error {
 	var (
 		mid                      uuid.UUID
 		region, govern, business int
+		mathResult, corrResult   int
 		name, author             string
 		regAct                   string
 		trk                      Idx
@@ -144,7 +153,8 @@ func (s *Service) ElasticIndex() error {
 
 	res, err := s.Query(`
 		SELECT 
-		mt.mid, mt.name, mt.region, mt.govern, mt.business, mt.author, COALESCE(rg.doc_text, '') 
+		mt.mid, mt.name, mt.region, mt.govern, mt.business, mt.author, 
+		       COALESCE(rg.doc_text, ''), mt.corr_result, mt.math_result 
 		FROM mtests mt
 		LEFT JOIN reg_acts rg
 		ON mt.mid = rg.mid GROUP BY mt.mid`)
@@ -157,7 +167,7 @@ func (s *Service) ElasticIndex() error {
 	defer cancel()
 
 	for res.Next() {
-		if err := res.Scan(&mid, &name, &region, &govern, &business, &author, &regAct); err != nil {
+		if err := res.Scan(&mid, &name, &region, &govern, &business, &author, &regAct, &corrResult, &mathResult); err != nil {
 			logrus.Error(err.Error(), " | ", mid, "\n")
 			return err
 		}
@@ -175,12 +185,14 @@ func (s *Service) UpdateIndex(id string) error {
 	var (
 		mid                      uuid.UUID
 		region, govern, business int
+		mathResult, corrResult   int
 		name, author, regAct     string
 	)
 
 	ind, err := s.Query(`
         SELECT 
-		mtests.mid, mtests.name, mtests.region, mtests.govern, mtest.business, mtests.author, reg_acts.doc_text 
+		mtests.mid, mtests.name, mtests.region, mtests.govern, mtests.business, 
+               mtests.author, reg_acts.doc_text, mtests.corr_result, mtests.math_result  
 		FROM mtests
 		JOIN reg_acts 
 		ON mtests.mid=reg_acts.mid WHERE mtests.mid=?;`, id)
@@ -189,7 +201,7 @@ func (s *Service) UpdateIndex(id string) error {
 	}
 
 	for ind.Next() {
-		if err = ind.Scan(&mid, &name, &region, &govern, &business, &author, &regAct); err != nil {
+		if err = ind.Scan(&mid, &name, &region, &govern, &business, &author, &regAct, &corrResult, &mathResult); err != nil {
 			logrus.Error(err)
 			return err
 		}
@@ -197,7 +209,17 @@ func (s *Service) UpdateIndex(id string) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
-	idx := Idx{Mid: mid.String(), Name: name, Region: region, Govern: govern, Business: business, Author: author, RegAct: regAct}
+	idx := Idx{
+		Mid:        mid.String(),
+		Name:       name,
+		Region:     region,
+		Govern:     govern,
+		Business:   business,
+		Author:     author,
+		RegAct:     regAct,
+		MathResult: mathResult,
+		CorrResult: corrResult,
+	}
 
 	if _, err = s.Index().Index("mtests").Id(mid.String()).BodyJson(idx).Do(ctx); err != nil {
 		return err
@@ -210,16 +232,17 @@ func (s *Service) UpdateIndexWithFile(id string, text string) error {
 	var (
 		mid                      uuid.UUID
 		region, govern, business int
+		mathResult, corrResult   int
 		name, author             string
 	)
 
-	ind, err := s.Query("SELECT mid, name, region, govern, business, author FROM mtests WHERE mid=?;", id)
+	ind, err := s.Query("SELECT mid, name, region, govern, business, author, corr_result, math_result FROM mtests WHERE mid=?;", id)
 	if err != nil {
 		return err
 	}
 
 	for ind.Next() {
-		if err = ind.Scan(&mid, &name, &region, &govern, &business, &author); err != nil {
+		if err = ind.Scan(&mid, &name, &region, &govern, &business, &author, &mathResult, &corrResult); err != nil {
 			logrus.Error(err)
 			return err
 		}
@@ -228,7 +251,17 @@ func (s *Service) UpdateIndexWithFile(id string, text string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
-	idx := Idx{Mid: mid.String(), Name: name, Region: region, Govern: govern, Business: business, Author: author, RegAct: text}
+	idx := Idx{
+		Mid:        mid.String(),
+		Name:       name,
+		Region:     region,
+		Govern:     govern,
+		Business:   business,
+		Author:     author,
+		RegAct:     text,
+		MathResult: mathResult,
+		CorrResult: corrResult,
+	}
 	if _, err = s.Index().Index("mtests").Id(mid.String()).BodyJson(idx).Do(ctx); err != nil {
 		return err
 	}

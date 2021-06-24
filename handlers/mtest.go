@@ -182,6 +182,11 @@ func (hd *Handlers) UpdateMTESTHandler(c *gin.Context) {
 
 	if err := hd.UpdateMTEST(form, email); err == nil {
 		c.JSON(http.StatusOK, gin.H{"title": "Mtest updated", "data": form})
+		go func() {
+			if err := hd.UpdateIndex(form["id"].(string)); err != nil {
+				logrus.Error(err)
+			}
+		}()
 	} else {
 		logrus.Error(err)
 		c.AbortWithStatus(http.StatusBadRequest)
