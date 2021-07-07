@@ -298,7 +298,7 @@ mTestApp.controller("mTestController", function ($scope, $rootScope, $sce, $http
             //get next index
             var ind = "";
             if ($rootScope.contains($rootScope.helpPopover.lastStep) || ($rootScope.helpPopover.lastStep == "dnd_button")) {
-                if ($rootScope.seq[$rootScope.helpPopover.lastStep] == "end") {
+                if ($rootScope.seq[$rootScope.helpPopover.lastStep] == "end" || $rootScope.helpPopover.lastStep == "req_price") {
                     //find next valid item
                     if ($scope.models.dropzones[1][$rootScope.helpPopover.lastItem].columns[0][$rootScope.helpPopover.lastItemPlus].columns[0][$rootScope.helpPopover.lastMove+1] != undefined) {
                         $rootScope.helpPopover.lastMove++
@@ -312,12 +312,35 @@ mTestApp.controller("mTestController", function ($scope, $rootScope, $sce, $http
                         ind = $rootScope.helpPopover.lastItem.toString()+"|"+
                             $rootScope.helpPopover.lastItemPlus.toString()+
                             $rootScope.seq[$rootScope.helpPopover.lastStep];
+                        $rootScope.helpPopover.lastMove = 0;
                     } else if ($scope.models.dropzones[1][$rootScope.helpPopover.lastItem+1] != undefined) {
-                        $rootScope.helpPopover.lastItem++;
-                        $rootScope.helpPopover.lastStep = "dnd_button"
-                        ind = $rootScope.helpPopover.lastItem.toString()+
-                            $rootScope.seq[$rootScope.helpPopover.lastStep];
-                    } else {
+                        if ($rootScope.helpPopover.lastStep == "req_price") {
+                            $rootScope.helpPopover.lastItem++;
+                            $rootScope.helpPopover.lastStep = "dnd_button"
+                            ind = $rootScope.helpPopover.lastItem.toString()+$rootScope.seq[$rootScope.helpPopover.lastStep];
+                            $rootScope.helpPopover.lastItemPlus = 0;
+                            $rootScope.helpPopover.lastMove = 0;
+                        } else {
+                            $rootScope.helpPopover.lastStep = "req_price"
+                            ind = $rootScope.helpPopover.lastItem.toString()+"req_price"
+                            $rootScope.helpPopover.isOpen[ind] = true
+                            $rootScope.helpPopover.content = $rootScope.help_texts[$rootScope.helpPopover.lastStep];
+                            $rootScope.helpPopover.lastOpened = ind
+                            return;
+                        }
+                    } else if ($scope.models.dropzones[1][$rootScope.helpPopover.lastItem+1] == undefined) {
+                        if ($rootScope.helpPopover.lastStep == "req_price") {
+                            $rootScope.helpPopover.close()
+                            return
+                        } else {
+                            $rootScope.helpPopover.lastStep = "req_price"
+                            ind = $rootScope.helpPopover.lastItem.toString()+"req_price"
+                            $rootScope.helpPopover.isOpen[ind] = true
+                            $rootScope.helpPopover.content = $rootScope.help_texts[$rootScope.helpPopover.lastStep];
+                            $rootScope.helpPopover.lastOpened = ind
+                            return;
+                        }
+                    } else  {
                         $rootScope.helpPopover.close()
                         return
                     }
@@ -347,9 +370,6 @@ mTestApp.controller("mTestController", function ($scope, $rootScope, $sce, $http
             $rootScope.helpPopover.lastStep = $rootScope.seq[$rootScope.helpPopover.lastStep];
             $rootScope.helpPopover.content = $rootScope.help_texts[$rootScope.helpPopover.lastStep];
             $rootScope.helpPopover.lastOpened = ind
-            if ($rootScope.helpPopover.lastOpened != "tools_block") {
-                $rootScope.helpPopover.isOpen["tools_block"] = false;
-            }
         },
 
         close: function close() {
