@@ -6,11 +6,19 @@
                 <div class='requlatory'>
                         <div class="col-md-12 pull-left input-group">
                             <div class="input-group-addon" style="width: 176px;padding: 4px;">Назва органу влади</div>
-                            <input type="text" class="form-control" name="subj" ng-model="list[0].subj">
+                            <input type="text" class="form-control" name="subj" ng-model="list[0].subj"
+                                   uib-popover-template="helpPopover.templateUrl"
+                                   popover-placement="auto bottom"
+                                   popover-is-open="helpPopover.isOpen['subj']"
+                                   popover-class="action-popover">
                         </div>
                         <div class="col-md-12 pull-left input-group">
                             <div class="input-group-addon">Назва регуляторного акта</div>
-                            <input type="text" class="form-control" name="regact" ng-model="list[0].regact">
+                            <input type="text" class="form-control" name="regact" ng-model="list[0].regact"
+                                   uib-popover-template="helpPopover.templateUrl"
+                                   popover-placement="auto bottom"
+                                   popover-is-open="helpPopover.isOpen['regact']"
+                                   popover-class="action-popover">
                     </div>
                 </div>
                 <div ng-include="'list.html'" ></div>
@@ -55,10 +63,13 @@
                         dnd-draggable="item"
                         dnd-type="item.type"
                         dnd-effect-allowed="copy"
-                        dnd-copied="item.id = item.id + 1"
-                        >
+                        dnd-copied="item.id = item.id + 1">
                         <h3 class="itemname">{[{item.name}]}</h3>
-                        <div class="dragitem"><img alt=""  src="/static/img/{[{ item.type }]}.png"></div>
+                        <div class="dragitem"
+                             uib-popover-template="helpPopover.templateUrl"
+                             popover-placement="auto left"
+                             popover-is-open="helpPopover.isOpen[item.type]"
+                             popover-class="action-popover"><img alt="" src="/static/img/{[{ item.type }]}.png"></div>
                     </li>
                 </ul>
                 <div class='brdr'></div>
@@ -100,7 +111,7 @@
                                                                             <!--  MAIN DROPZONE  -->
 <script type="text/ng-template" id="list.html" >
     <ul dnd-list="list" dnd-allowed-types="allowed.dropzone">
-        <li ng-repeat="item in list" 
+        <li ng-repeat="(cKey, item) in list"
             dnd-draggable="item"
             dnd-type="item.type"
             dnd-effect-allowed="move"
@@ -118,7 +129,7 @@
 
 <script type="text/ng-template" id="list2.html">
     <ul dnd-list="list" dnd-allowed-types="allowed.container">
-        <li ng-repeat="item in list" 
+        <li ng-repeat="(pKey, item) in list"
             dnd-draggable="item"
             dnd-type="item.type"
             dnd-effect-allowed="move"
@@ -135,7 +146,7 @@
 
 <script type="text/ng-template" id="list3.html">
     <ul dnd-list="list" dnd-allowed-types="allowed.itemplus">
-        <li ng-repeat="item in list" 
+        <li ng-repeat="item in list"
             dnd-draggable="item"
             dnd-type="item.type"
             dnd-effect-allowed="move"
@@ -155,7 +166,11 @@
     <div class="container-element box box-blue" style='padding-top: 10px;'>
         <div id='header-sub'>
             <div class="handle pull-left">
-                <div dnd-handle class="container-hnd">::::</div>
+                <div dnd-handle class="container-hnd"
+                     uib-popover-template="helpPopover.templateUrl"
+                     popover-placement="auto bottom"
+                     popover-is-open="helpPopover.isOpen[$index+'dnd_button']"
+                     popover-class="action-popover">::::</div>
             </div>
             <div class="pull-left" style='width:96%'>
                 <div class="input-group pull-left container-header">
@@ -170,18 +185,26 @@
                             name="zob"
                             placeholder="Введіть назву інформаційної вимоги"
                             typeahead-min-length="0"
-                            style="width: 96%;">
+                            style="width: 96%;"
+                            uib-popover-template="helpPopover.templateUrl"
+                            popover-placement="auto bottom"
+                            popover-is-open="helpPopover.isOpen[$index+'inf_req']"
+                            popover-class="action-popover">
                     <a class="clear" ng-click="item.zob = null">
                     <span class="glyphicon glyphicon-remove-circle"></span>
                 </a>
                 </div>
                 <div class="input-group-addon container-header"
-                     ng-model="item.subS">Вартість вимоги: {[{ Sum(item.id)[item.id] | number:0}]} грн</div>
+                     ng-model="item.subS"
+                     uib-popover-template="helpPopover.templateUrl"
+                     popover-placement="auto left"
+                     popover-is-open="helpPopover.isOpen[$index+'req_price']"
+                     popover-class="action-popover">Вартість вимоги: {[{ Sum(item.id)[item.id] | number:0}]} грн</div>
                 <div style="display:none;">{[{ item.contsub = Sum(item.id)[item.id] }]}</div>
             </div>
         </div>
     
-        <div class="column" ng-repeat="list in item.columns" ng-include="'list2.html'" ></div>
+        <div class="column" ng-repeat="list in item.columns" ng-include="'list2.html'" ng-init="containerIndex=$index"></div>
         <div class="clearfix"></div>
     </div>
 </script>
@@ -203,7 +226,11 @@
                         ng-model="item.zob" name="zob"
                         placeholder="Введіть назву складової"
                         typeahead-min-length="0"
-                        style="width: 96%;">
+                        style="width: 96%;"
+                        uib-popover-template="helpPopover.templateUrl"
+                        popover-placement="auto bottom"
+                        popover-is-open="helpPopover.isOpen[cKey+'|'+$index+'inf_req_part']"
+                        popover-class="action-popover">
                     <a class="clear" ng-click="item.zob = null">
                     <span class="glyphicon glyphicon-remove-circle"></span>
                 </a>
@@ -211,7 +238,8 @@
         </div>
         <div class="column"
              ng-repeat="list in item.columns"
-             ng-include="'list3.html'"></div>
+             ng-include="'list3.html'"
+             ng-init="itemPlusIndex=$index"></div>
         <div class="clearfix"></div>
     </div>
 </script>

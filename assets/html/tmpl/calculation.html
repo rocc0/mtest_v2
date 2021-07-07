@@ -16,7 +16,11 @@
                        typeahead-on-select="item.adq = questions[item.proc.id]; item.total = 0"
                        typeahead-min-length="0"
                        typeahead-focus-on-select="true"
-                       typeahead-editable="false">
+                       typeahead-editable="false"
+                       uib-popover-template="helpPopover.templateUrl"
+                       popover-placement="auto bottom"
+                       popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'move']"
+                       popover-class="action-popover">
                 <a class="clear" ng-click="item.proc = null">
                     <span class="glyphicon glyphicon-remove-circle"></span>
                 </a>
@@ -32,7 +36,11 @@
                             </span>
                         Частота застосування
                     </div>
-                    <input type="number" class="form-control" name="kri" ng-model="item.kri" placeholder='КРі (раз)'>
+                    <input type="number" class="form-control" name="kri" ng-model="item.kri" placeholder='КРі (раз)'
+                           uib-popover-template="helpPopover.templateUrl"
+                           popover-placement="auto bottom"
+                           popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'usage_freq']"
+                           popover-class="action-popover">
                 </div>
             </div>
             <div class="input_two input-group col-md-12">
@@ -46,7 +54,11 @@
                           popover-placement="top-left">
                     </span>
                 Супутні витрати(грн.)</div>
-                <input type="number" class="form-control" name="pvri" ng-model="item.pvri" placeholder='ПВРі (грн)'>
+                <input type="number" class="form-control" name="pvri" ng-model="item.pvri" placeholder='ПВРі (грн)'
+                       uib-popover-template="helpPopover.templateUrl"
+                       popover-placement="auto bottom"
+                       popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'additional_payment']"
+                       popover-class="action-popover">
             </div>
               <div class="input-group second">
                     <div class="input-group-addon">
@@ -58,7 +70,11 @@
                               popover-placement="top">
                         </span>
                     Час(год.):</div>
-                    <input type="number" class="form-control" name="chi" ng-model="item.chi" placeholder="Чі (год)">
+                    <input type="number" class="form-control" name="chi" ng-model="item.chi" placeholder="Чі (год)"
+                           uib-popover-template="helpPopover.templateUrl"
+                           popover-placement="auto bottom"
+                           popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'time']"
+                           popover-class="action-popover">
                 </div>
                 <div class="input-group thrd">
                     <div class="input-group-addon">
@@ -69,7 +85,11 @@
                               popover-placement="left">
                         </span>
                     Оплата(грн.):</div>
-                    <input type="number" class="form-control" name="vchi" ng-model="item.vchi" placeholder="ВЧі (грн)"> 
+                    <input type="number" class="form-control" name="vchi" ng-model="item.vchi" placeholder="ВЧі (грн)"
+                           uib-popover-template="helpPopover.templateUrl"
+                           popover-placement="auto bottom"
+                           popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'payment']"
+                           popover-class="action-popover">
                 </div>   
             </div>
            

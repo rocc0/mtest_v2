@@ -15,17 +15,27 @@
                                    href="static/files/reference_information.pdf" target="_blank">Довідкова інформація</a></li>
         </ul>
 
-        <a href="/search" class="btn">Пошук АРВ</a></li>
+        <a href="/search" class="btn">Пошук АРВ</a>
         <a class="btn btn-default" type="button"
            href="https://youtu.be/lpdRUGKRmUE" target="_blank" style="color: #0075b6;">Відеоінструкція</a>
-
+        <button class="btn btn-default" type="button"
+                ng-click="helpPopover.showHelp = !helpPopover.showHelp; helpPopover.open('chat_bot')"
+                style="color: #b1576d;"
+                uib-popover-template="helpPopover.templateUrl"
+                popover-placement="auto bottom"
+                popover-is-open="helpPopover.isOpen['chat_bot']"
+                popover-class="action-popover">Підказка</button>
     </div>
 
 
     <div class="profile">
         <ul class="login">
             <!--Display this link only when the user is not logged in-->
-            <li ng-show="isLoggedIn == false"><a class="btn" href="/u/register">Реєстрація</a></li>
+            <li ng-show="isLoggedIn == false"><a class="btn" href="/u/register"
+                                                 uib-popover-template="helpPopover.templateUrl"
+                                                 popover-placement="auto bottom"
+                                                 popover-is-open="helpPopover.isOpen['registration']"
+                                                 popover-class="action-popover">Реєстрація</a></li>
 
             <!--Display this link only when the user is not logged in-->
             <li ng-show="isLoggedIn == false"><a class="btn" href="/u/login">Вхід</a></li>
@@ -38,3 +48,12 @@
         </ul>
     </div>
 </div>
+
+<!--
+    <button ng-click="dynamicPopover.open('add', 'static/html/tmpl/modal_add_action.html', '')"
+            uib-popover-template="dynamicPopover.templateUrl['add']"
+            type="button"
+            class="btn btn-success"
+            popover-placement="auto top"
+            popover-is-open="dynamicPopover.isOpen['add']"
+            popover-class="action-popover">-->

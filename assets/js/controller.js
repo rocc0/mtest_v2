@@ -5,7 +5,7 @@ var mTestApp = angular.module("mTestApp", ["ngAnimate", "ngSanitize", "ngCookies
 //---------------------------------------------CONTROLLER WITH LOCAL ----------------------------------------
 //----------------------------------------------------------------------------------------------------------
 
-mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, $window,
+mTestApp.controller("mTestController", function ($scope, $rootScope, $sce, $http, $cookies, $window,
                                                  $location, LS, SubmitData, MathData, ModalWin, $interval) {
     $http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     //----------------------------------------------------------------------------------------------------------
@@ -64,6 +64,14 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
         console.log(reason)
     });
 
+    $http({
+        method: 'GET',
+        url: '/static/help.json'
+    }).then(function (response) {
+        $rootScope.help_texts = response.data;
+    }).catch(function (reason) {
+        console.log(reason)
+    });
 
     $scope.isLoggedIn = 234;
 
@@ -236,7 +244,122 @@ mTestApp.controller("mTestController", function ($scope, $sce, $http, $cookies, 
                 }]
         });
     }
+    // popover for setting, mail, add mtest etc..
+    $rootScope.seq = {
+        "chat_bot": "registration",
+        "registration": "regact",
+        "regact": "item",
+        "item": "dnd_button",
+        "dnd_button": "inf_req",
+        "inf_req":"inf_req_part","inf_req_part":"move",
+        "move":"time","time":"payment", "payment":"usage_freq",
+        "usage_freq":"additional_payment","additional_payment":"end"
+    }
 
+
+    $rootScope.calc_steps = [
+        "inf_req","inf_req_part",
+         "move",  "time",
+        "payment","usage_freq",
+        "additional_payment",
+        "req_price", "end"
+    ]
+
+    $rootScope.contains = function (step) {
+        for (let i = 0; i < $rootScope.calc_steps.length; i++) {
+            if (step == $rootScope.calc_steps[i]) {
+                return true
+            }
+        }
+        return false
+    }
+
+    $rootScope.helpPopover = {
+        showHelp: false,
+        isOpen: {},
+        title: "heh",
+        content: "",
+        lastStep: "",
+        lastOpened: "",
+        lastItem: 0,
+        lastItemPlus: 0,
+        lastMove: 0,
+        open: function open(step) {
+            $rootScope.helpPopover.templateUrl = "static/html/tmpl/modal_help_step.html";
+            $rootScope.helpPopover.isOpen[step] = $rootScope.helpPopover.showHelp;
+            $rootScope.helpPopover.content = $rootScope.help_texts[step];
+            $rootScope.helpPopover.lastStep = step;
+            $rootScope.helpPopover.lastOpened = step;
+        },
+
+        next: function next() {
+            //cancel previous step
+            $rootScope.helpPopover.isOpen[$rootScope.helpPopover.lastOpened] = false
+            //get next index
+            var ind = "";
+            if ($rootScope.contains($rootScope.helpPopover.lastStep) || ($rootScope.helpPopover.lastStep == "dnd_button")) {
+                if ($rootScope.seq[$rootScope.helpPopover.lastStep] == "end") {
+                    //find next valid item
+                    if ($scope.models.dropzones[1][$rootScope.helpPopover.lastItem].columns[0][$rootScope.helpPopover.lastItemPlus].columns[0][$rootScope.helpPopover.lastMove+1] != undefined) {
+                        $rootScope.helpPopover.lastMove++
+                        $rootScope.helpPopover.lastStep = "inf_req_part"
+                        ind = $rootScope.helpPopover.lastItem.toString()+"|"+
+                            $rootScope.helpPopover.lastItemPlus.toString()+"|"+
+                            $rootScope.helpPopover.lastMove.toString()+$rootScope.seq[$rootScope.helpPopover.lastStep];
+                    } else if ($scope.models.dropzones[1][$rootScope.helpPopover.lastItem].columns[0][$rootScope.helpPopover.lastItemPlus+1] != undefined) {
+                        $rootScope.helpPopover.lastItemPlus++;
+                        $rootScope.helpPopover.lastStep = "inf_req"
+                        ind = $rootScope.helpPopover.lastItem.toString()+"|"+
+                            $rootScope.helpPopover.lastItemPlus.toString()+
+                            $rootScope.seq[$rootScope.helpPopover.lastStep];
+                    } else if ($scope.models.dropzones[1][$rootScope.helpPopover.lastItem+1] != undefined) {
+                        $rootScope.helpPopover.lastItem++;
+                        $rootScope.helpPopover.lastStep = "dnd_button"
+                        ind = $rootScope.helpPopover.lastItem.toString()+
+                            $rootScope.seq[$rootScope.helpPopover.lastStep];
+                    } else {
+                        $rootScope.helpPopover.close()
+                        return
+                    }
+                } else {
+                    if ($rootScope.helpPopover.lastStep == "dnd_button") {
+                        ind = $rootScope.helpPopover.lastItem.toString()+
+                            $rootScope.seq[$rootScope.helpPopover.lastStep];
+                    } else if ($rootScope.helpPopover.lastStep == "inf_req") {
+                        ind = $rootScope.helpPopover.lastItem.toString()+"|"+
+                            $rootScope.helpPopover.lastItemPlus.toString()+
+                            $rootScope.seq[$rootScope.helpPopover.lastStep];
+                    } else {
+                        ind = $rootScope.helpPopover.lastItem.toString()+"|"+
+                            $rootScope.helpPopover.lastItemPlus.toString()+"|"+
+                            $rootScope.helpPopover.lastMove.toString()+$rootScope.seq[$rootScope.helpPopover.lastStep];
+                    }
+                }
+            } else {
+                if ($rootScope.helpPopover.lastStep == "item") {
+                    ind = '0dnd_button';
+                } else {
+                    ind = $rootScope.seq[$rootScope.helpPopover.lastStep]
+                }
+            }
+            //define new step
+            $rootScope.helpPopover.isOpen[ind] = $rootScope.helpPopover.showHelp;
+            $rootScope.helpPopover.lastStep = $rootScope.seq[$rootScope.helpPopover.lastStep];
+            $rootScope.helpPopover.content = $rootScope.help_texts[$rootScope.helpPopover.lastStep];
+            $rootScope.helpPopover.lastOpened = ind
+            if ($rootScope.helpPopover.lastOpened != "tools_block") {
+                $rootScope.helpPopover.isOpen["tools_block"] = false;
+            }
+        },
+
+        close: function close() {
+            $rootScope.helpPopover.showHelp = false;
+            $rootScope.helpPopover.lastStep = "";
+            $rootScope.helpPopover.content = "";
+            $rootScope.helpPopover.lastOpened = "";
+            $rootScope.helpPopover.isOpen = {};
+        }
+    };
 });
 
 mTestApp.controller("mTestDBController",
@@ -821,7 +944,7 @@ mTestApp.controller("authRegisterController", function ($scope, authService, $lo
     };
 });
 
-mTestApp.controller("menuController", function ($scope, $rootScope,$location, authService, ModalWin) {
+mTestApp.controller("menuController", function ($scope, $rootScope, $location, authService, ModalWin) {
     $rootScope.isLoggedIn = false;
     const token = localStorage.getItem('token');
     if (token) {
