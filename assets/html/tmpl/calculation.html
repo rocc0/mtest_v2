@@ -25,7 +25,56 @@
                     <span class="glyphicon glyphicon-remove-circle"></span>
                 </a>
                </div>
-                 <div class="input-group pull-left dia_input">
+            </div>
+            <div class="input_two input-group col-md-12">
+              <div class="input-group first">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-question-sign"
+                              aria-hidden="true"
+                              uib-popover="Час – витрати робочого часу  в годинах необхідні для виконання кожної
+                        окремої адміністративної дії/процедури  суб`єктами  малого бізнесу, на яких розповсюджується регулювання."
+                              popover-trigger="'mouseenter'"
+                              popover-placement="top">
+                        </span>
+                    Час(год.):</div>
+                    <input type="number" class="form-control" name="chi" ng-model="item.chi" placeholder="Чі (год)"
+                           uib-popover-template="helpPopover.templateUrl"
+                           popover-placement="auto bottom"
+                           popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'time']"
+                           popover-class="action-popover">
+                </div>
+                <div class="input-group second">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-question-sign"
+                              aria-hidden="true"
+                              uib-popover-html="payContent"
+                              popover-trigger="'mouseenter'"
+                              popover-placement="left">
+                        </span>
+                    Оплата(грн.):</div>
+                    <input type="number" class="form-control" name="vchi" ng-model="item.vchi" placeholder="ВЧі (грн)"
+                           uib-popover-template="helpPopover.templateUrl"
+                           popover-placement="auto bottom"
+                           popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'payment']"
+                           popover-class="action-popover">
+                </div>
+                <div class="input-group thrd">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-question-sign"
+                              aria-hidden="true"
+                              uib-popover="
+                        Супутні витрати – грошові  витрати в гривнях, які безпосередньо супроводжують адміністративні дії/процедури,  необхідні для виконання ІВ. Наприклад, оплата проїзду в транспорті до місця  подання звітності, сплата за бланки, витрати на копіювання, оплата аутсорсингу"
+                              popover-trigger="'mouseenter'"
+                              popover-placement="top-left">
+                        </span>
+                        Супутні витрати(грн.)</div>
+                    <input type="number" class="form-control" name="pvri" ng-model="item.pvri" placeholder='ПВРі (грн)'
+                           uib-popover-template="helpPopover.templateUrl"
+                           popover-placement="auto bottom"
+                           popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'additional_payment']"
+                           popover-class="action-popover">
+                </div>
+                <div class="input-group forth">
                     <div class="input-group-addon">
                         <span class="glyphicon glyphicon-question-sign"
                               aria-hidden="true"
@@ -42,55 +91,6 @@
                            popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'usage_freq']"
                            popover-class="action-popover">
                 </div>
-            </div>
-            <div class="input_two input-group col-md-12">
-                <div class="input-group first">
-                <div class="input-group-addon">
-                    <span class="glyphicon glyphicon-question-sign"
-                          aria-hidden="true"
-                          uib-popover="
-                    Супутні витрати – грошові  витрати в гривнях, які безпосередньо супроводжують адміністративні дії/процедури,  необхідні для виконання ІВ. Наприклад, оплата проїзду в транспорті до місця  подання звітності, сплата за бланки, витрати на копіювання, оплата аутсорсингу"
-                          popover-trigger="'mouseenter'"
-                          popover-placement="top-left">
-                    </span>
-                Супутні витрати(грн.)</div>
-                <input type="number" class="form-control" name="pvri" ng-model="item.pvri" placeholder='ПВРі (грн)'
-                       uib-popover-template="helpPopover.templateUrl"
-                       popover-placement="auto bottom"
-                       popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'additional_payment']"
-                       popover-class="action-popover">
-            </div>
-              <div class="input-group second">
-                    <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-question-sign"
-                              aria-hidden="true"
-                              uib-popover="Час – витрати робочого часу  в годинах необхідні для виконання кожної
-                        окремої адміністративної дії/процедури  суб`єктами  малого бізнесу, на яких розповсюджується регулювання."
-                              popover-trigger="'mouseenter'"
-                              popover-placement="top">
-                        </span>
-                    Час(год.):</div>
-                    <input type="number" class="form-control" name="chi" ng-model="item.chi" placeholder="Чі (год)"
-                           uib-popover-template="helpPopover.templateUrl"
-                           popover-placement="auto bottom"
-                           popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'time']"
-                           popover-class="action-popover">
-                </div>
-                <div class="input-group thrd">
-                    <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-question-sign"
-                              aria-hidden="true"
-                              uib-popover-html="payContent"
-                              popover-trigger="'mouseenter'"
-                              popover-placement="left">
-                        </span>
-                    Оплата(грн.):</div>
-                    <input type="number" class="form-control" name="vchi" ng-model="item.vchi" placeholder="ВЧі (грн)"
-                           uib-popover-template="helpPopover.templateUrl"
-                           popover-placement="auto bottom"
-                           popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'payment']"
-                           popover-class="action-popover">
-                </div>   
             </div>
            
         </div>

@@ -236,7 +236,7 @@ input::-webkit-inner-spin-button {
 .input_one,
 .input_two,
 .input_three {
-    margin: 3px 0;
+    margin: 2px 0;
     float: left!important;
 }
 #input_group {
@@ -283,7 +283,7 @@ ul.nav.nav-pills {
 
 .tabbuttons button {
     border-radius: 0;
-    height: 34px;
+    height: 41px;
     width: 46px;
     line-height: 20px;
     vertical-align: middle;
@@ -325,17 +325,31 @@ ul.nav.nav-pills {
 }
 .first,
 .second,
-.thrd {
+.thrd,
+.forth {
     float: left;
 }
 
-.input-group.first, .input-group.second, .input-group.thrd {
-    width: 33.11%;
+.input-group.second, .input-group.forth {
+    width: 50%;
     margin-left: 2px;
 }
+
+.input-group.thrd,
 .input-group.first {
-    margin-left: 0;
+    width: 49.56%;
+    margin-right: 2px;
 }
+
+.input-group.second, .input-group.first {
+    margin-bottom: 2px;
+}
+
+.thrd,
+.forth {
+    margin-top: 1px;
+}
+
 
 .save_alert {
     text-align: center;
@@ -478,11 +492,11 @@ div#header-sub .input-group-addon {
     width: 25%;
 }
 .dia_input:nth-child(1){
-width: 69.7%;
+    width: 100%;
     margin-right: 2px;
 }
 .dia_input:nth-child(2){
-width: 30%;
+    width: 30%;
 }
 
 .box-darkblue {
