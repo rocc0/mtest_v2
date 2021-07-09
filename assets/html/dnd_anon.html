@@ -89,18 +89,22 @@
                            id='btn-dwn'
                            class="btn btn-default btn-sm"
                            download="Звіт.html"
+                           ng-click="reportToggler=1"
                             ng-href="{[{ saveToPdf  }]}">
                             <span class="glyphicon glyphicon-cloud-download"></span>
-                            <span>Завантажити</span>
+                            <span>Завантажити Витрати</span>
                         </a>
                         </div>
-                        <div class="download-switch">
-                            <switcher ng-model="reportToggler"
-                                      true-value="'1'" true-label="" false-value="'0'" false-label="" class="corr_toggle"></switcher>
-                            <code class="small">
-                                <i ng-show="reportToggler==1">М-ТЕСТ</i>
-                                <i ng-show="reportToggler==0">Кор.</i>
-                            </code>
+                        <div class="download-btn">
+                            <a type="button"
+                               id='btn-dwn'
+                               class="btn btn-default btn-sm"
+                               download="Звіт.html"
+                               ng-click="reportToggler=1"
+                               ng-href="{[{ saveToPdf  }]}">
+                                <span class="glyphicon glyphicon-cloud-download"></span>
+                                <span>Завантажити Корризики</span>
+                            </a>
                         </div>
                     </div>
                 </div>
