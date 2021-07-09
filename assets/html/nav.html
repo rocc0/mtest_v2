@@ -1,33 +1,46 @@
 <div id='nav' ng-controller="menuController">
-    <div class="btn-group questions" uib-dropdown dropdown-append-to-body>
-        <button id="btn-append-to-body" type="button" class="btn btn-primary" uib-dropdown-toggle>
-            Запитання?<span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu questions" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-body">
-            <li role="menuitem"><a class="btn btn-default" type="button"
-                                   href="static/files/SCM_Manual.pdf" target="_blank"
-                                   style="color: #0075b6;">Як користуватись?</a></li>
-
-            <li role="menuitem"><a class="btn btn-default" style="color: #0075b6;"
-                                   href=""
-                                   target="_blank">Посібник по М-ТЕСТу</a></li>
-            <li role="menuitem"><a class="btn btn-default" style="color: #0075b6;"
-                                   href="static/files/reference_information.pdf" target="_blank">Довідкова інформація</a></li>
-        </ul>
-
-        <a href="/search" class="btn">Пошук АРВ</a>
-        <a class="btn btn-default" type="button"
-           href="https://youtu.be/lpdRUGKRmUE" target="_blank" style="color: #0075b6;">Відеоінструкція</a>
+    <div class="btn-group questions">
         <button class="btn btn-default" type="button"
                 ng-click="helpPopover.showHelp = !helpPopover.showHelp; helpPopover.open('chat_bot')"
                 style="color: #b1576d;"
                 uib-popover-template="helpPopover.templateUrl"
                 popover-placement="auto bottom"
                 popover-is-open="helpPopover.isOpen['chat_bot']"
-                popover-class="action-popover">Підказка</button>
+                popover-class="action-popover">Чат-бот</button>
+        <div class="floatleft" uib-dropdown dropdown-append-to-body>
+            <button id="btn-append-to-body" type="button" class="btn btn-primary" uib-dropdown-toggle>
+                Відеоінструкція<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu questions" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-body">
+                <li role="menuitem">
+                    <a class="btn btn-default" type="button"
+                       href="https://youtu.be/lpdRUGKRmUE" target="_blank" style="color: #0075b6;">М-ТЕСТ</a>
+                </li>
+
+                <li role="menuitem">
+                    <a class="btn btn-default" type="button"
+                       href="https://www.youtube.com/watch?v=ebesXUzfQKA" target="_blank" style="color: #0075b6;">Антикорупція(ENG)</a></li>
+            </ul>
+        </div>
+
+        <div class="floatleft" uib-dropdown dropdown-append-to-body>
+            <button id="btn-append-to-body2" type="button" class="btn btn-primary" uib-dropdown-toggle>
+                Запитання?<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu questions" uib-dropdown-menu role="menu2" aria-labelledby="btn-append-to-body2">
+                <li role="menuitem2"><a class="btn btn-default" type="button"
+                                       href="static/files/SCM_Manual.pdf" target="_blank"
+                                       style="color: #0075b6;">Як користуватись?</a></li>
+
+                <li role="menuitem2"><a class="btn btn-default" style="color: #0075b6;"
+                                       href=""
+                                       target="_blank">Посібник по М-ТЕСТу</a></li>
+                <li role="menuitem2"><a class="btn btn-default" style="color: #0075b6;"
+                                       href="static/files/reference_information.pdf" target="_blank">Довідкова інформація</a></li>
+            </ul>
+        </div>
+        <a href="/search" class="btn">Пошук</a>
     </div>
-
-
     <div class="profile">
         <ul class="login">
             <!--Display this link only when the user is not logged in-->
