@@ -153,6 +153,11 @@ header {
     max-width: 500px!important;
 }
 
+.dropzone .popover-content, .profile .popover-content, .tools .popover-content,
+.questions .popover-content {
+    padding: 0;
+}
+
 #mtests .popover {
     color: #000;
     width: 100%;
