@@ -83,6 +83,11 @@
                 <div class="pull-left col-xs-6">Розробник: {[{ hit._source.author }]}</div>
                 <div class="pull-left col-xs-6">Кілкість критичних кор. складових: {[{ hit._source.corr_result }]}</div>
                 <div class="pull-left col-xs-6">Результат розрахунків: {[{ hit._source.math_result }]}</div>
+                <div class="pull-left col-xs-6" ng-show="hit._source.reg_act != ''">Регуляторний акт:
+                    <button class="glyphicon glyphicon-file"
+                          aria-hidden="true"
+                          ng-click="openModal('col-sm-9','static/html/tmpl/modal_reg_act.html','searchController', hit._source.reg_act) ">
+                     </button></div>
             </div>
 
         </li>

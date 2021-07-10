@@ -994,7 +994,7 @@ mTestApp.controller("menuController", function ($scope, $rootScope, $location, a
     };
 });
 
-mTestApp.controller("searchController", function ($scope, $http) {
+mTestApp.controller("searchController", function ($scope, $http, ModalWin) {
     $scope.currentPage = 0;
     //load governments and regions
     $http({
@@ -1036,6 +1036,10 @@ mTestApp.controller("searchController", function ($scope, $http) {
                 }
             }
         }
+    };
+
+    $scope.openModal = function (size, template, controller, text) {
+        return ModalWin.openModalWithContent(text, size, template, controller)
     };
 
     $scope.addPhrase = function () {

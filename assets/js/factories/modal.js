@@ -16,8 +16,24 @@ mTestApp.factory('ModalWin', function ($uibModal, $log) {
         }, function () {
           $log.info('Modal dismissed at: ' + new Date());
         })
-      }
-       
+      },
+        openModalWithContent: function (content, size,template) {
+            var modalInstance = $uibModal.open({
+                animation: true,
+                ariaLabelledBy: 'modal-title',
+                ariaDescribedBy: 'modal-body',
+                templateUrl: template,
+                controller: function($scope) {
+                    $scope.regActText = content;
+                },
+                size: size,
+            });
+            modalInstance.result.then(function (selectedItem) {
+                m.selected = selectedItem;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            })
+        }
     }
 });
 
