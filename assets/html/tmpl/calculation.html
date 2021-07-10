@@ -12,15 +12,16 @@
                        name="proc"
                        placeholder="Оберіть дію"
                        uib-typeahead="action as action.act_name for action in adm_actions | limitTo:15"
-                       ng-change="item.adq = questions[item.proc.id]"
-                       typeahead-on-select="item.adq = questions[item.proc.id]; item.total = 0"
+                       ng-change="item.adq = questions[getProcID(item.proc)]"
+                       typeahead-on-select="item.adq = questions[getProcID(item.proc)]; item.total = 0"
                        typeahead-min-length="0"
                        typeahead-focus-on-select="true"
-                       typeahead-editable="false"
+                       typeahead-editable="true"
                        uib-popover-template="helpPopover.templateUrl"
                        popover-placement="auto bottom"
                        popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'move']"
-                       popover-class="action-popover">
+                       popover-class="action-popover"
+                       autocomplete="off">
                 <a class="clear" ng-click="item.proc = null">
                     <span class="glyphicon glyphicon-remove-circle"></span>
                 </a>

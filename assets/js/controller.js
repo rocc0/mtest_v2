@@ -89,6 +89,12 @@ mTestApp.controller("mTestController", function ($scope, $rootScope, $sce, $http
     };
 
     //--------------------------------------------- ADD-REMOVE ROW ---------------------------------------------
+    $scope.getProcID = function (proc) {
+        if (proc.id == undefined && proc != "") {
+            return 14;
+        }
+        return proc.id;
+    }
     $scope.addRow = function (item, text) {
         var quest = {
             text: text,
@@ -1072,7 +1078,7 @@ mTestApp.controller("searchController", function ($scope, $http) {
     $scope.doSearch = function () {
         $http({
             method: 'POST',
-            url: "http://mtest.org.ua/api/v.1/search",
+            url: "http://localhost:8099/api/v.1/search",
             data: $scope.query
         }).then(function (response) {
             $scope.results = response.data;
@@ -1105,7 +1111,7 @@ mTestApp.controller("authActivateController", function ($scope, $routeParams,$ht
 });
 
 mTestApp.controller("authResetController", function ($scope, $routeParams, $http, $location, authService) {
-    const baseURL = 'http://mtest.org.ua';
+    const baseURL = 'http://localhost:8099';
     var hash = $routeParams.hash;
     $scope.user = {};
     authService.checkhash(hash)
