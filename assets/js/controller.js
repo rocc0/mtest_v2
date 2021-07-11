@@ -1082,7 +1082,7 @@ mTestApp.controller("searchController", function ($scope, $http, ModalWin) {
     $scope.doSearch = function () {
         $http({
             method: 'POST',
-            url: "http://localhost:8099/api/v.1/search",
+            url: "http://mtest.org.ua/api/v.1/search",
             data: $scope.query
         }).then(function (response) {
             $scope.results = response.data;
@@ -1115,7 +1115,7 @@ mTestApp.controller("authActivateController", function ($scope, $routeParams,$ht
 });
 
 mTestApp.controller("authResetController", function ($scope, $routeParams, $http, $location, authService) {
-    const baseURL = 'http://localhost:8099';
+    const baseURL = 'http://mtest.org.ua:8099';
     var hash = $routeParams.hash;
     $scope.user = {};
     authService.checkhash(hash)
