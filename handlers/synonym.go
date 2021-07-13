@@ -51,6 +51,11 @@ func (hd *Handlers) AddSynonymHandler(c *gin.Context) {
 
 	if synID, err := hd.AddSynonym(syn.MtestID, syn.Synonym); err == nil {
 		c.JSON(http.StatusOK, gin.H{"title": "Synonym added", "synonym_id": synID})
+		go func() {
+			if err := hd.UpdateIndex(syn.MtestID); err != nil {
+				logrus.Error(err)
+			}
+		}()
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
@@ -68,6 +73,11 @@ func (hd *Handlers) RemoveSynonymHandler(c *gin.Context) {
 	}
 
 	if err := hd.RemoveSynonym(syn.MtestID, syn.SynonymID); err == nil {
+		go func() {
+			if err := hd.UpdateIndex(syn.MtestID); err != nil {
+				logrus.Error(err)
+			}
+		}()
 		c.JSON(http.StatusOK, gin.H{"title": "Synonym removed"})
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)

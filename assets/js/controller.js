@@ -1076,7 +1076,7 @@ mTestApp.controller("searchController", function ($scope, $http, ModalWin) {
                 "should": {
                     "multi_match": {
                         "query": $scope.phrase,
-                        "fields": ["name", "reg_act"]
+                        "fields": ["name", "reg_act", "synonyms"]
                     }
                 }
             }

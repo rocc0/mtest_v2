@@ -3,7 +3,10 @@ package search
 import (
 	"context"
 	"database/sql"
+	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/sirupsen/logrus"
 
@@ -21,6 +24,7 @@ type Idx struct {
 	CorrResult int    `json:"corr_result"`
 	Author     string `json:"author"`
 	RegAct     string `json:"reg_act"`
+	Synonyms   string `json:"synonyms"`
 }
 
 const mapping = `
@@ -60,6 +64,10 @@ const mapping = `
 				"type":"text"
 			},
 			"reg_act":{
+				"type":"text",
+				"analyzer": "ukrainian"
+			},
+			"synonyms":{
 				"type":"text",
 				"analyzer": "ukrainian"
 			}
@@ -173,6 +181,11 @@ func (s *Service) ElasticIndex() error {
 		}
 
 		trk = Idx{Mid: mid.String(), Name: name, Region: region, Govern: govern, Business: business, Author: author, RegAct: regAct}
+		syns, err := s.getSynonyms(mid.String())
+		if err != nil {
+			return err
+		}
+		trk.Synonyms = syns
 		if _, err = s.Index().Index("mtests").Id(mid.String()).BodyJson(trk).Do(ctx); err != nil {
 			return err
 		}
@@ -207,6 +220,11 @@ func (s *Service) UpdateIndex(id string) error {
 		}
 	}
 
+	syns, err := s.getSynonyms(mid.String())
+	if err != nil {
+		return err
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 	idx := Idx{
@@ -219,6 +237,7 @@ func (s *Service) UpdateIndex(id string) error {
 		RegAct:     regAct,
 		MathResult: mathResult,
 		CorrResult: corrResult,
+		Synonyms:   syns,
 	}
 
 	if _, err = s.Index().Index("mtests").Id(mid.String()).BodyJson(idx).Do(ctx); err != nil {
@@ -251,6 +270,11 @@ func (s *Service) UpdateIndexWithFile(id string, text string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
+	syns, err := s.getSynonyms(mid.String())
+	if err != nil {
+		return err
+	}
+
 	idx := Idx{
 		Mid:        mid.String(),
 		Name:       name,
@@ -261,10 +285,37 @@ func (s *Service) UpdateIndexWithFile(id string, text string) error {
 		RegAct:     text,
 		MathResult: mathResult,
 		CorrResult: corrResult,
+		Synonyms:   syns,
 	}
 	if _, err = s.Index().Index("mtests").Id(mid.String()).BodyJson(idx).Do(ctx); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+const listSynonymsQuery = `SELECT synonym FROM synonyms WHERE mtest_id=?;`
+
+func (s *Service) getSynonyms(mtestID string) (string, error) {
+	var synonyms []string
+	res, err := s.Query(listSynonymsQuery, mtestID)
+	if err != nil {
+		return "", err
+	}
+	defer func() {
+		if err := res.Close(); err != nil {
+			log.Error(err)
+		}
+	}()
+	for res.Next() {
+		var s string
+		if err := res.Scan(&s); err != nil {
+			return "", err
+		}
+
+		synonyms = append(synonyms, s)
+	}
+
+	return strings.Join(synonyms, " "), nil
+
 }
