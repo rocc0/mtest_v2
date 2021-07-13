@@ -930,6 +930,39 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
         });
     };
 
+    $scope.addSynonym = function (mtestID, synonym) {
+        console.log(mtestID, synonym);
+        $http({
+            method: 'POST',
+            url: "/api/v.1/synonyms",
+            data: {mtest_id: mtestID, synonym:synonym},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+            $scope.records[mtestID].synonyms.push({mtest_id:mtestID, synonym: synonym})
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+
+    $scope.removeSynonym = function (mtestID, synonymID) {
+        console.log(mtestID, synonymID);
+        const index = $scope.records[mtestID].synonyms.findIndex(a => a.synonymID === synonymID)
+        $http({
+            method: 'DELETE',
+            url: "/api/v.1/synonyms",
+            data: {mtest_id: mtestID, synonym_id:synonymID},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+            $scope.records[mtestID].synonyms.splice(index,1)
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+
     // popover for setting, mail, add mtest etc..
     $scope.dynamicPopover = {
         isOpen: {},
@@ -1090,7 +1123,7 @@ mTestApp.controller("searchController", function ($scope, $http, ModalWin) {
     $scope.doSearch = function () {
         $http({
             method: 'POST',
-            url: "http://localhost:8099/api/v.1/search",
+            url: "http://localhost:9200/mtests/_search",
             data: $scope.query
         }).then(function (response) {
             $scope.results = response.data;
@@ -1175,16 +1208,6 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
         url: '/api/v.1/businesses',
     }).then(function (response) {
         $scope.businesses = response.data.businesses
-    }).catch(function (reason) {
-        console.log(reason)
-    });
-
-    $http({
-        method: 'GET',
-        url: '/api/v.1/synonyms',
-    }).then(function (response) {
-        $scope.synonyms = response.data.synonyms
-        console.log($scope.synonyms)
     }).catch(function (reason) {
         console.log(reason)
     });
@@ -1417,37 +1440,6 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
         });
     };
 
-    $scope.addSynonym = function (word, synonym) {
-        console.log(word, synonym);
-        $http({
-            method: 'POST',
-            url: "/api/v.1/synonyms",
-            data: {word: word, synonym:synonym},
-            headers: {
-                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
-            }
-        }).then(function (response) {
-            $scope.synonyms.push({word:word, synonym: synonym})
-        }).catch(function (err) {
-            console.log(err)
-        });
-    };
-    $scope.removeSynonym = function (word, synonym) {
-        console.log(word, synonym);
-        const index =  $scope.businesses.findIndex(a => a.word === word && a.synonym === synonym)
-        $http({
-            method: 'DELETE',
-            url: "/api/v.1/synonyms",
-            data: {word: word, synonym:synonym},
-            headers: {
-                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
-            }
-        }).then(function (response) {
-            $scope.businesses.splice(index,1)
-        }).catch(function (err) {
-            console.log(err)
-        });
-    };
     $scope.removeUserMtest = function (id) {
         console.log(id);
         mtCrud.removeMtestItem(id, token)

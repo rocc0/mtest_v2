@@ -61,10 +61,10 @@ type indexUpdater interface {
 	UpdateIndexWithFile(id string, text string) error
 }
 
-type searchCache interface {
-	Load() ([]datapkg.Synonym, error)
-	AddSynonym(word, synonym string) error
-	RemoveSynonym(word, synonym string) error
+type SynonymsProcessor interface {
+	GetSynonymsByID(mtestID string) ([]datapkg.Synonym, error)
+	AddSynonym(mtestID, synonym string) (string, error)
+	RemoveSynonym(mtestID, synonym string) error
 }
 
 type Handlers struct {
@@ -78,7 +78,7 @@ type Handlers struct {
 	governmentDataProcessor
 	BusinessDataProcessor
 	regActUpdater
-	searchCache
+	SynonymsProcessor
 }
 
 func (hd *Handlers) RenderIndexPage(c *gin.Context) {

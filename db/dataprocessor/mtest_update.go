@@ -23,6 +23,7 @@ type (
 		Business   int                     `json:"business,omitempty"`
 		Executors  map[string]ExecutorInfo `json:"executors"`
 		Files      []RegAct                `json:"files"`
+		Synonyms   []Synonym               `json:"synonyms"`
 	}
 	AdmAction struct {
 		ActId   int    `json:"id"`

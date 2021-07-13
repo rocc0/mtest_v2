@@ -11,12 +11,23 @@ import (
 )
 
 type synonymRequest struct {
-	Word    string `json:"word"`
+	MtestID string `json:"mtest_id"`
 	Synonym string `json:"synonym"`
 }
 
 func (hd *Handlers) GetAllSynonyms(c *gin.Context) {
-	res, err := hd.LoadHandler()
+	x, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	var syn synonymRequest
+	if err := json.Unmarshal(x, &syn); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	res, err := hd.GetSynonymsByID(syn.MtestID)
 	if err != nil {
 		logrus.Error(err)
 		c.AbortWithStatus(http.StatusInternalServerError)
@@ -37,8 +48,8 @@ func (hd *Handlers) AddSynonymHandler(c *gin.Context) {
 		return
 	}
 
-	if err := hd.AddSynonym(syn.Word, syn.Synonym); err == nil {
-		c.JSON(http.StatusOK, gin.H{"title": "Synonym added"})
+	if synID, err := hd.AddSynonym(syn.MtestID, syn.Synonym); err == nil {
+		c.JSON(http.StatusOK, gin.H{"title": "Synonym added", "synonym_id": synID})
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
@@ -55,7 +66,7 @@ func (hd *Handlers) RemoveSynonymHandler(c *gin.Context) {
 		return
 	}
 
-	if err := hd.RemoveSynonym(syn.Word, syn.Synonym); err == nil {
+	if err := hd.RemoveSynonym(syn.MtestID, syn.Synonym); err == nil {
 		c.JSON(http.StatusOK, gin.H{"title": "Synonym removed"})
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)

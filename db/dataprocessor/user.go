@@ -131,6 +131,12 @@ func (mt *Service) GetUser(email string) (*User, error) {
 		} else {
 			user.Records[k].Files = acts
 		}
+
+		if syns, err := mt.GetSynonymsByID(k); err != nil {
+			return nil, err
+		} else {
+			user.Records[k].Synonyms = syns
+		}
 	}
 
 	return user, nil

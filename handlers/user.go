@@ -201,7 +201,3 @@ func (hd *Handlers) PasswordCheckHandler(c *gin.Context) {
 		c.Status(200)
 	}
 }
-
-func (hd *Handlers) LoadHandler() ([]datapkg.Synonym, error) {
-	return hd.Load()
-}
