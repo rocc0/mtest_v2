@@ -890,16 +890,20 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
         })
     };
     $scope.getRegAct = function (mtestID, docID) {
-        console.log(mtestID, docID);
         $http({
             method: 'POST',
             url: "/api/v.1/m/regact/get",
             data: {mtest_id: mtestID, doc_id: docID},
+            responseType:"arraybuffer",
             headers: {
                 'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }
         }).then(function (response) {
-            console.log(response)
+            var blob = new Blob([response.data], {type: 'application/msword'});
+            var a = document.getElementById("download-reg-act");
+            a.href = window.URL.createObjectURL(blob);
+            a.target = "_self";
+            a.click();
         }).catch(function (err) {
             console.log(err)
         });
@@ -1082,7 +1086,7 @@ mTestApp.controller("searchController", function ($scope, $http, ModalWin) {
     $scope.doSearch = function () {
         $http({
             method: 'POST',
-            url: "http://mtest.org.ua/api/v.1/search",
+            url: "http://localhost:8099/api/v.1/search",
             data: $scope.query
         }).then(function (response) {
             $scope.results = response.data;
@@ -1115,7 +1119,7 @@ mTestApp.controller("authActivateController", function ($scope, $routeParams,$ht
 });
 
 mTestApp.controller("authResetController", function ($scope, $routeParams, $http, $location, authService) {
-    const baseURL = 'http://mtest.org.ua:8099';
+    const baseURL = 'http://localhost:8099';
     var hash = $routeParams.hash;
     $scope.user = {};
     authService.checkhash(hash)

@@ -5,12 +5,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const insertRegActQuery = "INSERT INTO reg_acts (mid, doc_id, doc_text, doc_name, doc_type) VALUES (?, ?, ?, ?, ?);"
+const insertRegActQuery = "INSERT INTO reg_acts (mid, doc_id, doc_text, doc_name) VALUES (?, ?, ?, ?);"
 const deleteRegActQuery = "DELETE FROM reg_acts WHERE mid=? AND doc_id=?;"
-const getRegActQuery = "SELECT doc_text, doc_name, doc_type FROM reg_acts WHERE mid=? AND doc_id=?;"
-const listRegActsQuery = `SELECT doc_id, doc_name, doc_type FROM reg_acts WHERE mid=?;`
+const getRegActQuery = "SELECT doc_text, doc_name FROM reg_acts WHERE mid=? AND doc_id=?;"
+const listRegActsQuery = `SELECT doc_id, doc_name FROM reg_acts WHERE mid=?;`
 
-func (mt *Service) InsertRegAct(mtestID string, docText string, docName string, docType string) (string, error) {
+func (mt *Service) InsertRegAct(mtestID string, docText string, docName string) (string, error) {
 	stmt, err := mt.db.Prepare(insertRegActQuery)
 	if err != nil {
 		return "", err
@@ -22,7 +22,7 @@ func (mt *Service) InsertRegAct(mtestID string, docText string, docName string, 
 		}
 	}()
 
-	if _, err = stmt.Exec(mtestID, docID, docText, docName, docType); err != nil {
+	if _, err = stmt.Exec(mtestID, docID, docText, docName); err != nil {
 		return "", err
 	}
 	return docID, nil
@@ -58,7 +58,7 @@ func (mt *Service) GetRegAct(mtestID string, docID string) (RegAct, error) {
 	var doc RegAct
 	res := mt.db.QueryRow(getRegActQuery, mtestID, docID)
 
-	if err := res.Scan(&doc.Text, &doc.Name, &doc.Type); err != nil {
+	if err := res.Scan(&doc.Text, &doc.Name); err != nil {
 		return doc, err
 	}
 
@@ -83,8 +83,8 @@ func (mt *Service) ListRegActs(mtestID string) ([]RegAct, error) {
 		}
 	}()
 	for res.Next() {
-		var docID, docName, docType string
-		if err := res.Scan(&docID, &docName, &docType); err != nil {
+		var docID, docName string
+		if err := res.Scan(&docID, &docName); err != nil {
 			return nil, err
 		}
 
@@ -92,7 +92,6 @@ func (mt *Service) ListRegActs(mtestID string) ([]RegAct, error) {
 			MtestID: mtestID,
 			DocID:   docID,
 			Name:    docName,
-			Type:    docType,
 		})
 	}
 
