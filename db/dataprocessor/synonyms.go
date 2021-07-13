@@ -15,7 +15,7 @@ const initSynonyms = `CREATE TABLE IF NOT EXISTS synonyms
 );
 `
 
-const listSynonymsQuery = `SELECT mtest_id, synonym_id, synonym FROM synonyms WHERE mtest_id=?;`
+const listSynonymsQuery = `SELECT synonym_id, synonym FROM synonyms WHERE mtest_id=?;`
 
 type Synonym struct {
 	SynonymID string `json:"synonym_id"`

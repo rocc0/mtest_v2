@@ -11,8 +11,9 @@ import (
 )
 
 type synonymRequest struct {
-	MtestID string `json:"mtest_id"`
-	Synonym string `json:"synonym"`
+	MtestID   string `json:"mtest_id"`
+	Synonym   string `json:"synonym"`
+	SynonymID string `json:"synonym_id"`
 }
 
 func (hd *Handlers) GetAllSynonyms(c *gin.Context) {
@@ -66,7 +67,7 @@ func (hd *Handlers) RemoveSynonymHandler(c *gin.Context) {
 		return
 	}
 
-	if err := hd.RemoveSynonym(syn.MtestID, syn.Synonym); err == nil {
+	if err := hd.RemoveSynonym(syn.MtestID, syn.SynonymID); err == nil {
 		c.JSON(http.StatusOK, gin.H{"title": "Synonym removed"})
 	} else {
 		c.AbortWithStatus(http.StatusBadRequest)

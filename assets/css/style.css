@@ -1276,15 +1276,15 @@ ti-tag-item.ng-isolate-scope span {
 }
 
 #mtests .mtest-item {
-    width: 78%;
+    width: 75%;
 }
 #mtests .mtest-buttons {
-    width: 22%;
+    width: 25%;
     float: left;
 }
 
 #mtests .mtest-icon  {
-    width: 20%;
+    width: 15%;
     font-size: 23px;
     float: right;
 }
@@ -1323,6 +1323,12 @@ ti-tag-item.ng-isolate-scope span {
 #mtests .mtest-sharing h5 {
     margin-bottom: 2px;
     border-bottom: 1px solid #cccccc;
+}
+
+#mtests #synonym {
+    padding: 0 8px;
+    float: left;
+    line-height: 22px;
 }
 
 h2.border-bottom {

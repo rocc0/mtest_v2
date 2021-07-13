@@ -940,6 +940,9 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
                 'Content-Type': 'application/json', Authorization: 'Bearer ' + token
             }
         }).then(function (response) {
+            if ($scope.records[mtestID].synonyms == null) {
+                $scope.records[mtestID].synonyms = []
+            }
             $scope.records[mtestID].synonyms.push({mtest_id:mtestID, synonym: synonym})
         }).catch(function (err) {
             console.log(err)
@@ -948,7 +951,8 @@ mTestApp.controller("userCabinetController", function ($scope, $http, $location,
 
     $scope.removeSynonym = function (mtestID, synonymID) {
         console.log(mtestID, synonymID);
-        const index = $scope.records[mtestID].synonyms.findIndex(a => a.synonymID === synonymID)
+        console.log($scope.records[mtestID])
+        const index = $scope.records[mtestID].synonyms.findIndex(a => a.synonym_id === synonymID)
         $http({
             method: 'DELETE',
             url: "/api/v.1/synonyms",
