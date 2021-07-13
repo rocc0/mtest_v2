@@ -1160,7 +1160,7 @@ mTestApp.controller("authActivateController", function ($scope, $routeParams,$ht
 });
 
 mTestApp.controller("authResetController", function ($scope, $routeParams, $http, $location, authService) {
-    const baseURL = 'http://localhost:8099';
+    const baseURL = 'http://mtest.org.ua';
     var hash = $routeParams.hash;
     $scope.user = {};
     authService.checkhash(hash)
