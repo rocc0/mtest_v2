@@ -20,6 +20,7 @@
                        uib-popover-template="helpPopover.templateUrl"
                        popover-placement="auto bottom"
                        popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'move']"
+                       popover-enable="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'move']"
                        popover-class="action-popover"
                        autocomplete="off">
                 <a class="clear" ng-click="item.proc = null">
@@ -42,6 +43,7 @@
                            uib-popover-template="helpPopover.templateUrl"
                            popover-placement="auto bottom"
                            popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'time']"
+                           popover-enable="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'time']"
                            popover-class="action-popover">
                 </div>
                 <div class="input-group second">
@@ -57,6 +59,7 @@
                            uib-popover-template="helpPopover.templateUrl"
                            popover-placement="auto bottom"
                            popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'payment']"
+                           popover-enable="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'payment']"
                            popover-class="action-popover">
                 </div>
                 <div class="input-group thrd">
@@ -73,6 +76,7 @@
                            uib-popover-template="helpPopover.templateUrl"
                            popover-placement="auto bottom"
                            popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'additional_payment']"
+                           popover-enable="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'additional_payment']"
                            popover-class="action-popover">
                 </div>
                 <div class="input-group forth">
@@ -90,6 +94,7 @@
                            uib-popover-template="helpPopover.templateUrl"
                            popover-placement="auto bottom"
                            popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'usage_freq']"
+                           popover-enable="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'usage_freq']"
                            popover-class="action-popover">
                 </div>
             </div>

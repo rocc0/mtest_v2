@@ -195,7 +195,7 @@ INSERT INTO mtests (id, mid, name, region, govern, calculations, calc_type, calc
 (125, 'd53467b6-5859-4e6c-aa00-611d08166425', 'Тестова назва', 10, 7, '{\"1\":[{\"type\":\"container\",\"id\":3,\"columns\":[[{\"type\":\"itemplus\",\"id\":3,\n                    \"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":0},{\"type\":\"item\",\"id\":6,\"name\":\"Додати дію\",\"subsum\":0}]],\n                    \"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0},\n                {\"type\":\"container\",\"id\":null,\"columns\":[[{\"type\":\"itemplus\",\"id\":4,\"columns\":[[{\"type\":\"item\",\"id\":3,\"name\":\"Додати дію\",\"subsum\":0},\n                            {\"type\":\"item\",\"id\":4,\"name\":\"Додати дію\",\"subsum\":0}]],\"name\":\"Додати складову інф. вимоги\"}]],\"name\":\"Додати інф. вимогу\",\"contsub\":0}]}', 3, '{}', '{}', 'vk@clc.com.ua', '287251ad-8125-4a5d-80da-c9c21fdc8367', 'vlad.kotlyarenko@gmail.com', 0);
 `
 
-	initUsersTable = `CREATE TABLE users (
+	initUsersTable = `CREATE TABLE  if not exists users (
   id bigint UNSIGNED NOT NULL,
   name varchar(100) NOT NULL,
   surename varchar(20) NOT NULL,
@@ -220,39 +220,42 @@ func (mt Service) Init() error {
 		initSynonyms, initMTESTsTable, initUsersTable}
 
 	for _, q := range qs {
-		if err := exec(q, mt.db); err != nil {
+		aff, err := exec(q, mt.db)
+		if err != nil {
 			return err
 		}
-		switch {
-		case q == initGovernmentsTable:
-			if err := exec(initGovernments, mt.db); err != nil {
-				return err
-			}
-		case q == initAdmActionsTable:
-			if err := exec(initAdmActions, mt.db); err != nil {
-				return err
-			}
-		case q == initRegionsTable:
-			if err := exec(initRegions, mt.db); err != nil {
-				return err
-			}
-		case q == initMTESTsTable:
-			if err := exec(initDefaultMTESTS, mt.db); err != nil {
-				return err
-			}
-		case q == initUsersTable:
-			if err := exec(initUsers, mt.db); err != nil {
-				return err
+		if aff != 0 {
+			switch {
+			case q == initGovernmentsTable:
+				if _, err := exec(initGovernments, mt.db); err != nil {
+					return err
+				}
+			case q == initAdmActionsTable:
+				if _, err := exec(initAdmActions, mt.db); err != nil {
+					return err
+				}
+			case q == initRegionsTable:
+				if _, err := exec(initRegions, mt.db); err != nil {
+					return err
+				}
+			case q == initMTESTsTable:
+				if _, err := exec(initDefaultMTESTS, mt.db); err != nil {
+					return err
+				}
+			case q == initUsersTable:
+				if _, err := exec(initUsers, mt.db); err != nil {
+					return err
+				}
 			}
 		}
 	}
 	return nil
 }
 
-func exec(q string, client *sql.DB) error {
+func exec(q string, client *sql.DB) (int64, error) {
 	stmt, err := client.Prepare(q)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	defer func() {
@@ -260,9 +263,10 @@ func exec(q string, client *sql.DB) error {
 			log.Error(err)
 		}
 	}()
-	if _, err = stmt.Exec(); err != nil {
+	res, err := stmt.Exec()
+	if err != nil {
 		log.Error(err, q)
-		return err
+		return 0, err
 	}
-	return nil
+	return res.RowsAffected()
 }
