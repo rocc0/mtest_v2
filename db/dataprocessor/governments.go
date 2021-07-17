@@ -1,6 +1,8 @@
 package dataprocessor
 
 import (
+	"math/rand"
+
 	log "github.com/sirupsen/logrus"
 )
 
@@ -69,7 +71,7 @@ func (mt *Service) RemoveGovernment(id int) error {
 }
 
 func (mt *Service) AddGovernment(name string) error {
-	stmt, err := mt.db.Prepare("INSERT INTO govs (gov_name) VALUES (?) ;")
+	stmt, err := mt.db.Prepare("INSERT INTO govs (gov_name, gov_id) VALUES (?,?) ;")
 	if err != nil {
 		return err
 	}
@@ -79,7 +81,7 @@ func (mt *Service) AddGovernment(name string) error {
 		}
 	}()
 
-	if _, err = stmt.Exec(name); err != nil {
+	if _, err = stmt.Exec(name, rand.Int31()); err != nil {
 		return err
 	}
 	return nil

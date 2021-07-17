@@ -62,7 +62,10 @@ type indexUpdater interface {
 }
 
 type SynonymsProcessor interface {
+	LoadGlobals() ([]datapkg.GlobalSynonym, error)
 	GetSynonymsByID(mtestID string) ([]datapkg.Synonym, error)
+	AddGlobalSynonym(word, synonym string) error
+	RemoveGlobalSynonym(word, synonym string) error
 	AddSynonym(mtestID, synonym string) (string, error)
 	RemoveSynonym(mtestID, synonym string) error
 }

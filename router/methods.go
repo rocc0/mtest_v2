@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	datapkg "mtest.com.ua/db/dataprocessor"
 )
 
 type renderer interface {
@@ -39,9 +40,13 @@ type userHandlers interface {
 }
 
 type cacheLoader interface {
+	LoadHandler() ([]datapkg.GlobalSynonym, error)
+	GetGlobalSynonyms(c *gin.Context)
 	GetAllSynonyms(c *gin.Context)
 	AddSynonymHandler(c *gin.Context)
 	RemoveSynonymHandler(c *gin.Context)
+	AddGlobalSynonymHandler(c *gin.Context)
+	RemoveGlobalSynonymHandler(c *gin.Context)
 }
 
 type admActionsHandler interface {

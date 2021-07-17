@@ -1127,7 +1127,7 @@ mTestApp.controller("searchController", function ($scope, $http, ModalWin) {
     $scope.doSearch = function () {
         $http({
             method: 'POST',
-            url: "http://localhost:9200/mtests/_search",
+            url: "http://localhost:8099/api/v.1/search",
             data: $scope.query
         }).then(function (response) {
             $scope.results = response.data;
@@ -1215,6 +1215,17 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
     }).catch(function (reason) {
         console.log(reason)
     });
+
+    $http({
+        method: 'GET',
+        url: '/api/v.1/global_synonyms',
+    }).then(function (response) {
+        $scope.synonyms = response.data.synonyms
+        console.log($scope.synonyms)
+    }).catch(function (reason) {
+        console.log(reason)
+    });
+
 
     $http({
         method: 'GET',
@@ -1455,4 +1466,35 @@ mTestApp.controller("adminController", function ($scope, $http, $rootScope ,$loc
         });
     };
 
+    $scope.addSynonym = function (word, synonym) {
+        console.log(word, synonym);
+        $http({
+            method: 'POST',
+            url: "/api/v.1/global_synonyms",
+            data: {word: word, synonym:synonym},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+            $scope.synonyms.push({word:word, synonym: synonym})
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
+    $scope.removeSynonym = function (word, synonym) {
+        console.log(word, synonym);
+        const index =  $scope.businesses.findIndex(a => a.word === word && a.synonym === synonym)
+        $http({
+            method: 'DELETE',
+            url: "/api/v.1/global_synonyms",
+            data: {word: word, synonym:synonym},
+            headers: {
+                'Content-Type': 'application/json', Authorization: 'Bearer ' + token
+            }
+        }).then(function (response) {
+            $scope.businesses.splice(index,1)
+        }).catch(function (err) {
+            console.log(err)
+        });
+    };
 });

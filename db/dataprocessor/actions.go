@@ -1,6 +1,8 @@
 package dataprocessor
 
 import (
+	"math/rand"
+
 	log "github.com/sirupsen/logrus"
 )
 
@@ -66,7 +68,7 @@ func (mt *Service) EditAdministrativeActionName(id int, name string) error {
 }
 
 func (mt *Service) AddAdministrativeAction(name string) error {
-	stmt, err := mt.db.Prepare("INSERT INTO adm_actions (act_name) VALUES (?) ;")
+	stmt, err := mt.db.Prepare("INSERT INTO adm_actions (act_name,act_id) VALUES (?,?) ;")
 	if err != nil {
 		return err
 	}
@@ -76,7 +78,7 @@ func (mt *Service) AddAdministrativeAction(name string) error {
 		}
 	}()
 
-	if _, err = stmt.Exec(name); err != nil {
+	if _, err = stmt.Exec(name, rand.Int31()); err != nil {
 		return err
 	}
 	return nil
