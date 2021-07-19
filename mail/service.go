@@ -54,7 +54,7 @@ func newRequest(to []string, subject, body string, auth Auth) *Request {
 }
 
 func (r *Request) send() (bool, error) {
-	r.from = "noreply@mtest.com.ua"
+	r.from = "mtest.org.ua@ukr.net"
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	subject := "Subject: " + r.subject + "!\n"
 	from := "From:" + r.from + "\n"
