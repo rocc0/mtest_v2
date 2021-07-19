@@ -506,7 +506,7 @@ div#header-sub .input-group-addon {
 
 .box-darkblue {
     border-radius: 0;
-    background: #d1c9b7;
+    background: #a5a8a973;
 }
 .box-darkblue > h3 {
     text-shadow: none;
@@ -527,7 +527,7 @@ div#header-sub .input-group-addon {
     padding: 0;
 }
 .tools.main {
-    background: #d1c9b7;
+    background: #a5a8a9;
     width: 100%;
     text-align: center;
     padding: 0;
@@ -894,7 +894,7 @@ code.small {
     }
 
     li#container {
-        background: rgba(127, 126, 120, 0.63);
+        background: #a5a8a9;
     }
 
     li#itemplus {
