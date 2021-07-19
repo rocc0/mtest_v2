@@ -59,12 +59,6 @@ func (r *Request) send() (bool, error) {
 	subject := "Subject: " + r.subject + "!\n"
 	from := "From:" + r.from + "\n"
 	msg := []byte(from + subject + mime + "\n" + r.body)
-	addr := "smtp.ukr.net:2525"
-
-	auth := smtp.PlainAuth("M-TEST", r.auth.Email, r.auth.Password, "smtp.ukr.net")
-	if err := smtp.SendMail(addr, auth, r.from, r.to, msg); err != nil {
-		return false, err
-	}
 
 	return true, send(r.from, r.to[0], "smtp.ukr.net:465", r.auth.Email, r.auth.Password, msg)
 }
