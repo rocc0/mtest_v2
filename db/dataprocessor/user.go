@@ -2,6 +2,7 @@ package dataprocessor
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"strconv"
@@ -190,7 +191,7 @@ func (mt *Service) CheckUserExists(email string) bool {
 	res := mt.db.QueryRow(checkUserExistsQuery, email)
 	if err := res.Scan(&result); err != nil {
 		logrus.Error(err)
-		return false
+		return err == sql.ErrNoRows
 	}
 	return result == ""
 }
