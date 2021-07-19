@@ -1151,7 +1151,7 @@ mTestApp.controller("searchController", function ($scope, $http, ModalWin) {
 });
 
 mTestApp.controller("authActivateController", function ($scope, $routeParams,$http) {
-    const baseURL = 'https://mtest.org.ua';
+    const baseURL = 'https://mtest.org.ua/';
     $http({
         method: 'GET',
         url: baseURL + 'api/v.1/u/activate/' + $routeParams.hash ,

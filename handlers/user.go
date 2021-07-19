@@ -153,6 +153,7 @@ func (hd *Handlers) ActivateAccountHandler(c *gin.Context) {
 		}
 		c.JSON(200, gin.H{"title": "ok"})
 	} else {
+		log.Error(err)
 		if err := c.AbortWithError(404, errors.New("код застарілий")); err != nil {
 			log.Error(err)
 		}
