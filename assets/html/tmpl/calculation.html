@@ -10,7 +10,7 @@
                 <input class="form-control dia"
                        ng-model="item.proc"
                        name="proc"
-                       placeholder="Оберіть дію"
+                       placeholder="Оберіть дію зі списку (клікніть по цій строчці)"
                        uib-typeahead="action as action.act_name for action in adm_actions | limitTo:15"
                        ng-change="item.adq = questions[getProcID(item.proc)]"
                        typeahead-on-select="item.adq = questions[getProcID(item.proc)]; item.total = 0"
@@ -55,7 +55,7 @@
                               popover-placement="left">
                         </span>
                     Оплата(грн.):</div>
-                    <input type="number" class="form-control" name="vchi" ng-model="item.vchi" placeholder="ВЧі (грн)"
+                    <input type="number" class="form-control" name="vchi" ng-model="item.vchi" placeholder="ОЧі (грн в місяць)"
                            uib-popover-template="helpPopover.templateUrl"
                            popover-placement="auto bottom"
                            popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'payment']"
@@ -72,7 +72,7 @@
                               popover-placement="top-left">
                         </span>
                         Супутні витрати(грн.)</div>
-                    <input type="number" class="form-control" name="pvri" ng-model="item.pvri" placeholder='ПВРі (грн)'
+                    <input type="number" class="form-control" name="pvri" ng-model="item.pvri" placeholder='СВ (грн)'
                            uib-popover-template="helpPopover.templateUrl"
                            popover-placement="auto bottom"
                            popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'additional_payment']"
@@ -90,7 +90,7 @@
                             </span>
                         Частота застосування
                     </div>
-                    <input type="number" class="form-control" name="kri" ng-model="item.kri" placeholder='КРі (раз)'
+                    <input type="number" class="form-control" name="kri" ng-model="item.kri" placeholder='КР (кількість разів виконання цієї дії)'
                            uib-popover-template="helpPopover.templateUrl"
                            popover-placement="auto bottom"
                            popover-is-open="helpPopover.isOpen[cKey+'|'+pKey+'|'+$index+'usage_freq']"

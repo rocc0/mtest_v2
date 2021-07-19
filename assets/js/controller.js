@@ -182,13 +182,15 @@ mTestApp.controller("mTestController", function ($scope, $rootScope, $sce, $http
     };
 
     $scope.corr_bar = function (total, length) {
+        var a = '';
         if (total > length / 2) {
+            a = 'danger';
             $scope.barText = "Критична корупційна складова!";
-            return 1;
         } else {
             $scope.barText = "Кількість корупційних ризиків:" + total;
-            return 0;
+            a = 'success'
         }
+        return a
     };
 
     $scope.valueToText = function (val, type) {
@@ -539,13 +541,15 @@ mTestApp.controller("mTestDBController",
 
 
         $scope.corr_bar = function (total, length) {
+            var a = '';
             if (total > length / 2) {
+                a = 'danger';
                 $scope.barText = "Критична корупційна складова!";
-                return 1;
             } else {
                 $scope.barText = "Кількість корупційних ризиків:" + total;
-                return 0;
+                a = 'success'
             }
+            return a
         };
 
         $scope.addRow = function (item, text) {
@@ -1127,7 +1131,7 @@ mTestApp.controller("searchController", function ($scope, $http, ModalWin) {
     $scope.doSearch = function () {
         $http({
             method: 'POST',
-            url: "http://localhost:8099/api/v.1/search",
+            url: "http://mtest.org.ua/api/v.1/search",
             data: $scope.query
         }).then(function (response) {
             $scope.results = response.data;
