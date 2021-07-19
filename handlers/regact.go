@@ -56,7 +56,7 @@ func (hd *Handlers) ActUploadHandler(c *gin.Context) {
 		return
 	}
 
-	if err := c.SaveUploadedFile(file, "/tmp/reg_acts/"+docID); err != nil {
+	if err := c.SaveUploadedFile(file, "/var/www/reg_acts/"+docID); err != nil {
 		logrus.Error(err)
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -130,7 +130,7 @@ func (hd *Handlers) ActGetHandler(c *gin.Context) {
 	c.Writer.Header().Add("Content-Description", "File Transfer")
 	c.Writer.Header().Add("Content-Transfer-Encoding", "binary")
 
-	c.FileAttachment("/tmp/reg_acts/"+actData.DocID, actData.Name)
+	c.FileAttachment("/var/www/reg_acts/"+actData.DocID, actData.Name)
 }
 
 func (hd *Handlers) ActDeleteHandler(c *gin.Context) {
@@ -153,7 +153,7 @@ func (hd *Handlers) ActDeleteHandler(c *gin.Context) {
 	}()
 	if err := hd.DeleteRegAct(act.MtestID, act.DocID); err == nil {
 		c.JSON(200, gin.H{"title": "Документ видалено"})
-		if err := os.Remove("/tmp/reg_acts/" + act.DocID); err != nil {
+		if err := os.Remove("/var/www/reg_acts/" + act.DocID); err != nil {
 			logrus.Error(err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 		}

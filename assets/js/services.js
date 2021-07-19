@@ -1,6 +1,6 @@
 mTestApp.service('authService', function ($http) {
     /*jshint validthis: true */
-    const baseURL = 'http://mtest.org.ua/';
+    const baseURL = 'https://mtest.org.ua/';
 
     this.login = function(user) {
         return $http({
@@ -60,7 +60,7 @@ mTestApp.service('authService', function ($http) {
 });
 
 mTestApp.service('mtCrud', function ($http) {
-    const baseURL = 'http://mtest.org.ua';
+    const baseURL = 'https://mtest.org.ua';
 
     this.readMtestFromDB = function (id) {
         return $http({

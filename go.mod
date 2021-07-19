@@ -9,6 +9,7 @@ require (
 	github.com/appleboy/gin-jwt/v2 v2.6.4
 	github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20190729070250-5ae5475bae5e
 	github.com/caarlos0/env/v6 v6.6.0
+	github.com/gin-gonic/autotls v0.0.3 // indirect
 	github.com/gin-gonic/gin v1.7.2
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-sql-driver/mysql v1.5.0
@@ -20,7 +21,7 @@ require (
 	github.com/olivere/elastic/v7 v7.0.24
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.4.2
-	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect

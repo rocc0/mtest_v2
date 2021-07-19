@@ -1131,7 +1131,7 @@ mTestApp.controller("searchController", function ($scope, $http, ModalWin) {
     $scope.doSearch = function () {
         $http({
             method: 'POST',
-            url: "http://mtest.org.ua/api/v.1/search",
+            url: "https://mtest.org.ua/api/v.1/search",
             data: $scope.query
         }).then(function (response) {
             $scope.results = response.data;
@@ -1151,7 +1151,7 @@ mTestApp.controller("searchController", function ($scope, $http, ModalWin) {
 });
 
 mTestApp.controller("authActivateController", function ($scope, $routeParams,$http) {
-    const baseURL = 'http://mtest.org.ua';
+    const baseURL = 'https://mtest.org.ua';
     $http({
         method: 'GET',
         url: baseURL + 'api/v.1/u/activate/' + $routeParams.hash ,
@@ -1164,7 +1164,7 @@ mTestApp.controller("authActivateController", function ($scope, $routeParams,$ht
 });
 
 mTestApp.controller("authResetController", function ($scope, $routeParams, $http, $location, authService) {
-    const baseURL = 'http://mtest.org.ua';
+    const baseURL = 'https://mtest.org.ua';
     var hash = $routeParams.hash;
     $scope.user = {};
     authService.checkhash(hash)
