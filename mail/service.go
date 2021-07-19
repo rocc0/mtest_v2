@@ -2,8 +2,10 @@ package mail
 
 import (
 	"bytes"
+	"crypto/tls"
 	"errors"
 	"html/template"
+	"net"
 	"net/smtp"
 )
 
@@ -63,7 +65,8 @@ func (r *Request) send() (bool, error) {
 	if err := smtp.SendMail(addr, auth, r.from, r.to, msg); err != nil {
 		return false, err
 	}
-	return true, nil
+
+	return true, send(r.from, r.to[0], "smtp.ukr.net:465", r.auth.Email, r.auth.Password, msg)
 }
 
 func (r *Request) parseTemplate(templateFileName string, data interface{}) error {
@@ -77,4 +80,57 @@ func (r *Request) parseTemplate(templateFileName string, data interface{}) error
 	}
 	r.body = buf.String()
 	return nil
+}
+
+func send(from, to, servername, username, password string, msg []byte) error {
+	host, _, _ := net.SplitHostPort(servername)
+	auth := smtp.PlainAuth("", username, password, host)
+
+	// TLS config
+	tlsconfig := &tls.Config{
+		InsecureSkipVerify: true,
+		ServerName:         host,
+	}
+
+	conn, err := tls.Dial("tcp", servername, tlsconfig)
+	if err != nil {
+		return err
+	}
+
+	c, err := smtp.NewClient(conn, host)
+	if err != nil {
+		return err
+	}
+
+	// Auth
+	if err = c.Auth(auth); err != nil {
+		return err
+	}
+
+	// To && From
+	if err = c.Mail(from); err != nil {
+		return err
+	}
+
+	if err = c.Rcpt(to); err != nil {
+		return err
+	}
+
+	// Data
+	w, err := c.Data()
+	if err != nil {
+		return err
+	}
+
+	_, err = w.Write([]byte(msg))
+	if err != nil {
+		return err
+	}
+
+	err = w.Close()
+	if err != nil {
+		return err
+	}
+
+	return c.Quit()
 }
