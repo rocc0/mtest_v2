@@ -4,6 +4,7 @@ import (
 	runtime "github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/acme/autocert"
+	"mtest.com.ua/mail"
 
 	"github.com/gin-gonic/autotls"
 	"mtest.com.ua/config"
@@ -65,7 +66,10 @@ func main() {
 		}
 	}
 
-	router := routes.NewRouter(handlerspkg.NewService(data, hash, searchService), data)
+	router := routes.NewRouter(handlerspkg.NewService(data, hash, searchService, mail.Auth{
+		Email:    cfg.Email,
+		Password: cfg.Password,
+	}), data)
 	if err := router.Init(); err != nil {
 		logrus.Fatal(err)
 	}

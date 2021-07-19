@@ -79,7 +79,7 @@ func (hd *Handlers) RegistrationHandler(c *gin.Context) {
 			return
 		}
 
-		if err := mail.SendEmail(user.Name, user.Email, h, "email_activate"); err != nil {
+		if err := mail.SendEmail(user.Name, user.Email, h, "email_activate", hd.auth); err != nil {
 			log.Error(err)
 			c.AbortWithStatus(400)
 			return
@@ -175,7 +175,7 @@ func (hd *Handlers) ResetPasswordHandler(c *gin.Context) {
 		return
 	}
 
-	if err = mail.SendEmail(user.Email, user.Email, hashData, "email_password"); err != nil {
+	if err = mail.SendEmail(user.Email, user.Email, hashData, "email_password", hd.auth); err != nil {
 		logrus.Error(err)
 		if err := c.AbortWithError(404, err); err != nil {
 			log.Error(err)

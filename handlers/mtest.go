@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"mtest.com.ua/mail"
+
 	"github.com/sirupsen/logrus"
 
 	datapkg "mtest.com.ua/db/dataprocessor"
@@ -82,6 +84,7 @@ type Handlers struct {
 	BusinessDataProcessor
 	regActUpdater
 	SynonymsProcessor
+	auth mail.Auth
 }
 
 func (hd *Handlers) RenderIndexPage(c *gin.Context) {

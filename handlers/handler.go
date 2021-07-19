@@ -3,9 +3,10 @@ package handlers
 import (
 	datapkg "mtest.com.ua/db/dataprocessor"
 	hashpkg "mtest.com.ua/db/hasher"
+	"mtest.com.ua/mail"
 )
 
-func NewService(data *datapkg.Service, hash *hashpkg.HashHandler, search indexUpdater) *Handlers {
+func NewService(data *datapkg.Service, hash *hashpkg.HashHandler, search indexUpdater, auth mail.Auth) *Handlers {
 	return &Handlers{
 		mtestDataProcessor:      data,
 		executorDataProcessor:   data,
@@ -18,5 +19,6 @@ func NewService(data *datapkg.Service, hash *hashpkg.HashHandler, search indexUp
 		hasher:                  hash,
 		indexUpdater:            search,
 		SynonymsProcessor:       data,
+		auth:                    auth,
 	}
 }

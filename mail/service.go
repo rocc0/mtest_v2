@@ -17,12 +17,18 @@ type (
 		to      []string
 		subject string
 		body    string
+		auth    Auth
 	}
 )
 
-func SendEmail(name, email, hash, template string) error {
+type Auth struct {
+	Email    string
+	Password string
+}
+
+func SendEmail(name, email, hash, template string, auth Auth) error {
 	tmpl := templateData{Name: name, URL: hash}
-	r := newRequest([]string{email}, "Активація аккаунту", "Активація аккаунту")
+	r := newRequest([]string{email}, "Активація аккаунту", "Активація аккаунту", auth)
 	if err := r.parseTemplate("templates/"+template+".html", tmpl); err != nil {
 		return err
 	}
@@ -36,11 +42,12 @@ func SendEmail(name, email, hash, template string) error {
 	return nil
 }
 
-func newRequest(to []string, subject, body string) *Request {
+func newRequest(to []string, subject, body string, auth Auth) *Request {
 	return &Request{
 		to:      to,
 		subject: subject,
 		body:    body,
+		auth:    auth,
 	}
 }
 
@@ -50,9 +57,9 @@ func (r *Request) send() (bool, error) {
 	subject := "Subject: " + r.subject + "!\n"
 	from := "From:" + r.from + "\n"
 	msg := []byte(from + subject + mime + "\n" + r.body)
-	addr := "mail.adm.tools:2525"
+	addr := "smtp.ukr.net:2525"
 
-	auth := smtp.PlainAuth("M-TEST", "noreply@mtest.com.ua", "test", "mail.adm.tools")
+	auth := smtp.PlainAuth("M-TEST", r.auth.Email, r.auth.Password, "smtp.ukr.net")
 	if err := smtp.SendMail(addr, auth, r.from, r.to, msg); err != nil {
 		return false, err
 	}
