@@ -17,7 +17,7 @@ import (
 type userDataProcessor interface {
 	CheckUserActivation(email string) bool
 	CheckUserExists(email string) bool
-	CreateUser() (string, error)
+	CreateUser(u datapkg.User) (string, error)
 	DeleteUser(id int) error
 	GetUser(email string) (*datapkg.User, error)
 	InitUsersTable() error

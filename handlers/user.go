@@ -71,7 +71,7 @@ func (hd *Handlers) RegistrationHandler(c *gin.Context) {
 		return
 	}
 
-	if name, err := hd.CreateUser(); err == nil {
+	if name, err := hd.CreateUser(user); err == nil {
 		h, err := hd.WriteHash(user.Email)
 		if err != nil {
 			log.Error(err)

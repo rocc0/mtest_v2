@@ -90,8 +90,7 @@ func (mt *Service) CheckUserAdmin(email string) bool {
 	return rights == 1
 }
 
-func (mt *Service) CreateUser() (string, error) {
-	var u User
+func (mt *Service) CreateUser(u User) (string, error) {
 	if mt.CheckUserExists(u.Email) == false {
 		return u.Name, errors.New("користувач з цим ім'ям вже існує")
 	}
