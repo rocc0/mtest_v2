@@ -3,7 +3,10 @@
         <div class="mtest-item"><a href="/track/{[{ mt.id }]}" target="_blank">{[{ mt.name }]}</a></div>
         <div class="mtest-buttons">
             <div class="mtest-icon">
-                <button ng-click="removeMtestItem(mt.id)" class="btn btn-danger">
+                <button ng-click="removeMtestItem(mt.id)"
+                        tooltip-placement="top"
+                        uib-tooltip="Видалити розрахунок"
+                        class="btn btn-danger">
                     <span class="glyphicon glyphicon-remove">
                     </span>
                 </button>
@@ -13,6 +16,8 @@
                         uib-popover-template="dynamicPopover.templateUrl[$index + 'm']"
                         popover-title="Надіслати посилання на email"
                         type="button"
+                        tooltip-placement="top"
+                        uib-tooltip="Надіслати посилання на email"
                         class="btn btn-success"
                         popover-placement="left-top"
                         popover-is-open="dynamicPopover.isOpen[$index + 'm']"
@@ -25,6 +30,8 @@
                         uib-popover-template="dynamicPopover.templateUrl[$index + 's']"
                         type="button"
                         class="btn btn-primary"
+                        tooltip-placement="top"
+                        uib-tooltip="Змінити дані розрахунку"
                         popover-placement="left-top"
                         popover-is-open="dynamicPopover.isOpen[$index+'s']">
                     <span class="glyphicon glyphicon-cog"></span>
@@ -33,21 +40,27 @@
             <div class="mtest-icon">
                 <button ng-click="mt.filesList=!mt.filesList;mt.rowSharing=0;mt.showSynonyms=0"
                         type="button"
-                        class="btn btn-primary">
+                        class="btn btn-primary"
+                        tooltip-placement="top"
+                        uib-tooltip="Завантажити регуляторний акт">
                     <span class="glyphicon glyphicon-file"></span>
                 </button>
             </div>
             <div class="mtest-icon">
                 <button ng-click="mt.showSynonyms=!mt.showSynonyms;mt.rowSharing=0;mt.filesList=0"
                         type="button"
-                        class="btn btn-primary">
+                        class="btn btn-primary"
+                        tooltip-placement="top"
+                        uib-tooltip="Додати синонім">
                     <span class="glyphicon glyphicon-plus"></span>
                 </button>
             </div>
             <div class="mtest-icon" ng-show="mt.calc_type == 1">
                 <button ng-click="mt.rowSharing=!mt.rowSharing;mt.filesList=0; mt.showSynonyms=0"
                         type="button"
-                        class="btn btn-primary">
+                        class="btn btn-primary"
+                        tooltip-placement="top"
+                        uib-tooltip="Виконавці">
                     <span class="glyphicon glyphicon-list-alt"></span>
                 </button>
             </div>
