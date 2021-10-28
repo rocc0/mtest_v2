@@ -3,10 +3,8 @@ package main
 import (
 	runtime "github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/sirupsen/logrus"
-	"golang.org/x/crypto/acme/autocert"
 	"mtest.com.ua/mail"
 
-	"github.com/gin-gonic/autotls"
 	"mtest.com.ua/config"
 	datapkg "mtest.com.ua/db/dataprocessor"
 	hashpkg "mtest.com.ua/db/hasher"
@@ -79,12 +77,12 @@ func main() {
 	}
 
 	// Start serving the application
-	//router.Run(":8099")
-	m := autocert.Manager{
-		Prompt:     autocert.AcceptTOS,
-		HostPolicy: autocert.HostWhitelist("mtest.org.ua"),
-		Cache:      autocert.DirCache("/var/www/.cache"),
-	}
-
-	autotls.RunWithManager(router, &m)
+	router.Run(":8099")
+	//m := autocert.Manager{
+	//	Prompt:     autocert.AcceptTOS,
+	//	HostPolicy: autocert.HostWhitelist("mtest.org.ua"),
+	//	Cache:      autocert.DirCache("/var/www/.cache"),
+	//}
+	//
+	//autotls.RunWithManager(router, &m)
 }
